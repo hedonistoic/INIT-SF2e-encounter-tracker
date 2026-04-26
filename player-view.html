@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Initiative — Player View</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@100..900&family=Lexend:wght@100..900&family=Orbitron:wght@400..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0d0e11;
+        --bg2: #13151a;
+        --bg3: #1a1d25;
+        --border: #2a2d38;
+        --border2: #3a3e50;
+        --text: #c8ccd8;
+        --muted: #5a5f72;
+        --primary: rgb(130, 0, 253);
+        --muted-primary: rgba(130, 0, 253, 0.5);
+        --amber: #e8a020;
+        --green: #7ab800;
+        --red: #c43030;
+        --red-soft: #3a1515;
+        --blue: #4080d0;
+        --blue-soft: #101828;
+        --ally-col: #20a070;
+        --ally-soft: #0a2018;
+        --pc-col: #549df7;
+        --enemy-col: #e23939;
+        --active-glow: rgba(138, 178, 0, 0.18);
+        --active-border: #8ab200;
+        --active-outer-glow: rgba(130, 0, 253, 0.22);
+        --radius: 6px;
+        --radius-lg: 12px;
+        --hud-w: 90px;
+      }
+
+      html,
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* ── HUD TILE (corner-anchored, bleeds off top & left edges) ── */
+      #hud {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+        background: var(--bg2);
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-radius: 0 0 var(--radius-lg) 0;
+        padding: 14px 16px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: var(--hud-w);
+        box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .round-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1;
+      }
+      .round-label {
+        font-family: "Orbitron", monospace;
+        font-size: 12px;
+        letter-spacing: 1px;
+        color: var(--primary);
+        text-transform: uppercase;
+        font-weight: 900;
+      }
+      .round-num {
+        font-family: "Orbitron", sans-serif;
+        font-size: 38px;
+        color: var(--primary);
+        line-height: 1;
+        font-weight: 700;
+      }
+
+      .status-pill {
+        font-family: "Orbitron", monospace;
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border2);
+        color: var(--muted);
+        align-self: stretch;
+        text-align: center;
+      }
+      .status-pill.live {
+        border-color: var(--active-border);
+        color: var(--green);
+        background: rgba(138, 178, 0, 0.08);
+      }
+
+      /* ── TRACK AREA ── */
+      #track {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: flex-start;
+        padding: 24px 32px 24px calc(var(--hud-w) + 16px);
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 0;
+      }
+      #track::-webkit-scrollbar {
+        height: 4px;
+      }
+      #track::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      #track::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
+      }
+
+      /* ── COMBATANT CARDS ── */
+      .card-wrap {
+        display: flex;
+        align-items: flex-start;
+        flex-shrink: 0;
+      }
+
+      /* Arrow connector between cards */
+      .card-arrow {
+        width: 28px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--primary);
+        font-size: 24px;
+        font-family: "Orbitron", monospace;
+      }
+
+      .card {
+        min-width: 160px;
+        width: max-content;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 32px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        position: relative;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s,
+          background 0.2s;
+        flex-shrink: 0;
+        /* hp glow: driven by --hp-glow set inline per card */
+        box-shadow:
+          inset 0 0 0 1px var(--hp-glow, transparent),
+          inset 0 0 16px 4px var(--hp-glow, transparent);
+      }
+
+      .card.active {
+        box-shadow:
+          inset 0 0 0 1px var(--hp-glow, transparent),
+          inset 0 0 16px 4px var(--hp-glow, transparent),
+          0 0 20px 0px rgba(130, 0, 253, 0.4),
+          0 0 120px -5px var(--active-outer-glow);
+      }
+
+      .card.defeated {
+        opacity: 0.3;
+        filter: grayscale(0.6);
+      }
+
+      /* Active crown marker */
+      .active-marker {
+        display: none;
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: "Orbitron", monospace;
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        color: var(--primary);
+        background: var(--bg);
+        padding: 1px 8px;
+        border: 1px solid var(--primary);
+        border-radius: 20px;
+        white-space: nowrap;
+        text-transform: uppercase;
+      }
+      .card.active .active-marker {
+        display: block;
+      }
+
+      /* Type stripe along left edge */
+      /* .card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 12px;
+        bottom: 12px;
+        width: 3px;
+        border-radius: 2px;
+      } */
+      /* .card.type-pc::before {
+        background: var(--pc-col);
+      }
+      .card.type-ally::before {
+        background: var(--ally-col);
+      }
+      .card.type-enemy::before {
+        background: var(--enemy-col);
+      } */
+
+      /* Name */
+      .card-name {
+        font-size: 17px;
+        font-weight: 600;
+        color: #e8eaf0;
+        letter-spacing: 0.3px;
+        line-height: 1.2;
+        padding-left: 8px;
+        word-break: break-word;
+      }
+      .card.type-pc .card-name {
+        color: var(--pc-col);
+      }
+      .card.type-ally .card-name {
+        color: var(--ally-col);
+      }
+      .card.type-enemy .card-name {
+        color: var(--enemy-col);
+      }
+      .card.defeated .card-name {
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+
+      /* Conditions */
+      .cond-tags-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding-left: 0;
+        align-items: flex-start;
+        width: 0;
+        min-width: 100%;
+      }
+
+      /* Each condition group: parent + bundled children in one connected pill */
+      .cond-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        background: #1e2130;
+        overflow: hidden;
+      }
+      /* Parent chip loses its own border/bg — the group provides it */
+      .cond-group .cond-chip {
+        border: none;
+        background: transparent;
+        border-radius: 0;
+      }
+
+      .cond-chip {
+        font-family: "Lexend", sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        background: #1e2130;
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 3px 8px;
+        color: #9090b8;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .cond-chip .cval {
+        color: var(--amber);
+        font-weight: 700;
+      }
+      /* Bundled (included) conditions — attached row beneath parent */
+      .cond-chip.bundled {
+        background: rgba(0, 0, 0, 0.25);
+        border: none;
+        border-top: 1px solid var(--border);
+        border-radius: 0;
+        color: #7880a8;
+        padding-left: 12px;
+      }
+      /* Overridden conditions */
+      .cond-chip.overridden {
+        opacity: 0.3;
+        text-decoration: line-through;
+      }
+      .bundled-arrow {
+        color: var(--muted);
+        font-size: 9px;
+        opacity: 0.7;
+        flex-shrink: 0;
+      }
+      .overridden-icon {
+        color: var(--muted);
+        font-size: 10px;
+        text-decoration: none;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      /* Initiative badge (small, top-right of card) */
+      .init-num {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-family: "Lexend", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text);
+        background: var(--bg3);
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-radius: var(--radius-lg) 0 var(--radius) 0;
+        padding: 3px 7px;
+        line-height: 1;
+        box-shadow:
+          inset 0px 0px 0 var(--hp-glow, transparent),
+          inset 1px 1px 1px var(--hp-glow, transparent);
+      }
+      .card.active .init-num {
+        /* color: var(--green); */
+        /* border-color: var(--active-border); */
+        /* background: rgba(138, 178, 0, 0.12); */
+      }
+
+      /* ── EFFECTS SUMMARY ── */
+      .stat-summary {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        gap: 0;
+        align-items: flex-end;
+        align-self: flex-start;
+        padding: 2px 6px;
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+      .summary-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+        padding: 2px 6px;
+      }
+      /* muted pipe separator between stats */
+      .summary-stat + .summary-stat {
+        border-left: 1px solid var(--border);
+      }
+      .summary-stat-key {
+        font-family: "Lexend", monospace;
+        font-size: 9px;
+        color: var(--text);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        line-height: 1.2;
+        text-align: center;
+        white-space: normal;
+        width: min-content;
+      }
+      .summary-stat-val {
+        font-family: "Lexend", monospace;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1;
+      }
+      .summary-stat-val.neg {
+        color: var(--red);
+      }
+      .summary-stat-val.pos {
+        color: var(--green);
+      }
+
+      /* ── WAITING STATE ── */
+      #waiting {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        color: var(--muted);
+      }
+      #waiting .w-icon {
+        font-size: 48px;
+        opacity: 0.2;
+        animation: pulse 2.5s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.15;
+        }
+        50% {
+          opacity: 0.35;
+        }
+      }
+      #waiting p {
+        font-family: "Orbitron", monospace;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+
+      /* Rotation Button Styling */
+      .rotate-btn {
+        background: var(--bg3);
+        border: 1px solid var(--border2);
+        color: var(--muted);
+        font-family: "Orbitron", monospace;
+        font-size: 9px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        align-self: stretch;
+        text-align: center;
+      }
+
+      .rotate-btn:hover {
+        border-color: var(--amber);
+        color: var(--amber);
+      }
+
+      /* The Flip Logic */
+      body.rotated {
+        transform: rotate(180deg);
+      }
+      /* Rotates the icon itself when the body is flipped */
+      body.rotated #rotate-toggle span {
+        display: inline-block;
+        transform: rotate(180deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hud">
+      <div class="round-block">
+        <span class="round-label">Round</span>
+        <span class="round-num" id="round-display">0</span>
+      </div>
+      <span class="status-pill" id="status-pill">/-/</span>
+      <button class="rotate-btn" id="rotate-toggle">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          aria-hidden="true"
+          role="img"
+          height="2em"
+          viewBox="0 0 24 24"
+          style="color: inherit"
+        >
+          <path
+            fill="currentColor"
+            d="M6.09 19h12l-1.3 1.29a1 1 0 0 0 1.42 1.42l3-3a1 1 0 0 0 0-1.42l-3-3a1 1 0 0 0-1.42 0a1 1 0 0 0 0 1.42l1.3 1.29h-12a1.56 1.56 0 0 1-1.59-1.53V13a1 1 0 0 0-2 0v2.47A3.56 3.56 0 0 0 6.09 19m-.3-9.29a1 1 0 1 0 1.42-1.42L5.91 7h12a1.56 1.56 0 0 1 1.59 1.53V11a1 1 0 0 0 2 0V8.53A3.56 3.56 0 0 0 17.91 5h-12l1.3-1.29a1 1 0 0 0 0-1.42a1 1 0 0 0-1.42 0l-3 3a1 1 0 0 0 0 1.42Z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <div id="waiting">
+      <div class="w-icon">⚔</div>
+      <p>Awaiting combat…</p>
+    </div>
+
+    <div id="track" style="display: none"></div>
+
+    <script>
+      function hpColor(pct) {
+        if (pct > 0.5) return "#7ab800";
+        if (pct > 0.25) return "#e8a020";
+        return "#c43030";
+      }
+
+      function escHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      const STAT_ORDER = [
+        "AC",
+        "FORT",
+        "REFL",
+        "WILL",
+        "STR",
+        "DEX",
+        "CON",
+        "INT",
+        "WIS",
+        "CHA",
+      ];
+
+      function fmtMod(v) {
+        return (v >= 0 ? "+" : "") + v;
+      }
+
+      function buildStatSummaryHTML(statSummary) {
+        if (!statSummary) return "";
+        const entries = Object.entries(statSummary);
+        if (!entries.length) return "";
+        entries.sort(([a], [b]) => {
+          const ai = STAT_ORDER.indexOf(a),
+            bi = STAT_ORDER.indexOf(b);
+          if (ai !== -1 && bi !== -1) return ai - bi;
+          if (ai !== -1) return -1;
+          if (bi !== -1) return 1;
+          return a.localeCompare(b);
+        });
+        let parts = "";
+        for (const [stat, val] of entries) {
+          const cls = val < 0 ? "neg" : "pos";
+          parts += `<span class="summary-stat"><span class="summary-stat-key">${escHtml(stat)}</span><span class="summary-stat-val ${cls}">${fmtMod(val)}</span></span>`;
+        }
+        return `<div class="stat-summary">${parts}</div>`;
+      }
+
+      function buildCard(c, idx, activeIndex) {
+        const isActive = idx === activeIndex;
+        const hpPct = c.maxHp > 0 ? c.hp / c.maxHp : 1;
+        const hpFill = Math.round(hpPct * 100);
+        const col = c.maxHp > 0 ? hpColor(hpPct) : "#5a5f72";
+
+        // Build grouped condition HTML matching GM view structure (read-only)
+        function buildCondChips(conditions) {
+          const mains = conditions.filter((x) => x.bundledUnder == null);
+          if (!mains.length) return "";
+          let html = '<div class="cond-tags-wrap">';
+          for (const cond of mains) {
+            const isOverridden = !!cond.overriddenBy;
+            html += `<div class="cond-group">`;
+            html += `<span class="cond-chip${isOverridden ? " overridden" : ""}">`;
+            html += escHtml(cond.name);
+            if (cond.value != null)
+              html += `<span class="cval"> ${escHtml(String(cond.value))}</span>`;
+            if (isOverridden)
+              html += `<span class="overridden-icon" title="Overridden by ${escHtml(cond.overriddenBy)}"></span>`;
+            html += `</span>`;
+            // Bundled children stacked under parent
+            const children = conditions.filter(
+              (x) => x.bundledUnder === cond.cid,
+            );
+            for (const child of children) {
+              const childOverridden = !!child.overriddenBy;
+              html += `<span class="cond-chip bundled${childOverridden ? " overridden" : ""}">`;
+              html += `<span class="bundled-arrow">⤷</span>`;
+              html += escHtml(child.name);
+              if (child.value != null)
+                html += `<span class="cval"> ${escHtml(String(child.value))}</span>`;
+              if (childOverridden)
+                html += `<span class="overridden-icon">⊘</span>`;
+              html += `</span>`;
+            }
+            html += `</div>`;
+          }
+          html += `</div>`;
+          return html;
+        }
+
+        const condHTML = buildCondChips(c.conditions);
+        const statSummaryHTML = buildStatSummaryHTML(c.statSummary);
+
+        // hp glow: convert the solid colour to a semi-transparent rgba for the inset shadow
+        const glowStyle =
+          c.maxHp > 0
+            ? `--hp-glow: ${col.replace(
+                /^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i,
+                (_, r, g, b) =>
+                  `rgba(${parseInt(r, 16)},${parseInt(g, 16)},${parseInt(b, 16)},0.45)`,
+              )};`
+            : "";
+
+        return `
+  <div class="card type-${c.type}${isActive ? " active" : ""}${c.defeated ? " defeated" : ""}" style="${glowStyle}">
+    <div class="active-marker">▶ Active</div>
+    <div class="init-num">${c.initiative}</div>
+    <div class="card-name">${escHtml(c.name)}</div>
+    ${statSummaryHTML}
+    ${condHTML}
+  </div>`;
+      }
+
+      function render(state) {
+        const track = document.getElementById("track");
+        const waiting = document.getElementById("waiting");
+        const roundEl = document.getElementById("round-display");
+        const pill = document.getElementById("status-pill");
+
+        roundEl.textContent = state.round > 0 ? state.round : "Ø";
+
+        if (!state.inCombat || !state.combatants.length) {
+          track.style.display = "none";
+          waiting.style.display = "";
+          pill.textContent = "/-/";
+          pill.classList.remove("live");
+          return;
+        }
+
+        waiting.style.display = "none";
+        track.style.display = "flex";
+        pill.textContent = "Live";
+        pill.classList.add("live");
+
+        // --- NEW LOGIC STARTS HERE ---
+        // 1. Filter out hidden combatants first
+        const visibleCombatants = state.combatants.filter(
+          (c) => c.visibleToPlayers !== false,
+        );
+
+        // 2. Map only the visible ones to HTML
+        const cards = visibleCombatants
+          .map((c, i) => {
+            // We need to find the REAL index of this combatant in the original state.combatants array
+            // to check if they are the active one
+            const originalIndex = state.combatants.indexOf(c);
+            const isActive = originalIndex === state.activeIndex;
+
+            const arrow =
+              i < visibleCombatants.length - 1
+                ? `<div class="card-arrow">›</div>`
+                : "";
+
+            // We use buildCard but pass our calculated isActive status
+            return `<div class="card-wrap">${buildCard(c, originalIndex, state.activeIndex)}${arrow}</div>`;
+          })
+          .join("");
+        // --- NEW LOGIC ENDS HERE ---
+
+        track.innerHTML = cards;
+
+        const activeCard = track.querySelector(".card.active");
+        if (activeCard) {
+          activeCard.scrollIntoView({
+            behavior: "smooth",
+            inline: "center",
+            block: "nearest",
+          });
+        }
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem("init_player_view");
+          if (raw) render(JSON.parse(raw));
+        } catch (e) {}
+      }
+
+      // Listen for updates from the tracker tab
+      window.addEventListener("storage", (e) => {
+        if (e.key === "init_player_view" && e.newValue) {
+          try {
+            render(JSON.parse(e.newValue));
+          } catch (err) {}
+        }
+      });
+
+      // Load whatever is already stored on open
+      loadState();
+
+      // rotate toggle logic
+      document.getElementById("rotate-toggle").addEventListener("click", () => {
+        document.body.classList.toggle("rotated");
+      });
+    </script>
+  </body>
+</html>

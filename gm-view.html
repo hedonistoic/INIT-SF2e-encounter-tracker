@@ -1,0 +1,3486 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>INIT // Encounter Tracker</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@100..900&family=Lexend:wght@100..900&family=Orbitron:wght@400..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0e11;
+        --bg2: #13151a;
+        --bg3: #1a1d25;
+        --border: #2a2d38;
+        --border2: #3a3e50;
+        --text: #c8ccd8;
+        --muted: #5a5f72;
+        --active-bg: #1a1e10;
+        --active-border: #8ab200;
+        --active-glow: rgba(138, 178, 0, 0.12);
+        --hyperlink: #ca73ff;
+        --primary: rgb(130, 0, 253);
+        --muted-primary: rgba(130, 0, 253, 0.5);
+        --amber: #e8a020;
+        --green: #7ab800;
+        --red: #c43030;
+        --red-soft: #3a1515;
+        --blue: #4080d0;
+        --blue-soft: #101828;
+        --ally-col: #20a070;
+        --ally-soft: #0a2018;
+        --pc-col: #4080d0;
+        --enemy-col: #c43030;
+        --btn-bg: #1e2130;
+        --btn-hover: #272b3a;
+        --tag-bg: #1e2130;
+        --radius: 4px;
+        --radius-lg: 8px;
+        /* Fixed width for the stats column — conditions always start at this offset */
+        --stats-col-width: 240px;
+      }
+      html,
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        font-size: 15px;
+        min-height: 100vh;
+        line-height: 1.4;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        height: 56px;
+        background: var(--bg2);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-family: "Orbitron", sans-serif;
+        font-size: 22px;
+        color: var(--primary);
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+      .logo span {
+        color: var(--muted);
+        font-size: 13px;
+        font-family: "Orbitron", sans-serif;
+        letter-spacing: 1px;
+        margin-left: 12px;
+        vertical-align: middle;
+      }
+      .header-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      #autosave-indicator {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 10px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 0.4s;
+        white-space: nowrap;
+      }
+      #autosave-indicator.saved {
+        color: var(--green);
+      }
+      #autosave-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--muted);
+        transition: background 0.4s;
+        flex-shrink: 0;
+      }
+      #autosave-indicator.saved #autosave-dot {
+        background: var(--green);
+      }
+
+      /* inline combat control groups — label + button row */
+      .ctrl-group {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+      .ctrl-group-label {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 9px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .ctrl-group-btns {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+      /* round number sits inline between - and + */
+      .round-badge-num {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 22px;
+        color: var(--primary);
+        line-height: 1;
+        min-width: 32px;
+        text-align: center;
+      }
+      /* keep round-badge-label usable elsewhere */
+      .round-badge-label {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 9px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      /* icon-only button — same vertical padding as .btn so heights match */
+      .vis-btn {
+        padding: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+      }
+      main {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 0;
+        flex: 1;
+        transition: grid-template-columns 0.25s ease;
+      }
+      main.sidebar-hidden {
+        grid-template-columns: 1fr 0;
+      }
+      main.sidebar-hidden #sidebar {
+        overflow: hidden;
+        padding: 0;
+        border: none;
+      }
+      #tracker-col {
+        border-right: 1px solid var(--border);
+      }
+      #sidebar {
+        padding: 20px 16px;
+        background: var(--bg2);
+        overflow: hidden;
+        transition: padding 0.25s ease;
+      }
+
+      #combatant-list {
+        padding: 0;
+      }
+      .combatant {
+        display: grid;
+        grid-template-columns: 44px 1fr auto;
+        align-items: start;
+        padding: 12px 16px 12px 0;
+        border-bottom: 1px solid var(--border);
+        gap: 12px;
+        transition: background 0.15s;
+        position: relative;
+      }
+      .combatant:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .combatant.active {
+        background: var(--active-bg);
+        border-left: 3px solid var(--active-border);
+        box-shadow: inset 4px 0 24px var(--active-glow);
+      }
+      .combatant.hidden,
+      .combatant.defeated {
+        opacity: 0.4;
+      }
+      .combatant.defeated .comb-name {
+        text-decoration: line-through;
+      }
+
+      .left-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding-top: 2px;
+      }
+      .init-badge {
+        width: 44px;
+        text-align: center;
+        font-family: "Lexend Exa", monospace;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 8px 0;
+        background: var(--bg3);
+        flex-shrink: 0;
+        align-self: start;
+        margin-top: 2px;
+        /* input resets */
+        -moz-appearance: textfield;
+        cursor: text;
+        outline: none;
+        line-height: 1;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+      }
+      .init-badge::-webkit-inner-spin-button,
+      .init-badge::-webkit-outer-spin-button {
+        display: none;
+      }
+      .init-badge:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      .init-badge:focus {
+        border-color: var(--amber);
+        color: var(--amber);
+        background: #1e1a0e;
+      }
+      .combatant.active .init-badge {
+        border-color: var(--active-border);
+        color: var(--green);
+      }
+      .combatant.active .init-badge:focus {
+        border-color: var(--amber);
+        color: var(--amber);
+        background: #1e1a0e;
+      }
+
+      .reaction-badge {
+        width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: "Lexend", monospace;
+        font-size: 14px;
+        font-weight: 700;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2px 0;
+        background: var(--bg3);
+        color: var(--muted);
+        cursor: pointer;
+        user-select: none;
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          color 0.15s;
+      }
+
+      .reaction-badge:hover {
+        border-color: var(--muted);
+        color: var(--text);
+      }
+
+      /* SPENT state */
+      .reaction-badge.used {
+        border-color: var(--amber);
+        background: #241d10;
+        color: var(--amber);
+      }
+
+      /* ── COMB-BODY ── */
+      .comb-body {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .comb-top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      /* Two-column middle row */
+      .comb-middle {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+        flex-wrap: nowrap;
+      }
+
+      /* Fixed-width stats column — ensures conditions always align regardless of content */
+      .comb-stats-col {
+        width: var(--stats-col-width);
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      /* Conditions column — takes remaining space */
+      .cond-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+      /* Header row: label + add button sit inline */
+      .cond-col-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .cond-col-label {
+        font-family: "Lexend Exa", monospace;
+        font-size: 10px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+
+      /* Conditions flow left-to-right, wrapping */
+      .cond-tags-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        align-items: flex-start;
+      }
+
+      /* Each condition group: parent + bundled children in one connected pill */
+      .cond-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        background: #1e2130;
+        overflow: hidden;
+      }
+      /* Parent tag loses its own border/bg — the group provides it */
+      .cond-group .cond-tag {
+        border: none;
+        background: transparent;
+        border-radius: 0;
+      }
+      .cond-group .cond-tag:hover {
+        border: none;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      /* Stat summary pinned to bottom-left of comb-body */
+      .stat-summary-row {
+        align-self: flex-start;
+      }
+      .comb-left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .comb-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #e8eaf0;
+        letter-spacing: 0.5px;
+      }
+      .type-badge {
+        font-family: "Lexend", sans-serif;
+        font-size: 10px;
+        width: 100%;
+        text-align: center;
+        padding: 2px 2px;
+        border-radius: var(--radius);
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .type-pc {
+        background: var(--blue-soft);
+        color: var(--pc-col);
+        border: 1px solid rgba(64, 128, 208, 0.3);
+      }
+      .type-ally {
+        background: var(--ally-soft);
+        color: var(--ally-col);
+        border: 1px solid rgba(32, 160, 112, 0.3);
+      }
+      .type-enemy {
+        background: var(--red-soft);
+        color: var(--enemy-col);
+        border: 1px solid rgba(196, 48, 48, 0.3);
+      }
+
+      .stat-block-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .stat-block {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .stat-label {
+        font-family: "Lexend Exa", monospace;
+        font-size: 10px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .stat-val {
+        font-family: "Lexend Exa", monospace;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .stat-val.modified {
+        color: var(--red);
+      }
+      .ac-effective {
+        font-size: 10px;
+        color: var(--muted);
+        font-family: "Lexend Exa", monospace;
+      }
+      .ac-mod-only {
+        font-family: "Lexend Exa", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--red);
+      }
+
+      .hp-row {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .hp-row-left {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 4px;
+      }
+      .hp-stat-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+      }
+      .hp-display {
+        font-family: "Lexend Exa", monospace;
+        font-size: 16px;
+        font-weight: 700;
+        min-width: 48px;
+      }
+      .hp-display .hp-max {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--muted);
+      }
+      .hp-bar-bg {
+        width: 64px;
+        height: 4px;
+        background: var(--bg3);
+        border-radius: 2px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .hp-bar-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition:
+          width 0.2s,
+          background 0.3s;
+      }
+      .hp-row-right {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 2px;
+      }
+      .hp-amt-input {
+        width: 56px;
+        height: 50px;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        padding: 3px 6px;
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 18px;
+        text-align: center;
+        transition: border-color 0.15s;
+      }
+      .hp-amt-input:focus {
+        outline: none;
+        border-color: var(--amber);
+      }
+      .hp-amt-input::-webkit-inner-spin-button {
+        display: none;
+      }
+      .hp-button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .hp-action-btn {
+        font-family: "Lexend", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        padding: 3px 9px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background 0.1s;
+        white-space: nowrap;
+      }
+      .hp-dmg-btn {
+        background: var(--red-soft);
+        border: 1px solid rgba(196, 48, 48, 0.5);
+        color: var(--red);
+      }
+      .hp-dmg-btn:hover {
+        background: #4a1a1a;
+      }
+      .hp-heal-btn {
+        background: #0f2010;
+        border: 1px solid rgba(122, 184, 0, 0.4);
+        color: var(--green);
+      }
+      .hp-heal-btn:hover {
+        background: #162810;
+      }
+
+      .cond-tag {
+        font-family: "Lexend Exa", monospace;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        background: var(--tag-bg);
+        border: 1px solid var(--border2);
+        border-radius: 20px;
+        padding: 2px 8px 2px 6px;
+        color: #a0a8c0;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        user-select: none;
+        transition: border-color 0.15s;
+        white-space: nowrap;
+      }
+      .cond-tag:hover {
+        border-color: var(--muted);
+      }
+      .cond-tag .cond-val {
+        color: var(--amber);
+        font-weight: 700;
+      }
+      .cond-remove {
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1;
+        margin-left: auto;
+        padding-left: 4px;
+        flex-shrink: 0;
+      }
+      .cond-remove:hover {
+        color: var(--red);
+      }
+      .cond-tag.bundled {
+        background: rgba(0, 0, 0, 0.25);
+        border: none;
+        border-top: 1px solid var(--border);
+        border-radius: 0;
+        color: #7880a8;
+        padding-left: 10px;
+      }
+      .cond-tag.bundled:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-top: 1px solid var(--border);
+      }
+      .bundled-arrow {
+        color: var(--muted);
+        font-size: 9px;
+        opacity: 0.7;
+      }
+      .cond-tag.overridden {
+        opacity: 0.3;
+        cursor: pointer;
+      }
+      .cond-tag.overridden:hover {
+        opacity: 0.5;
+      }
+      .cond-tag.overridden .cond-name {
+        text-decoration: line-through;
+      }
+      .overridden-icon {
+        color: var(--muted);
+        font-size: 10px;
+        margin-left: 1px;
+        text-decoration: none;
+        display: inline-block;
+      }
+      /* Inline +/- stepper for valued conditions */
+      .cond-stepper {
+        display: inline-flex;
+        align-items: center;
+        gap: 1px;
+        margin-left: 3px;
+        vertical-align: middle;
+      }
+      .cond-step-btn {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 3px;
+        color: var(--muted);
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        font-size: 12px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        transition:
+          background 0.1s,
+          color 0.1s,
+          border-color 0.1s;
+        flex-shrink: 0;
+      }
+      .cond-step-btn:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: var(--text);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      .add-cond-btn {
+        font-size: 11px;
+        background: transparent;
+        border: 1px dashed var(--border2);
+        border-radius: 20px;
+        color: var(--muted);
+        padding: 2px 8px;
+        cursor: pointer;
+        font-family: "Lexend", sans-serif;
+        transition:
+          border-color 0.1s,
+          color 0.1s;
+        white-space: nowrap;
+        align-self: flex-start;
+      }
+      .add-cond-btn:hover {
+        border-color: var(--active-border);
+        color: var(--green);
+      }
+
+      .stat-summary {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        gap: 0;
+        align-items: flex-end;
+        padding: 2px 6px;
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-top: 2px;
+      }
+      .summary-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+        padding: 2px 6px;
+        flex: 1;
+      }
+      .summary-stat + .summary-stat {
+        border-left: 1px solid var(--border);
+      }
+      .summary-stat-key {
+        font-family: "Lexend", monospace;
+        font-size: 9px;
+        color: var(--text);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        line-height: 1.2;
+        text-align: center;
+        white-space: normal;
+        width: min-content;
+      }
+      .summary-stat-val {
+        font-family: "Lexend", monospace;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1;
+      }
+      .summary-stat-val.neg {
+        color: var(--red);
+      }
+      .summary-stat-val.pos {
+        color: var(--green);
+      }
+
+      .comb-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-self: start;
+        padding-top: 2px;
+      }
+      .icon-btn {
+        background: var(--btn-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--muted);
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        padding: 6px;
+        transition:
+          background 0.1s,
+          color 0.1s,
+          border-color 0.1s;
+      }
+      .icon-btn svg {
+        fill: currentColor;
+        pointer-events: none;
+        transition: color 0.1s;
+      }
+      .icon-btn:hover {
+        background: var(--btn-hover);
+        color: var(--text);
+      }
+      .icon-btn.danger:hover {
+        color: var(--blue-soft);
+        background-color: var(--red);
+        border-color: rgba(196, 48, 48, 0.4);
+      }
+
+      .icon-btn.defeat-btn:hover {
+        color: var(--red);
+        border-color: rgba(196, 48, 48, 0.4);
+      }
+
+      .icon-btn.edit-btn:hover {
+        color: #80b0e8;
+        border-color: rgba(64, 128, 208, 0.4);
+      }
+      .icon-btn.shown-combatant {
+        background-color: var(--blue-soft);
+        color: var(--blue);
+      }
+      .icon-btn.shown-combatant:hover {
+        color: var(--amber);
+        border-color: rgba(232, 160, 32, 0.4);
+      }
+
+      .edit-panel {
+        grid-column: 1/-1;
+        background: var(--bg3);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-lg);
+        padding: 12px 14px;
+        margin: 4px 16px 8px 0;
+        display: grid;
+        grid-template-columns: 1fr 80px 80px 80px auto;
+        gap: 8px;
+        align-items: end;
+      }
+      .edit-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .edit-field label {
+        font-family: "Lexend Exa", monospace;
+        font-size: 10px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .edit-field input {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        padding: 6px 8px;
+        font-family: "Lexend", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        width: 100%;
+        transition: border-color 0.15s;
+      }
+      .edit-field input:focus {
+        outline: none;
+        border-color: var(--amber);
+      }
+      .edit-actions {
+        display: flex;
+        gap: 6px;
+        padding-bottom: 1px;
+      }
+      .edit-save-btn {
+        font-family: "Lexend", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: var(--radius);
+        border: 1px solid var(--active-border);
+        background: #1d2a10;
+        color: var(--green);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.1s;
+      }
+      .edit-save-btn:hover {
+        background: #253510;
+      }
+      .edit-cancel-btn {
+        font-family: "Lexend", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 6px 10px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        background: var(--btn-bg);
+        color: var(--muted);
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .edit-cancel-btn:hover {
+        background: var(--btn-hover);
+        color: var(--text);
+      }
+
+      .combat-controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 4px 12px;
+        height: 60px;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg);
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+      .combat-active-controls {
+        display: flex;
+        flex: 1;
+        align-items: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        font-family: "Lexend", sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 7px 16px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border2);
+        background: var(--btn-bg);
+        color: var(--text);
+        cursor: pointer;
+        transition:
+          background 0.1s,
+          color 0.1s,
+          border-color 0.1s;
+        white-space: nowrap;
+      }
+      .btn:hover {
+        background: var(--btn-hover);
+      }
+      .btn.primary {
+        flex-growl: 1;
+        background: #1d2a10;
+        border-color: var(--active-border);
+        color: var(--green);
+      }
+      .btn.primary:hover {
+        background: #253510;
+      }
+      .btn.accent {
+        background: #241d10;
+        border-color: var(--amber);
+        color: var(--amber);
+      }
+      .btn.accent:hover {
+        background: #2e2514;
+      }
+      .btn.danger {
+        border-color: rgba(196, 48, 48, 0.5);
+        color: var(--red);
+      }
+      .btn.danger:hover {
+        background: var(--red-soft);
+      }
+      .btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .btn.undo:not(:disabled):hover {
+        background: #1e1a2e;
+        border-color: rgba(160, 120, 220, 0.6);
+        color: #c090f0;
+      }
+      .btn-gap {
+        flex: 1;
+      }
+
+      .sidebar-section {
+        margin-bottom: 20px;
+      }
+      .sidebar-title {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+      }
+      .sidebar-text {
+        font-family: "Lexend", sans-serif;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 1px;
+      }
+      .sidebar-text a {
+        font-family: "Lexend", sans-serif;
+        font-size: 12px;
+        color: var(--hyperlink);
+      }
+      .field {
+        margin-bottom: 10px;
+      }
+      .field label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        font-family: "Lexend", sans-serif;
+      }
+      .field input,
+      .field select {
+        width: 100%;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        padding: 7px 10px;
+        font-family: "Lexend", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        transition: border-color 0.15s;
+      }
+      .field input:focus,
+      .field select:focus {
+        outline: none;
+        border-color: var(--amber);
+      }
+      .field input::placeholder {
+        color: var(--muted);
+      }
+      .field select option {
+        background: var(--bg3);
+      }
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .init-row {
+        display: grid;
+        grid-template-columns: 1fr 24px 1fr;
+        gap: 4px;
+        align-items: start;
+      }
+      .init-or {
+        text-align: center;
+        align-self: center;
+        color: var(--muted);
+        font-size: 16px;
+        padding-bottom: 16px;
+        font-family: "Lexend", sans-serif;
+      }
+      .roll-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+        font-family: "Lexend Exa", sans-serif;
+      }
+
+      .type-select-row {
+        display: flex;
+        gap: 6px;
+      }
+      .type-radio {
+        display: none;
+      }
+      .type-label {
+        flex: 1;
+        text-align: center;
+        padding: 6px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-family: "Lexend Exa", sans-serif;
+        transition:
+          background 0.1s,
+          border-color 0.1s,
+          color 0.1s;
+        color: var(--muted);
+      }
+      .type-radio:checked + .type-label[for-type="pc"] {
+        background: var(--blue-soft);
+        border-color: var(--pc-col);
+        color: var(--pc-col);
+      }
+      .type-radio:checked + .type-label[for-type="ally"] {
+        background: var(--ally-soft);
+        border-color: var(--ally-col);
+        color: var(--ally-col);
+      }
+      .type-radio:checked + .type-label[for-type="enemy"] {
+        background: var(--red-soft);
+        border-color: var(--enemy-col);
+        color: var(--enemy-col);
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .stat-card {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px;
+        text-align: center;
+      }
+      .stat-card .sc-val {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 26px;
+        color: var(--amber);
+        line-height: 1;
+      }
+      .stat-card .sc-lbl {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 10px;
+        color: var(--muted);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+
+      #combat-log {
+        max-height: 240px;
+        overflow-y: auto;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 8px;
+        font-family: "Lexend Exa", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        display: flex;
+        flex-direction: column-reverse;
+        flex-grow: 1;
+      }
+      .shortcuts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .shortcut-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-family: "Lexend Exa", monospace;
+        font-size: 10px;
+        color: var(--text);
+      }
+      .shortcut-row span {
+        margin-left: 4px;
+        opacity: 0.6;
+      }
+      kbd {
+        font-family: "Lexend Exa", monospace;
+        font-size: 9px;
+        background: var(--bg3);
+        border: 1px solid var(--border2);
+        border-radius: 3px;
+        padding: 1px 5px;
+        color: var(--text);
+        white-space: nowrap;
+        line-height: 1.6;
+      }
+      .log-round {
+        color: var(--amber);
+      }
+      .log-dmg {
+        color: var(--red);
+      }
+      .log-heal {
+        color: var(--green);
+      }
+      .log-turn {
+        color: var(--blue);
+      }
+      .log-cond {
+        color: #a080c0;
+      }
+      .log-time {
+        color: var(--muted);
+        margin-right: 6px;
+      }
+
+      #empty-state {
+        padding: 48px 24px;
+        text-align: center;
+        color: var(--muted);
+      }
+      #empty-state .empty-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+        opacity: 0.4;
+      }
+      #empty-state p {
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
+      }
+
+      #toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(12px);
+        background: var(--bg3);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 12px;
+        padding: 8px 16px;
+        border-radius: var(--radius-lg);
+        opacity: 0;
+        transition:
+          opacity 0.2s,
+          transform 0.2s;
+        pointer-events: none;
+        z-index: 200;
+        white-space: nowrap;
+      }
+      #toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      #cond-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 300;
+        align-items: center;
+        justify-content: center;
+      }
+      #cond-modal-overlay.open {
+        display: flex;
+      }
+      #cond-modal {
+        background: var(--bg2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        min-width: 320px;
+        max-width: 420px;
+        width: 90%;
+      }
+      .modal-title {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 18px;
+        color: var(--amber);
+        letter-spacing: 2px;
+        margin-bottom: 14px;
+      }
+      .modal-cond-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 14px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .modal-cond-btn {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 11px;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 4px 10px;
+        color: var(--text);
+        cursor: pointer;
+        transition:
+          background 0.1s,
+          border-color 0.1s,
+          color 0.1s;
+      }
+      .modal-cond-btn:hover,
+      .modal-cond-btn.valued:hover {
+        border-color: var(--active-border);
+        color: var(--green);
+      }
+      .modal-cond-btn.valued {
+        color: var(--amber);
+        border-color: rgba(232, 160, 32, 0.4);
+      }
+      .modal-cond-btn.already-active {
+        opacity: 0.35;
+        cursor: not-allowed;
+        color: var(--muted);
+        border-color: var(--border);
+        text-decoration: line-through;
+      }
+      .modal-cond-btn.already-active:hover {
+        border-color: var(--border);
+        color: var(--muted);
+      }
+      .modal-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .modal-input {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        padding: 6px 8px;
+        font-family: "Lexend", sans-serif;
+        font-size: 14px;
+        width: 100%;
+      }
+      .modal-input:focus {
+        outline: none;
+        border-color: var(--amber);
+      }
+      .modal-val-input {
+        width: 100px;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        padding: 6px 8px;
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 13px;
+        text-align: center;
+      }
+      .modal-val-input:focus {
+        outline: none;
+        border-color: var(--amber);
+      }
+      .modal-btns {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      #desc-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: transparent;
+        z-index: 400;
+        align-items: flex-end;
+        justify-content: center;
+        pointer-events: none;
+      }
+      #desc-overlay.open {
+        display: flex;
+      }
+      #desc-panel {
+        pointer-events: auto;
+        background: var(--bg2);
+        border-top: 2px solid var(--active-border);
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        padding: 20px 0 20px 20px;
+        width: 100%;
+        max-width: 60vw;
+        max-height: 40vh;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.8);
+        animation: slideUp 0.3s ease-out;
+      }
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+      #desc-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+      #desc-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      #desc-title {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 24px;
+        color: var(--amber);
+      }
+      #desc-body {
+        font-family: "Lexend Exa", sans-serif;
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.5;
+        white-space: pre-line;
+        overflow-y: auto;
+      }
+
+      @media (max-width: 680px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+        #sidebar {
+          border-top: 1px solid var(--border);
+        }
+        :root {
+          --stats-col-width: 220px;
+        }
+        /* Compress header at narrow widths */
+        .logo span {
+          display: none;
+        }
+        #autosave-indicator {
+          display: none;
+        }
+      }
+      @media (max-width: 560px) {
+        /* Stack stats above conditions instead of side-by-side */
+        .comb-middle {
+          flex-wrap: wrap;
+        }
+        .comb-stats-col {
+          width: 100%;
+          flex: 0 0 100%;
+        }
+        .cond-col {
+          width: 100%;
+          flex: 0 0 100%;
+        }
+        /* Compress combatant row padding */
+        .combatant {
+          padding: 10px 10px 10px 0;
+          gap: 8px;
+        }
+        /* Tighten combat controls */
+        .combat-controls {
+          padding: 8px 10px;
+          gap: 6px;
+          display: flex;
+          flex-direction: row;
+        }
+        .btn {
+          padding: 6px 10px;
+          font-size: 12px;
+        }
+      }
+      @media (max-width: 420px) {
+        .logo {
+          font-size: 16px;
+          letter-spacing: 2px;
+        }
+        .btn {
+          padding: 5px 8px;
+          font-size: 11px;
+          letter-spacing: 0.5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">INIT <span>// ENCOUNTER TRACKER</span></div>
+      <div class="header-controls">
+        <div id="autosave-indicator" title="Auto-save status">
+          <div id="autosave-dot"></div>
+          <span id="autosave-label">NO DATA</span>
+        </div>
+        <button
+          class="btn undo"
+          id="btn-undo"
+          onclick="undo()"
+          title="Undo last action (Ctrl+Z)"
+          disabled
+        >
+          ↩
+        </button>
+        <button
+          class="btn"
+          onclick="saveEncounter()"
+          title="Save encounter to JSON file"
+        >
+          Save
+        </button>
+        <button
+          class="btn"
+          onclick="document.getElementById('load-input').click()"
+          title="Load encounter from JSON file"
+        >
+          Load
+        </button>
+        <input
+          type="file"
+          id="load-input"
+          accept=".json"
+          style="display: none"
+          onchange="loadEncounter(event)"
+        />
+        <button class="btn danger" onclick="resetAll()">✕ Clear</button>
+        <button
+          class="btn"
+          id="btn-sidebar-toggle"
+          onclick="toggleSidebar()"
+          title="Toggle side panel"
+        >
+          ☰
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div id="tracker-col">
+        <div class="combat-controls">
+          <!-- Pre-combat: only Start visible -->
+          <button class="btn primary" id="btn-start" onclick="startCombat()">
+            ▶ Start Combat
+          </button>
+
+          <!-- In-combat controls: hidden until combat begins -->
+          <div
+            id="combat-active-controls"
+            class="combat-active-controls"
+            style="display: none"
+          >
+            <!-- Round group: label + [- num +] inline -->
+            <div class="ctrl-group">
+              <span class="ctrl-group-label">Round</span>
+              <div class="ctrl-group-btns">
+                <button
+                  class="btn"
+                  id="btn-prev-round"
+                  onclick="subRound()"
+                  title="Previous round"
+                >
+                  −
+                </button>
+                <span class="round-badge-num" id="round-display">1</span>
+                <button
+                  class="btn"
+                  id="btn-next-round"
+                  onclick="addRound()"
+                  title="Next round"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="btn-gap"></div>
+
+            <!-- Visibility group -->
+            <div class="ctrl-group">
+              <span class="ctrl-group-label">Show / Hide All</span>
+              <div class="ctrl-group-btns">
+                <button
+                  class="btn vis-btn"
+                  onclick="setAllVisibility(true)"
+                  title="Show all combatants to players"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    style="color: inherit; display: block"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M12 9a3.02 3.02 0 0 0-3 3c0 1.642 1.358 3 3 3s3-1.358 3-3s-1.359-3-3-3"
+                    ></path>
+                    <path
+                      fill="currentColor"
+                      d="M12 5c-7.633 0-9.927 6.617-9.948 6.684L1.946 12l.105.316C2.073 12.383 4.367 19 12 19s9.927-6.617 9.948-6.684l.106-.316l-.105-.316C21.927 11.617 19.633 5 12 5m0 12c-5.351 0-7.424-3.846-7.926-5C4.578 10.842 6.652 7 12 7c5.351 0 7.424 3.846 7.926 5c-.504 1.158-2.578 5-7.926 5"
+                    ></path>
+                  </svg>
+                </button>
+                <button
+                  class="btn vis-btn"
+                  onclick="setAllVisibility(false)"
+                  title="Hide all combatants from players"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    style="color: inherit; display: block"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M8.073 12.194L4.212 8.333c-1.52 1.657-2.096 3.317-2.106 3.351L2 12l.105.316C2.127 12.383 4.421 19 12.054 19c.929 0 1.775-.102 2.552-.273l-2.746-2.746a3.987 3.987 0 0 1-3.787-3.787M12.054 5c-1.855 0-3.375.404-4.642.998L3.707 2.293L2.293 3.707l18 18l1.414-1.414l-3.298-3.298c2.638-1.953 3.579-4.637 3.593-4.679l.105-.316l-.105-.316C21.98 11.617 19.687 5 12.054 5m1.906 7.546c.187-.677.028-1.439-.492-1.96s-1.283-.679-1.96-.492L10 8.586A3.96 3.96 0 0 1 12.054 8c2.206 0 4 1.794 4 4a3.94 3.94 0 0 1-.587 2.053z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="btn-gap"></div>
+
+            <!-- Turn group -->
+            <div class="ctrl-group">
+              <span class="ctrl-group-label">Turn</span>
+              <div class="ctrl-group-btns">
+                <button class="btn" id="btn-prev" onclick="prevTurn()">
+                  ◀ Prev
+                </button>
+                <button class="btn accent" id="btn-next" onclick="nextTurn()">
+                  Next ▶
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="combatant-list"></div>
+        <div id="empty-state">
+          <div class="empty-icon">⚔</div>
+          <p>
+            No combatants yet.<br />Add characters and enemies using the panel
+            on the right.
+          </p>
+        </div>
+      </div>
+
+      <div id="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-title">Add Combatant</div>
+          <div class="field">
+            <label>Type</label>
+            <div class="type-select-row">
+              <input
+                class="type-radio"
+                type="radio"
+                name="ctype"
+                id="r-enemy"
+                value="enemy"
+                checked
+              />
+              <label class="type-label" for="r-enemy" for-type="enemy"
+                >Enemy</label
+              >
+              <input
+                class="type-radio"
+                type="radio"
+                name="ctype"
+                id="r-pc"
+                value="pc"
+              />
+              <label class="type-label" for="r-pc" for-type="pc">PC</label>
+              <input
+                class="type-radio"
+                type="radio"
+                name="ctype"
+                id="r-ally"
+                value="ally"
+              />
+              <label class="type-label" for="r-ally" for-type="ally"
+                >Ally</label
+              >
+            </div>
+          </div>
+          <div class="field">
+            <label>Name</label>
+            <input
+              type="text"
+              id="f-name"
+              placeholder="Character name…"
+              onkeydown="if (event.key === 'Enter') addCombatant();"
+            />
+          </div>
+          <div class="field">
+            <label>Init</label>
+            <div class="init-row">
+              <div>
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  id="f-init-val"
+                  placeholder="20"
+                  title="Enter final initiative score directly"
+                />
+                <div class="roll-hint">INIT Value</div>
+              </div>
+              <div class="init-or">OR</div>
+              <div>
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  id="f-init-mod"
+                  placeholder="+0"
+                  title="Perc/skill modifier — click Roll"
+                />
+                <div class="roll-hint">INIT Mod</div>
+              </div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Max HP</label>
+              <input
+                type="text"
+                inputmode="numeric"
+                id="f-hp"
+                placeholder="0"
+                min="0"
+              />
+            </div>
+            <div class="field">
+              <label>AC</label>
+              <input
+                type="text"
+                inputmode="numeric"
+                id="f-ac"
+                placeholder="0"
+                min="0"
+              />
+            </div>
+          </div>
+          <div class="field">
+            <label>Notes</label>
+            <input
+              type="text"
+              id="f-notes"
+              placeholder="spell focus, rage, etc…"
+            />
+          </div>
+          <button
+            class="btn primary"
+            style="width: 100%; margin-top: 4px"
+            onclick="addCombatant()"
+          >
+            + Add Combatant
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title">Encounter</div>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="sc-val" id="sc-total">0</div>
+              <div class="sc-lbl">Combatants</div>
+            </div>
+            <div class="stat-card">
+              <div class="sc-val" id="sc-enemies">0</div>
+              <div class="sc-lbl">Enemies</div>
+            </div>
+            <div class="stat-card">
+              <div class="sc-val" id="sc-alive">0</div>
+              <div class="sc-lbl">Alive</div>
+            </div>
+            <div class="stat-card">
+              <div class="sc-val" id="sc-round" style="color: var(--muted)">
+                —
+              </div>
+              <div class="sc-lbl">Round</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title">Combat Log</div>
+          <div id="combat-log">
+            <div class="log-entry" style="color: var(--border2)">
+              // awaiting combat…
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title">Shortcuts</div>
+          <div class="shortcuts-list">
+            <div class="shortcut-row">
+              <kbd>N</kbd> / <kbd>→</kbd><span>Next turn</span>
+            </div>
+            <div class="shortcut-row">
+              <kbd>P</kbd> / <kbd>←</kbd><span>Previous turn</span>
+            </div>
+            <div class="shortcut-row">
+              <kbd>Enter</kbd><span>Deal damage / add combatant</span>
+            </div>
+            <div class="shortcut-row">
+              <kbd>Shift</kbd><kbd>Enter</kbd><span>Heal combatant</span>
+            </div>
+            <div class="shortcut-row">
+              <kbd>Esc</kbd><span>Clear HP input / close modal</span>
+            </div>
+            <div class="shortcut-row">
+              <kbd>Ctrl</kbd><kbd>Z</kbd><span>Undo last action</span>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Commnunity Use Notice</div>
+          <div class="sidebar-text">
+            This website uses trademarks and/or copyrights owned by Paizo Inc.,
+            used under Paizo's Community Use Policy (<a
+              href="https://paizo.com/licenses/communityuse"
+              target="_blank"
+              >paizo.com/licenses/communityuse</a
+            >). We are expressly prohibited from charging you to use or access
+            this content. This website is not published, endorsed, or
+            specifically approved by Paizo. For more information about Paizo
+            Inc. and Paizo products, visit
+            <a href="http://paizo.com/" target="_blank">paizo.com</a>.
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div
+      id="cond-modal-overlay"
+      onclick="if (event.target === this) closeCondModal();"
+    >
+      <div id="cond-modal">
+        <div class="modal-title">Add Condition</div>
+        <div class="modal-cond-grid" id="modal-cond-grid"></div>
+        <div class="modal-row">
+          <input
+            class="modal-input"
+            id="modal-cond-name"
+            placeholder="Custom condition name…"
+            onkeydown="if (event.key === 'Enter') submitCondition();"
+          />
+          <input
+            class="modal-val-input"
+            id="modal-cond-val"
+            type="text"
+            inputmode="numeric"
+            placeholder="–"
+            min="1"
+            max="20"
+            title="Condition value (e.g. Frightened 2)"
+            onkeydown="if (event.key === 'Enter') submitCondition();"
+          />
+        </div>
+        <div class="modal-btns">
+          <button class="btn" onclick="closeCondModal()">Cancel</button>
+          <button class="btn primary" onclick="submitCondition()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="desc-overlay">
+      <div id="desc-panel">
+        <div id="desc-content">
+          <div id="desc-header">
+            <div id="desc-title">CONDITION NAME</div>
+            <button class="btn danger" onclick="closeCondDesc()">✕</button>
+          </div>
+          <div id="desc-body">Description text goes here...</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+      let combatants = [],
+        activeIndex = -1,
+        round = 0,
+        inCombat = false,
+        visibleToPlayers = false,
+        condTargetId = null,
+        nextId = 1,
+        nextCondId = 1,
+        editingIds = new Set();
+      const STORAGE_KEY = "init_tracker_autosave";
+      let autosaveTimer = null;
+
+      // ── UNDO ──────────────────────────────────────────────────────────────
+      let undoSnapshot = null;
+
+      function saveSnapshot() {
+        undoSnapshot = {
+          combatants: JSON.parse(JSON.stringify(combatants)),
+          round,
+          inCombat,
+          activeIndex,
+          nextId,
+          nextCondId,
+        };
+        updateUndoBtn();
+      }
+
+      function updateUndoBtn() {
+        const btn = document.getElementById("btn-undo");
+        if (btn) btn.disabled = !undoSnapshot;
+      }
+
+      function undo() {
+        if (!undoSnapshot) return;
+        const snap = undoSnapshot;
+        undoSnapshot = null;
+        combatants = snap.combatants;
+        round = snap.round;
+        inCombat = snap.inCombat;
+        activeIndex = snap.activeIndex;
+        nextId = snap.nextId;
+        nextCondId = snap.nextCondId;
+        editingIds.clear();
+        document.getElementById("btn-start").style.display = inCombat
+          ? "none"
+          : "";
+        document.getElementById("combat-active-controls").style.display =
+          inCombat ? "flex" : "none";
+        log("↩ Undo", "log-round");
+        updateUndoBtn();
+        render();
+        scheduleAutosave();
+        broadcastState();
+      }
+      // ─────────────────────────────────────────────────────────────────────
+
+      function scheduleAutosave() {
+        clearTimeout(autosaveTimer);
+        autosaveTimer = setTimeout(commitAutosave, 300);
+      }
+      function commitAutosave() {
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+              version: 1,
+              savedAt: new Date().toISOString(),
+              round,
+              inCombat,
+              activeIndex,
+              nextId,
+              nextCondId,
+              combatants,
+            }),
+          );
+          flashAutosaveIndicator();
+        } catch (e) {
+          console.warn("Auto-save failed:", e);
+        }
+      }
+      function flashAutosaveIndicator() {
+        const indicator = document.getElementById("autosave-indicator"),
+          label = document.getElementById("autosave-label");
+        if (!indicator) return;
+        const ts = new Date().toLocaleTimeString("en-AU", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+        label.textContent = `AUTO ${ts}`;
+        indicator.classList.add("saved");
+        clearTimeout(indicator._fadeTimer);
+        indicator._fadeTimer = setTimeout(
+          () => indicator.classList.remove("saved"),
+          2000,
+        );
+      }
+      function migrateConditions(list) {
+        for (const c of list) {
+          if (!c.conditions) c.conditions = [];
+          for (const cond of c.conditions) {
+            if (cond.cid == null) cond.cid = nextCondId++;
+            if (cond.bundledUnder === undefined) cond.bundledUnder = null;
+            if (cond.overriddenBy === undefined) cond.overriddenBy = null;
+          }
+        }
+      }
+      function loadFromLocalStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return false;
+          const data = JSON.parse(raw);
+          if (!data.version || !Array.isArray(data.combatants)) return false;
+          combatants = data.combatants;
+          round = data.round ?? 0;
+          inCombat = data.inCombat ?? false;
+          activeIndex = data.activeIndex ?? -1;
+          nextId =
+            data.nextId ?? Math.max(0, ...combatants.map((c) => c.id), 0) + 1;
+          nextCondId = data.nextCondId ?? 1;
+          migrateConditions(combatants);
+          editingIds.clear();
+          document.getElementById("btn-start").style.display = inCombat
+            ? "none"
+            : "";
+          document.getElementById("combat-active-controls").style.display =
+            inCombat ? "flex" : "none";
+          const label = document.getElementById("autosave-label");
+          sss;
+          if (label && data.savedAt) {
+            const ts = new Date(data.savedAt).toLocaleTimeString("en-AU", {
+              hour12: false,
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            });
+            label.textContent = `RESTORED ${ts}`;
+          }
+          return true;
+        } catch (e) {
+          console.warn("Failed to restore auto-save:", e);
+          return false;
+        }
+      }
+
+      // TO-DO :
+      // Add Action Counter & handle quickened/slowed/stunned.
+      // Add Dying/Doomed/Wounded rules+ auto-deceased.
+      // Add ability to group by alphabetical or by condition type.
+      // DO NOT MODIFY CONDITIONS BELOW WITHOUT REFERENCE TO PF2E OR SF2E RULES AS THIS IS THE BASIS FOR ALL CONDITION EFFECTS IN THE TRACKER
+      const CONDITIONS_SF2 = [
+        {
+          name: "Blinded",
+          valued: false,
+          statchanges: {
+            PERC: { value: -4, type: "status" },
+          },
+          override: ["Dazzled"],
+          description: `You can't see. All normal terrain is difficult terrain to you. You can't detect anything using vision. You automatically critically fail Perception checks that require you to be able to see, and if vision is your only precise sense, you take a –4 status penalty to Perception checks. You're immune to visual effects. Blinded overrides dazzled.`,
+        },
+        {
+          name: "Clumsy",
+          valued: true,
+          statchanges: {
+            AC: { value: (val) => -val, type: "status" },
+            DEX: { value: (val) => -val, type: "status" },
+            REFL: { value: (val) => -val, type: "status" },
+            "ranged attacks": { value: (val) => -val, type: "status" },
+          },
+          description: `Your movements become clumsy and inexact. Clumsy always includes a value. You take a status penalty equal to the condition value to Dexterity-based rolls and DCs, including AC, Reflex saves, ranged attack rolls, and skill checks using Acrobatics, Stealth, and Thievery.`,
+        },
+        {
+          name: "Concealed",
+          valued: false,
+          description: `You're difficult for one or more creatures to see due to thick fog or some other obscuring feature. You can be concealed to some creatures but not others. While concealed, you can still be observed, but you're tougher to target. A creature that you're concealed from must succeed at a DC 5 flat check when targeting you with an attack, spell, or other effect. If the check fails, you aren't affected. Area effects aren't subject to this flat check.`,
+        },
+        {
+          name: "Confused",
+          valued: false,
+          description: `You don't have your wits about you, and you attack wildly. You're off-guard, you don't treat anyone as your ally (though they might still treat you as theirs), and you can't Delay, Ready, or use reactions.
+
+              You use all your actions to Strike or cast offensive cantrips, though the GM can have you use other actions to facilitate your attacks, such as drawing a weapon, moving so that a target is in reach, and so forth. Your targets are determined randomly by the GM. If you have no other viable targets, you target yourself, automatically hitting but not scoring a critical hit. If it's impossible for you to attack or cast spells, you babble incoherently, wasting your actions.
+
+              Each time you take damage from an attack or spell, you can attempt a DC 11 flat check to recover from your confusion and end the condition.`,
+        },
+        {
+          name: "Controlled",
+          valued: false,
+          description: `You've been commanded or magically dominated, or you otherwise had your will subverted. The controller dictates how you act and can make you use any of your actions, including attacks, reactions, or even Delay. The controller usually doesn't have to spend their own actions when controlling you.`,
+        },
+        {
+          name: "Dazzled",
+          valued: false,
+          description: `Your eyes are overstimulated or your vision is swimming. If vision is your only precise sense, all creatures and objects are concealed from you.`,
+        },
+        {
+          name: "Deafened",
+          valued: false,
+          statchanges: {
+            PERC: { value: -2, type: "status" },
+          },
+          description: `You can't hear. You automatically critically fail Perception checks that require you to be able to hear. You take a –2 status penalty to Perception checks for initiative and checks that involve sound but also rely on other senses. If you perform an action that has the auditory trait, you must succeed at a DC 5 flat check or the action is lost; attempt the check after spending the action but before any effects are applied. You're immune to auditory effects while deafened.`,
+        },
+        {
+          name: "Doomed",
+          valued: true,
+          description: `Your soul has been gripped by a powerful force that calls you closer to death. Doomed always includes a value. The dying value at which you die is reduced by your doomed value. If your maximum dying value is reduced to 0, you instantly die. When you die, you're no longer doomed.
+
+              Your doomed value decreases by 1 each time you get a full night's rest.`,
+        },
+        {
+          name: "Drained",
+          valued: true,
+          statchanges: {
+            CON: { value: (val) => -val, type: "status" },
+            FORT: { value: (val) => -val, type: "status" },
+          },
+          description: `Your health and vitality have been depleted as you've lost blood, life force, or some other essence. Drained always includes a value. You take a status penalty equal to your drained value to Constitution-based rolls and DCs, such as Fortitude saves. You also lose a number of Hit Points equal to your level (minimum 1) times the drained value, and your maximum Hit Points are reduced by the same amount. For example, if you become drained 3 and you're a 3rd-level character, you lose 9 Hit Points and reduce your maximum Hit Points by 9. Losing these Hit Points doesn't count as taking damage.
+
+              Each time you get a full night's rest, your drained value decreases by 1. This increases your maximum Hit Points, but you don't immediately recover the lost Hit Points.`,
+        },
+        {
+          name: "Dying",
+          valued: true,
+          description: `You're bleeding out or otherwise at death's door. While you have this condition, you're unconscious. Dying always includes a value, and if it ever reaches dying 4, you die. When you're dying, you must attempt a recovery check at the start of your turn each round to determine whether you get better or worse. Your dying condition increases by 1 if you take damage while dying, or by 2 if you take damage from an enemy's critical hit or a critical failure on your save.
+
+              If you lose the dying condition by succeeding at a recovery check and are still at 0 Hit Points, you remain unconscious, but you can wake up as described in that condition. You lose the dying condition automatically and wake up if you ever have 1 Hit Point or more. Any time you lose the dying condition, you gain the wounded 1 condition, or increase your wounded condition value by 1 if you already have that condition.`,
+        },
+        {
+          name: "Encumbered",
+          valued: false,
+          includes: ["Clumsy 1"],
+          statchanges: {
+            speed: { value: "-10ft", type: "untyped" },
+          },
+          description: `You're carrying more weight than you can manage. While you're encumbered, you are clumsy 1 and take a 10-foot penalty to all your Speeds. As with all penalties to your Speed, this can't reduce your Speed below 5 feet.`,
+        },
+        {
+          name: "Enfeebled",
+          valued: true,
+          statchanges: {
+            STR: { value: (val) => -val, type: "status" },
+            "strength attacks": { value: (val) => -val, type: "status" },
+            "strength damage": { value: (val) => -val, type: "status" },
+          },
+          description: `You're physically weakened. Enfeebled always includes a value. When you're enfeebled, you take a status penalty equal to the condition value to Strength-based rolls and DCs, including Strength-based melee attack rolls, Strength-based damage rolls, and Athletics checks.`,
+        },
+        {
+          name: "Fascinated",
+          valued: false,
+          statchanges: { PERC: { value: -2, type: "status" } },
+          description: `You're compelled to focus your attention on something, distracting you from whatever else is going on around you. You take a –2 status penalty to Perception and skill checks, and you can't use concentrate actions unless they (or their intended consequences) are related to the subject of your fascination, as determined by the GM. For instance, you might be able to Seek and Recall Knowledge about the subject, but you likely couldn't cast a spell targeting a different creature. This condition ends if a creature uses hostile actions against you or any of your allies.`,
+        },
+        {
+          name: "Fatigued",
+          valued: false,
+          statchanges: {
+            AC: { value: -1, type: "status" },
+            FORT: { value: -1, type: "status" },
+            REFL: { value: -1, type: "status" },
+            WILL: { value: -1, type: "status" },
+          },
+          description: `You are tired and can't summon much energy. You take a –1 status penalty to AC and saving throws. You can't use exploration activities performed while traveling.
+
+              You recover from fatigue after a full night's rest.`,
+        },
+        {
+          name: "Fleeing",
+          valued: false,
+          description: `You're forced to run away due to fear or some other compulsion. On your turn, you must spend each of your actions trying to escape the source of the fleeing condition as expediently as possible (such as by using move actions to flee, or opening doors barring your escape). The source is usually the effect or creature that gave you the condition, though some effects might define something else as the source. You can't Delay or Ready while fleeing.`,
+        },
+        {
+          name: "Frightened",
+          valued: true,
+          statchanges: {
+            STR: { value: (val) => -val, type: "status" },
+            DEX: { value: (val) => -val, type: "status" },
+            CON: { value: (val) => -val, type: "status" },
+            INT: { value: (val) => -val, type: "status" },
+            WIS: { value: (val) => -val, type: "status" },
+            CHA: { value: (val) => -val, type: "status" },
+            FORT: { value: (val) => -val, type: "status" },
+            REFL: { value: (val) => -val, type: "status" },
+            WILL: { value: (val) => -val, type: "status" },
+            AC: { value: (val) => -val, type: "status" },
+          },
+          description: `You're gripped by fear and struggle to control your nerves. The frightened condition always includes a value. You take a status penalty equal to this value to all your checks and DCs. Unless specified otherwise, at the end of each of your turns, the value of your frightened condition decreases by 1.`,
+        },
+        {
+          name: "Glitching",
+          valued: true,
+          description: `A glitching creature, hazard, or object with the tech trait experiences a combination of debilitating effects and moments of seizing up. The glitching condition always includes a value. If you have glitching equipment and take any action involving that equipment, you must attempt a flat check to see what occurs. If you have the glitching condition, you must attempt this flat check at the beginning of each of your turns. The DC of the flat check equals 5 plus your condition value or the item's condition value.
+
+              \u00A0\u00A0Critical Success:
+              \u00A0\u00A0\u00A0\u00A0Reduce your glitching value by 1.
+              \u00A0\u00A0Success:
+              \u00A0\u00A0\u00A0\u00A0You act as normal or use your equipment as normal.
+              \u00A0\u00A0Failure:
+              \u00A0\u00A0\u00A0\u00A0You take an item penalty to all your checks and DCs equal to your glitching value or the glitching value of the item you're attempting to use, including saving throws, attack modifiers, and the DCs of abilities, effects, and spells you use.
+              \u00A0\u00A0Critical Failure:
+              \u00A0\u00A0\u00A0\u00A0A glitching object you tried to use doesn't function, and you lose the actions you took to attempt to use it. A glitching creature uses the same effect as a failure and is also stunned 1. A glitching hazard uses the same effect as a failure.`,
+        },
+        {
+          name: "Grabbed",
+          valued: false,
+          includes: ["Off-Guard", "Immobilized"],
+          description: `You're held in place by another creature, giving you the offguard and immobilized conditions. If you attempt a manipulate action while grabbed, you must succeed at a DC 5 flat check or it's lost; roll the check after spending the action, but before any effects are applied.`,
+        },
+        {
+          name: "Immobilized",
+          valued: false,
+          description: `You're incapable of movement. You can't use any actions that have the move trait. If you're immobilized by something holding you in place and an external force would move you out of your space, the force must succeed at a check against either the DC of the effect holding you in place or the relevant defense (usually Fortitude DC) of the creature holding you in place.`,
+        },
+        {
+          name: "Invisible",
+          valued: false,
+          description: `You can't be seen. You're undetected to everyone. Creatures can Seek to detect you; if a creature succeeds at its Perception check against your Stealth DC, you become hidden to that creature until you Sneak to become undetected again. If you become invisible while someone can already see you, you start out hidden to them (instead of undetected) until you successfully Sneak. You can't become observed while invisible except via special abilities or magic.`,
+        },
+        {
+          name: "Off-Guard",
+          valued: false,
+          statchanges: { AC: { value: -2, type: "circumstance" } },
+          description: `You're distracted or otherwise unable to focus your full attention on defense. You take a –2 circumstance penalty to AC. Some effects give you the off-guard condition only to certain creatures or against certain attacks. Others—especially conditions—can make you off-guard against everything. If a rule doesn't specify that the condition applies only to certain circumstances, it applies to all of them, such as “The target is off-guard.”`,
+        },
+        {
+          name: "Paralyzed",
+          valued: false,
+          includes: ["Off-Guard"],
+          description: `You're frozen in place. You have the off-guard condition and can't act except to Recall Knowledge and use actions that require only your mind (as determined by the GM). Your senses still function, but only in the areas you can perceive without moving, so you can't Seek.`,
+        },
+        {
+          name: "Persistent Damage",
+          valued: true,
+          textValued: true,
+          description: `You're taking damage from an ongoing effect, such as from being lit on fire. This appears as “X persistent [type] damage,” where “X” is the amount of damage dealt and “[type]” is the damage type.
+              Like normal damage, it can be doubled or halved based on the results of an attack roll or saving throw.
+              Instead of taking persistent damage immediately, you take it at the end of each of your turns as long as you have the condition, rolling any damage dice anew each time.
+              After you take persistent damage, roll a DC 15 flat check to see if you recover from the persistent damage. If you succeed, the condition ends.
+              Persistent damage runs its course and automatically ends after a certain amount of time as fire burns out, blood clots, and the like. The GM determines when this occurs, but it usually takes 1 minute.
+
+              <a href="https://2e.aonsrd.com/conditions/30-persistent-damage" target="_blank" style="color: var(--hyperlink);">Persistent Damage additional rules</a>.`,
+        },
+        {
+          name: "Petrified",
+          valued: false,
+          description: `You've been turned to stone. You can't act, nor can you sense anything. You become an object with a Bulk double your normal Bulk (typically 12 for a petrified Medium creature or 6 for a petrified Small creature), AC 9, Hardness 8, and the same current Hit Points you had when alive. You don't have a Broken Threshold. When the petrified condition ends, you have the same number of Hit Points you had as a statue. If the statue is destroyed, you immediately die. While petrified, your mind and body are in stasis, so you don't age or notice the passing of time.`,
+        },
+        {
+          name: "Prone",
+          valued: false,
+          includes: ["Off-Guard"],
+          statchanges: {
+            attack: { value: -2, type: "circumstance" },
+          },
+          description: `You're lying on the ground. You are off-guard and take a –2 circumstance penalty to attack rolls. The only move actions you can use while you're prone are Crawl and Stand. Standing up ends the prone condition. You can Take Cover while prone to hunker down and gain greater cover against ranged attacks, even if you don't have an object to get behind, which grants you a +4 circumstance bonus to AC against ranged attacks (but you remain off-guard).
+
+              If you would be knocked prone while you're Climbing or Flying, you fall. You can't be knocked prone when Swimming.`,
+        },
+        {
+          name: "Quickened",
+          valued: false,
+          actionchanges: +1,
+          description: `You're able to act more quickly. You gain 1 additional action at the start of your turn each round. Many effects that make you quickened require you use this extra action only in certain ways. If you become quickened from multiple sources, you can use the extra action you've been granted for any single action allowed by any of the effects that made you quickened. Because quickened has its effect at the start of your turn, you don't immediately gain actions if you become quickened during your turn.
+
+              <a href="https://2e.aonsrd.com/conditions/33-quickened" target="_blank" style="color: var(--hyperlink);">Quickened additional rules</a>`,
+        },
+        {
+          name: "Restrained",
+          valued: false,
+          includes: ["Off-Guard", "Immobilized"],
+          override: ["Grabbed"],
+          description: `You are tied up and can barely move, or a creature has you pinned. You have the off-guard and immobilized conditions, and you can't use any attack or manipulate actions except to attempt to <a href="https://2e.aonsrd.com/actions/5-escape" target="_blank" style="color: var(--hyperlink);">Escape</a> or <a href="https://2e.aonsrd.com/actions/63-force-open" target="_blank" style="color: var(--hyperlink);">Force Open</a> your bonds. Restrained overrides grabbed.`,
+        },
+        {
+          name: "Sickened",
+          valued: true,
+          statchanges: {
+            STR: { value: (val) => -val, type: "status" },
+            DEX: { value: (val) => -val, type: "status" },
+            CON: { value: (val) => -val, type: "status" },
+            INT: { value: (val) => -val, type: "status" },
+            WIS: { value: (val) => -val, type: "status" },
+            CHA: { value: (val) => -val, type: "status" },
+            FORT: { value: (val) => -val, type: "status" },
+            REFL: { value: (val) => -val, type: "status" },
+            WILL: { value: (val) => -val, type: "status" },
+            AC: { value: (val) => -val, type: "status" },
+          },
+          description: `You feel ill. Sickened always includes a value. You take a status penalty equal to this value on all your checks and DCs. You can't willingly ingest anything—including serums—while sickened.
+
+              You can spend a single action retching in an attempt to recover, which lets you immediately attempt a Fortitude save against the DC of the effect that made you sickened. On a success, you reduce your sickened value by 1 (or by 2 on a critical success).`,
+        },
+        {
+          name: "Slowed",
+          valued: true,
+          actionchanges: (val) => -val,
+          description: `You have fewer actions. Slowed always includes a value. When you regain your actions, reduce the number of actions regained by your slowed value. Because you regain actions at the start of your turn, you don't immediately lose actions if you become slowed during your turn.
+
+              <a href="https://2e.aonsrd.com/conditions/36-slowed" target="_blank" style="color: var(--hyperlink);">Slowed additional rules</a>`,
+        },
+        {
+          name: "Stunned",
+          valued: true,
+          actionchanges: (val) => -val,
+          override: ["Slowed"],
+          description: `You've become senseless. You can't act. Stunned usually includes a value, which indicates how many total actions you lose, possibly over multiple turns, from being stunned. Each time you regain actions, reduce the number you regain by your stunned value, then reduce your stunned value by the number of actions you lost. For example, if you were stunned 4, you would lose all 3 of your actions on your turn, reducing you to stunned 1; on your next turn, you would lose 1 more action, and then be able to use your remaining 2 actions normally. Stunned might also have a duration instead, such as “stunned for 1 minute,” causing you to lose all your actions for the duration.
+
+              Stunned overrides slowed. If the duration of your stunned condition ends while you're slowed, you count the actions lost to the stunned condition toward those lost to being slowed. So, if you were stunned 1 and slowed 2 at the beginning of your turn, you would lose 1 action from stunned, and then lose only 1 additional action by being slowed, so you would still have 1 action remaining to use that turn.
+
+              <a href="https://2e.aonsrd.com/conditions/37-stunned" target="_blank" style="color: var(--hyperlink);">Stunned additional rules</a>`,
+        },
+        {
+          name: "Stupefied",
+          valued: true,
+          statchanges: {
+            INT: { value: (val) => -val, type: "status" },
+            WIS: { value: (val) => -val, type: "status" },
+            CHA: { value: (val) => -val, type: "status" },
+            WILL: { value: (val) => -val, type: "status" },
+          },
+          description: `Your thoughts and instincts are clouded. Stupefied always includes a value. You take a status penalty equal to this value on Intelligence-, Wisdom-, and Charisma-based rolls and DCs, including Will saving throws, spell attack modifiers, spell DCs, and skill checks that use these attribute modifiers. Any time you attempt to Cast a Spell while stupefied, the spell is disrupted unless you succeed at a flat check with a DC equal to 5 + your stupefied value.`,
+        },
+        {
+          name: "Suppressed",
+          valued: false,
+          statchanges: {
+            attack: { value: -1, type: "circumstance" },
+            speed: { value: "-10ft", type: "status" },
+          },
+          description: `You've been affected by a high volume of incoming fire or a particularly dangerous attack that forces you to act less efficiently for your own safety. You take a –1 circumstance penalty to attack rolls and a –10-foot status penalty to all your Speeds.`,
+        },
+        {
+          name: "Unconscious",
+          valued: false,
+          statchanges: {
+            AC: { value: -4, type: "status" },
+            PERC: { value: -4, type: "status" },
+            REFL: { value: -4, type: "status" },
+          },
+          includes: ["Blinded", "Off-Guard"],
+          description: `You are sleeping or have been knocked out. You can't act. You take a –4 status penalty to AC, Perception, and Reflex saves, and you have the blinded and off-guard conditions. When you gain this condition, you fall prone and drop items you're holding unless the effect states otherwise or the GM determines you're positioned so you wouldn't. If you're unconscious because you're dying, you can't wake up while you have 0 Hit Points. If you're restored to 1 Hit Point or more, you lose the dying and unconscious conditions and can act normally on your next turn. If you're unconscious and at 0 Hit Points, but not dying, you return to 1 Hit Point and awaken after sufficient time passes. The GM determines how long you remain unconscious, from a minimum of 10 minutes to several hours.
+
+              <a href="https://2e.aonsrd.com/conditions/40-unconscious" target="_blank" style="color: var(--hyperlink);">Unconscious additional rules</a>`,
+        },
+        {
+          name: "Untethered",
+          valued: false,
+          includes: ["Clumsy 1", "Off-Guard"],
+          description: `You're in a zero gravity (or similar) environment without a means of movement and float without support. You can't take move actions unless they specify they can be used in your current environment. At the end of your turn, you move 5 feet in the last direction you moved. You can take the <a href="https://2e.aonsrd.com/actions/27-push-off" target="_blank" style="color: var(--hyperlink);">Push Off</a> action (see below) to change directions and the distance moved. Once you gain a means of moving in your environment, you lose this condition. Typically, a creature with the untethered condition in zero-gravity also gains the clumsy 1 and off-guard conditions while untethered.`,
+        },
+        {
+          name: "Wounded",
+          valued: true,
+          description: `You've been seriously injured. If you lose the dying condition and don't already have the wounded condition, you become wounded 1. If you already have the wounded condition when you lose the dying condition, your wounded condition value increases by 1. If you gain the dying condition while wounded, increase your dying condition value by your wounded value.
+
+              The wounded condition ends if someone successfully restores Hit Points to you using Treat Wounds, or if you are restored to full Hit Points by any means and rest for 10 minutes.`,
+        },
+      ];
+
+      function newCondId() {
+        return nextCondId++;
+      }
+      function resolveStatValue(rawValue, condVal) {
+        return typeof rawValue === "function"
+          ? rawValue(condVal ?? 1)
+          : rawValue;
+      }
+      function parseIncludedCond(str) {
+        const m = str.trim().match(/^(.+?)\s+(\d+)$/);
+        return m
+          ? { name: m[1].trim(), value: parseInt(m[2]) }
+          : { name: str.trim(), value: null };
+      }
+
+      function computeConditionStatSummary(c) {
+        const grouped = {};
+        for (const cond of c.conditions) {
+          if (cond.overriddenBy) continue;
+          const def = CONDITIONS_SF2.find((x) => x.name === cond.name);
+          if (!def || !def.statchanges) continue;
+          const condVal = cond.value ?? 1;
+          for (const [stat, change] of Object.entries(def.statchanges)) {
+            const num = resolveStatValue(change.value, condVal);
+            if (typeof num !== "number") continue;
+            if (!grouped[stat]) grouped[stat] = {};
+            const t = change.type || "untyped";
+            if (!grouped[stat][t]) grouped[stat][t] = [];
+            grouped[stat][t].push(num);
+          }
+        }
+        const summary = {};
+        for (const [stat, types] of Object.entries(grouped)) {
+          let total = 0;
+          for (const [type, values] of Object.entries(types)) {
+            if (type === "untyped") {
+              total += values.reduce((a, b) => a + b, 0);
+            } else {
+              const negs = values.filter((v) => v < 0),
+                pos = values.filter((v) => v > 0);
+              if (negs.length) total += Math.min(...negs);
+              if (pos.length) total += Math.max(...pos);
+            }
+          }
+          if (total !== 0) summary[stat] = total;
+        }
+        return summary;
+      }
+
+      function getEffectiveACInfo(c) {
+        const s = computeConditionStatSummary(c);
+        let mod = 0;
+        if (s.AC) mod += s.AC;
+        if (!c.ac && mod === 0) return null;
+        return { base: c.ac || 0, mod, effective: (c.ac || 0) + mod };
+      }
+
+      function rollD20() {
+        return Math.floor(Math.random() * 20) + 1;
+      }
+      function uid() {
+        return nextId++;
+      }
+      function fmtMod(v) {
+        return v >= 0 ? `+${v}` : `${v}`;
+      }
+      function now() {
+        return new Date().toLocaleTimeString("en-AU", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+      }
+      function toast(msg, dur = 1800) {
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.classList.add("show");
+        clearTimeout(el._t);
+        el._t = setTimeout(() => el.classList.remove("show"), dur);
+      }
+      function log(msg, cls = "") {
+        const el = document.getElementById("combat-log");
+        const div = document.createElement("div");
+        div.className = "log-entry";
+        div.innerHTML = `<span class="log-time">${now()}</span><span class="${cls}">${msg}</span>`;
+        el.prepend(div);
+      }
+
+      function showCondDesc(name) {
+        const def = CONDITIONS_SF2.find((x) => x.name === name);
+        document.getElementById("desc-title").textContent = name;
+        document.getElementById("desc-body").innerHTML = def?.description
+          ? def.description.trim()
+          : "No description available.";
+        document.getElementById("desc-overlay").classList.add("open");
+      }
+      function closeCondDesc() {
+        document.getElementById("desc-overlay").classList.remove("open");
+      }
+
+      function addCombatant() {
+        const name = document.getElementById("f-name").value.trim();
+        if (!name) {
+          toast("Enter a name first");
+          return;
+        }
+        saveSnapshot();
+        const type = document.querySelector(
+          'input[name="ctype"]:checked',
+        ).value;
+        const mod = parseInt(document.getElementById("f-init-mod").value) || 0;
+        const fixedVal = document.getElementById("f-init-val").value;
+        const maxHp = parseInt(document.getElementById("f-hp").value) || 0;
+        const ac = parseInt(document.getElementById("f-ac").value) || 0;
+        const notes = document.getElementById("f-notes").value.trim();
+        const visibleToPlayers =
+          document.querySelector('input[name="ctype"]:checked').value === "pc";
+
+        let initiative,
+          roll = null;
+        if (fixedVal !== "") {
+          initiative = parseInt(fixedVal);
+        } else {
+          roll = rollD20();
+          initiative = roll + mod;
+        }
+        const c = {
+          id: uid(),
+          name,
+          type,
+          initiative,
+          mod,
+          maxHp,
+          hp: maxHp,
+          ac,
+          notes,
+          visibleToPlayers,
+          conditions: [],
+          defeated: false,
+          reactionUsed: false,
+        };
+        combatants.push(c);
+        combatants.sort(sortFn);
+        if (roll !== null) {
+          log(
+            `${name} joined — rolled d20(${roll})${mod >= 0 ? "+" : ""}${mod} = <strong>${initiative}</strong>`,
+            "log-round",
+          );
+          toast(
+            `${name}: d20(${roll})${mod >= 0 ? "+" : ""}${mod} = ${initiative}`,
+          );
+        } else {
+          log(`${name} joined — initiative ${initiative}`, "log-round");
+        }
+        [
+          "f-name",
+          "f-init-mod",
+          "f-init-val",
+          "f-hp",
+          "f-ac",
+          "f-notes",
+        ].forEach((id) => (document.getElementById(id).value = ""));
+        document.getElementById("f-name").focus();
+        if (inCombat && activeIndex >= 0) {
+          const activeId = combatants[activeIndex]?.id;
+          activeIndex = combatants.findIndex((x) => x.id === activeId);
+          if (activeIndex < 0) activeIndex = 0;
+        }
+        render();
+      }
+
+      function sortFn(a, b) {
+        if (b.initiative !== a.initiative) return b.initiative - a.initiative;
+        // Ties: Enemies before PCs before allies
+        const order = { enemy: 0, pc: 1, ally: 2 };
+        return order[a.type] - order[b.type];
+      }
+      function sortCombatants() {
+        const activeId = combatants[activeIndex]?.id;
+        combatants.sort(sortFn);
+        if (inCombat) {
+          activeIndex = combatants.findIndex((x) => x.id === activeId);
+          if (activeIndex < 0) activeIndex = 0;
+        }
+        render();
+        toast("Sorted by initiative");
+      }
+      function startCombat() {
+        if (!combatants.length) {
+          toast("Add combatants first");
+          return;
+        }
+        saveSnapshot();
+        combatants.sort(sortFn);
+        inCombat = true;
+        round = 1;
+        activeIndex = 0;
+        combatants.forEach((c) => (c.reactionUsed = false));
+        document.getElementById("btn-start").style.display = "none";
+        document.getElementById("combat-active-controls").style.display =
+          "flex";
+        log(`⚔ Combat started — Round 1`, "log-round");
+        render();
+      }
+      function nextTurn() {
+        if (!inCombat) return;
+        saveSnapshot();
+
+        combatants[activeIndex].reactionUsed = false;
+        endOfTurnTickDownCondition(combatants[activeIndex]);
+
+        let next = (activeIndex + 1) % combatants.length;
+        let skipped = 0;
+        while (
+          (combatants[next].defeated ||
+            combatants[next].visibleToPlayers === false) &&
+          skipped < combatants.length
+        ) {
+          next = (next + 1) % combatants.length;
+          skipped++;
+        }
+
+        if (skipped >= combatants.length) {
+          toast("No eligible combatants to take a turn!");
+          return;
+        }
+
+        if (next <= activeIndex) {
+          round++;
+          combatants.forEach((c) => (c.reactionUsed = false));
+          log(`⚑ Round ${round} begins`, "log-round");
+        }
+        activeIndex = next;
+        log(`→ ${combatants[activeIndex].name}'s turn`, "log-turn");
+        render();
+      }
+
+      // TODO - stop this going
+      function prevTurn() {
+        if (!inCombat) return;
+
+        let prev = (activeIndex - 1 + combatants.length) % combatants.length;
+        let skipped = 0;
+        if (round <= 1 && activeIndex === 0) {
+          toast("Already at the start of Round 1");
+          return;
+        }
+        saveSnapshot();
+        // Skip backward over defeated or hidden combatants
+        while (
+          (combatants[prev].defeated ||
+            combatants[prev].visibleToPlayers === false) &&
+          skipped < combatants.length
+        ) {
+          prev = (prev - 1 + combatants.length) % combatants.length;
+          skipped++;
+        }
+
+        // If we wrapped backward past the start of the list, decrement the round
+        if (prev >= activeIndex && round > 1) {
+          round--;
+          log(`⟵ Reverted to Round ${round}`, "log-round");
+        }
+
+        activeIndex = prev;
+        render();
+      }
+
+      function addRound() {
+        if (!inCombat) {
+          toast("Start combat first");
+          return;
+        }
+        saveSnapshot();
+        round++;
+        combatants.forEach((c) => (c.reactionUsed = false));
+        log(`⚑ Round ${round} (manual advance)`, "log-round");
+        render();
+      }
+      function subRound() {
+        if (!inCombat) return;
+        if (round <= 1) {
+          toast("Already on round 1");
+          return;
+        }
+        saveSnapshot();
+        round--;
+        log(`⟵ Reverted to Round ${round}`, "log-round");
+        render();
+      }
+      function endOfTurnTickDownCondition(c) {
+        const tickDown = ["Frightened", "Slowed"];
+        c.conditions = c.conditions.filter((cond) => {
+          if (
+            cond.value &&
+            tickDown.some((v) =>
+              cond.name.toLowerCase().includes(v.toLowerCase()),
+            )
+          ) {
+            cond.value -= 1;
+            if (cond.value <= 0) {
+              log(`${c.name}: ${cond.name} expired`, "log-cond");
+              return false;
+            }
+            return true;
+          }
+          return true;
+        });
+      }
+      function resetAll() {
+        if (!confirm("Reset everything?")) return;
+        combatants = [];
+        activeIndex = -1;
+        round = 0;
+        inCombat = false;
+        document.getElementById("btn-start").style.display = "";
+        document.getElementById("combat-active-controls").style.display =
+          "none";
+        document.getElementById("combat-log").innerHTML =
+          '<div class="log-entry" style="color:var(--border2)">// awaiting combat…</div>';
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch (e) {}
+        const label = document.getElementById("autosave-label");
+        if (label) label.textContent = "CLEARED";
+        render();
+      }
+
+      function adjustCombatantHP(id, sign) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c) return;
+        const inputEl = document.getElementById(`hp-amt-${id}`);
+        const amt = parseInt(inputEl?.value);
+        if (isNaN(amt) || amt <= 0) {
+          toast("Enter an amount first");
+          inputEl?.focus();
+          return;
+        }
+        const old = c.hp;
+        saveSnapshot();
+        c.hp = Math.max(0, Math.min(c.maxHp || 9999, c.hp + sign * amt));
+        const diff = Math.abs(c.hp - old);
+        if (sign < 0)
+          log(`${c.name} took ${diff} damage (${c.hp}/${c.maxHp})`, "log-dmg");
+        else
+          log(`${c.name} healed ${diff} HP (${c.hp}/${c.maxHp})`, "log-heal");
+        if (c.hp === 0 && c.maxHp > 0 && sign < 0) {
+          log(`${c.name} dropped to 0 HP!`, "log-dmg");
+          if (!c.defeated) {
+            c.defeated = true;
+            log(`${c.name} defeated`, "log-dmg");
+          }
+        }
+        if (inputEl) inputEl.value = "";
+        renderSingle(c.id);
+        updateStats();
+        scheduleAutosave();
+      }
+
+      function removeCombatant(id) {
+        const c = combatants.find((x) => x.id === id);
+        saveSnapshot();
+        combatants = combatants.filter((x) => x.id !== id);
+        if (inCombat && !combatants[activeIndex])
+          activeIndex = Math.max(0, combatants.length - 1);
+        log(`${c?.name || "Combatant"} removed from encounter`);
+        render();
+      }
+      function toggleDefeated(id) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c) return;
+        saveSnapshot();
+        c.defeated = !c.defeated;
+        c.hp = c.defeated ? 0 : c.maxHp;
+        log(
+          `${c.name} ${c.defeated ? "defeated" : "restored"}`,
+          c.defeated ? "log-dmg" : "log-heal",
+        );
+        renderSingle(id);
+        updateStats();
+        scheduleAutosave();
+      }
+
+      function setVisibility(id, visible) {
+        const c = combatants.find((c) => c.id === id);
+        if (!c) return;
+        saveSnapshot();
+        c.visibleToPlayers = visible;
+        renderSingle(id);
+        updateStats();
+        scheduleAutosave();
+      }
+      function setAllVisibility(visible) {
+        if (!combatants.length) return;
+        saveSnapshot();
+        combatants.forEach((c) => (c.visibleToPlayers = visible));
+        log(
+          `👁 All combatants ${visible ? "shown to" : "hidden from"} players`,
+          "log-round",
+        );
+        render();
+        scheduleAutosave();
+        broadcastState();
+      }
+      function toggleReaction(id) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c) return;
+        saveSnapshot();
+        c.reactionUsed = !c.reactionUsed;
+        renderSingle(id);
+        scheduleAutosave();
+      }
+
+      function saveInitiative(id) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c) return;
+        const input = document.getElementById(`init-badge-${id}`);
+        if (!input) return;
+        const newVal = parseInt(input.value);
+        if (isNaN(newVal)) {
+          input.value = c.initiative;
+          return;
+        }
+        if (newVal === c.initiative) return;
+        saveSnapshot();
+        const old = c.initiative;
+        c.initiative = newVal;
+        // Re-sort and keep active combatant tracked
+        const activeId = combatants[activeIndex]?.id;
+        combatants.sort(sortFn);
+        if (inCombat && activeId != null) {
+          activeIndex = combatants.findIndex((x) => x.id === activeId);
+          if (activeIndex < 0) activeIndex = 0;
+        }
+        log(`${c.name}: initiative ${old} → ${newVal}`, "log-round");
+        render();
+        scheduleAutosave();
+      }
+      function handleInitKey(e, id) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          saveInitiative(id);
+        }
+        if (e.key === "Escape") {
+          const c = combatants.find((x) => x.id === id);
+          const input = document.getElementById(`init-badge-${id}`);
+          if (c && input) {
+            input.value = c.initiative;
+            input.blur();
+          }
+        }
+      }
+      function revertInit(id) {
+        // On blur without Enter, restore the stored value so display stays consistent
+        const c = combatants.find((x) => x.id === id);
+        const input = document.getElementById(`init-badge-${id}`);
+        if (c && input && parseInt(input.value) !== c.initiative) {
+          input.value = c.initiative;
+        }
+      }
+
+      function toggleEdit(id) {
+        if (editingIds.has(id)) editingIds.delete(id);
+        else editingIds.add(id);
+        renderSingle(id);
+        if (editingIds.has(id))
+          setTimeout(() => {
+            const nameInput = document.getElementById(`edit-name-${id}`);
+            if (nameInput) {
+              nameInput.focus();
+              nameInput.select();
+            }
+          }, 30);
+      }
+      function cancelEdit(id) {
+        editingIds.delete(id);
+        renderSingle(id);
+      }
+      function saveEdit(id) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c) return;
+        const get = (sfx) => document.getElementById(`edit-${sfx}-${id}`);
+        const newName = get("name")?.value.trim() || c.name;
+        const newInit = parseInt(get("init")?.value);
+        const newMaxHp = parseInt(get("maxhp")?.value);
+        const newAc = parseInt(get("ac")?.value);
+        const newNotes = get("notes")?.value.trim() ?? c.notes;
+        const hasChanges =
+          newName !== c.name ||
+          (!isNaN(newInit) && newInit !== c.initiative) ||
+          (!isNaN(newMaxHp) && newMaxHp !== c.maxHp) ||
+          (!isNaN(newAc) && newAc !== c.ac) ||
+          newNotes !== c.notes;
+        if (hasChanges) saveSnapshot();
+        const changes = [];
+        if (newName !== c.name) {
+          changes.push(`name → ${newName}`);
+          c.name = newName;
+        }
+        if (!isNaN(newInit) && newInit !== c.initiative) {
+          changes.push(`initiative ${c.initiative} → ${newInit}`);
+          c.initiative = newInit;
+        }
+        if (!isNaN(newMaxHp) && newMaxHp !== c.maxHp) {
+          const oldMax = c.maxHp;
+          c.maxHp = Math.max(0, newMaxHp);
+          c.hp = Math.min(c.hp, c.maxHp);
+          changes.push(`max HP ${oldMax} → ${c.maxHp}`);
+        }
+        if (!isNaN(newAc) && newAc !== c.ac) {
+          changes.push(`AC ${c.ac} → ${newAc}`);
+          c.ac = Math.max(0, newAc);
+        }
+        if (newNotes !== c.notes) {
+          changes.push(`notes updated`);
+          c.notes = newNotes;
+        }
+        if (changes.length) log(`${c.name}: edited — ${changes.join(", ")}`);
+        editingIds.delete(id);
+        const activeId = combatants[activeIndex]?.id;
+        combatants.sort(sortFn);
+        if (inCombat && activeId != null) {
+          activeIndex = combatants.findIndex((x) => x.id === activeId);
+          if (activeIndex < 0) activeIndex = 0;
+        }
+        render();
+        updateBanner();
+      }
+
+      function openCondModal(id) {
+        condTargetId = id;
+        document.getElementById("modal-cond-name").value = "";
+        const valInput = document.getElementById("modal-cond-val");
+        valInput.value = "";
+        valInput.inputMode = "numeric";
+        valInput.placeholder = "–";
+        const c = combatants.find((x) => x.id === id);
+        // Collect names already active as main (non-bundled) conditions.
+        // Persistent Damage is excluded — multiple instances are allowed.
+        const activeNames = new Set(
+          (c?.conditions || [])
+            .filter(
+              (x) => x.bundledUnder == null && x.name !== "Persistent Damage",
+            )
+            .map((x) => x.name),
+        );
+        const grid = document.getElementById("modal-cond-grid");
+        grid.innerHTML = "";
+        CONDITIONS_SF2.forEach((cond) => {
+          const isActive = activeNames.has(cond.name);
+          const btn = document.createElement("button");
+          btn.className =
+            "modal-cond-btn" +
+            (cond.valued ? " valued" : "") +
+            (isActive ? " already-active" : "");
+          btn.textContent = cond.name;
+          if (isActive) {
+            btn.disabled = true;
+            btn.title = `${cond.name} is already active`;
+          } else if (cond.valued) {
+            // Valued: populate form so user can confirm/adjust the value
+            btn.title = `${cond.name} — set value then click Add`;
+            btn.onclick = () => {
+              document.getElementById("modal-cond-name").value = cond.name;
+              const valInput = document.getElementById("modal-cond-val");
+              if (cond.textValued) {
+                valInput.inputMode = "text";
+                valInput.placeholder = "1d6 F";
+              } else {
+                valInput.inputMode = "numeric";
+                valInput.placeholder = "–";
+              }
+              valInput.value = cond.textValued ? "" : "1";
+              valInput.focus();
+              valInput.select();
+            };
+          } else {
+            // Non-valued: add immediately on click, no confirmation needed
+            btn.title = `Add ${cond.name}`;
+            btn.onclick = () => {
+              applyCondition(condTargetId, cond.name, null);
+              closeCondModal();
+            };
+          }
+          grid.appendChild(btn);
+        });
+        document.getElementById("cond-modal-overlay").classList.add("open");
+        document.getElementById("modal-cond-name").focus();
+      }
+      function closeCondModal() {
+        document.getElementById("cond-modal-overlay").classList.remove("open");
+        condTargetId = null;
+      }
+
+      // Core logic for adding a condition — called from the modal form (submitCondition)
+      // or directly from a non-valued button click (applyCondition).
+      function applyCondition(targetId, name, value) {
+        const c = combatants.find((x) => x.id === targetId);
+        if (!c) return false;
+        const def = CONDITIONS_SF2.find((x) => x.name === name);
+        const cid = newCondId();
+        // Duplicate check: main (non-bundled) conditions only.
+        // Persistent Damage is exempt — multiple instances are valid (different damage types/sources).
+        const isDuplicate =
+          name !== "Persistent Damage" &&
+          c.conditions.some((x) => x.bundledUnder == null && x.name === name);
+        if (isDuplicate) {
+          toast(`${name} is already active on ${c.name}`);
+          return false;
+        }
+        saveSnapshot();
+        const newCond = {
+          cid,
+          name,
+          value,
+          bundledUnder: null,
+          overriddenBy: null,
+        };
+        for (const existing of c.conditions) {
+          if (existing.bundledUnder != null) continue;
+          const existDef = CONDITIONS_SF2.find((x) => x.name === existing.name);
+          if (existDef?.override?.includes(name)) {
+            newCond.overriddenBy = existing.name;
+            break;
+          }
+        }
+        c.conditions.push(newCond);
+        log(
+          `${c.name}: +${name}${value != null ? " " + value : ""}`,
+          "log-cond",
+        );
+        if (def?.includes) {
+          for (const inclStr of def.includes) {
+            const parsed = parseIncludedCond(inclStr);
+            let inclOverridden = null;
+            for (const existing of c.conditions) {
+              const existDef = CONDITIONS_SF2.find(
+                (x) => x.name === existing.name,
+              );
+              if (existDef?.override?.includes(parsed.name)) {
+                inclOverridden = existing.name;
+                break;
+              }
+            }
+            c.conditions.push({
+              cid: newCondId(),
+              name: parsed.name,
+              value: parsed.value,
+              bundledUnder: cid,
+              overriddenBy: inclOverridden,
+            });
+          }
+        }
+        if (def?.override) {
+          for (const overrideName of def.override) {
+            for (const other of c.conditions) {
+              if (other.name === overrideName && other.cid !== cid)
+                other.overriddenBy = name;
+            }
+          }
+        }
+        renderSingle(c.id);
+        scheduleAutosave();
+        return true;
+      }
+
+      function submitCondition() {
+        const name = document.getElementById("modal-cond-name").value.trim();
+        if (!name) {
+          toast("Enter a condition name");
+          return;
+        }
+        const valRaw = document.getElementById("modal-cond-val").value.trim();
+        const def = CONDITIONS_SF2.find((x) => x.name === name);
+        let value = null;
+        if (valRaw !== "") {
+          value = def?.textValued ? valRaw : parseInt(valRaw);
+        }
+        if (applyCondition(condTargetId, name, value)) {
+          closeCondModal();
+        }
+      }
+
+      function adjustCondValue(combId, cid, delta) {
+        const c = combatants.find((x) => x.id === combId);
+        if (!c) return;
+        const cond = c.conditions.find((x) => x.cid === cid);
+        if (!cond || cond.value == null) return;
+        saveSnapshot();
+        const newVal = cond.value + delta;
+        if (newVal <= 0) {
+          removeCondition(combId, cid);
+          return;
+        }
+        cond.value = newVal;
+        log(
+          `${c.name}: ${cond.name} ${delta > 0 ? "↑" : "↓"} ${newVal}`,
+          "log-cond",
+        );
+        renderSingle(c.id);
+        scheduleAutosave();
+      }
+
+      function removeCondition(combId, cid) {
+        const c = combatants.find((x) => x.id === combId);
+        if (!c) return;
+        const cond = c.conditions.find((x) => x.cid === cid);
+        if (!cond) return;
+        if (cond.bundledUnder != null) return;
+        saveSnapshot();
+        const def = CONDITIONS_SF2.find((x) => x.name === cond.name);
+        if (def?.override) {
+          for (const overrideName of def.override) {
+            for (const other of c.conditions) {
+              if (
+                other.name === overrideName &&
+                other.overriddenBy === cond.name
+              )
+                other.overriddenBy = null;
+            }
+          }
+        }
+        const toRemove = new Set([cid]);
+        for (const child of c.conditions)
+          if (child.bundledUnder === cid) toRemove.add(child.cid);
+        c.conditions = c.conditions.filter((x) => !toRemove.has(x.cid));
+        log(`${c.name}: −${cond.name}`, "log-cond");
+        renderSingle(c.id);
+        scheduleAutosave();
+      }
+
+      function saveEncounter() {
+        const payload = {
+          version: 1,
+          savedAt: new Date().toISOString(),
+          round,
+          inCombat,
+          activeIndex,
+          nextId,
+          nextCondId,
+          combatants,
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const ts = new Date()
+          .toISOString()
+          .slice(0, 16)
+          .replace("T", "_")
+          .replace(":", "−");
+        a.href = url;
+        a.download = `encounter_${ts}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        log(`Encounter saved to encounter_${ts}.json`);
+        toast("Encounter saved ↓");
+      }
+      function loadEncounter(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (!data.version || !Array.isArray(data.combatants)) {
+              toast("Invalid encounter file");
+              return;
+            }
+            combatants = data.combatants;
+            round = data.round ?? 0;
+            inCombat = data.inCombat ?? false;
+            activeIndex = data.activeIndex ?? -1;
+            nextId =
+              data.nextId ?? Math.max(0, ...combatants.map((c) => c.id)) + 1;
+            nextCondId = data.nextCondId ?? 1;
+            migrateConditions(combatants);
+            editingIds.clear();
+            document.getElementById("btn-start").style.display = inCombat
+              ? "none"
+              : "";
+            document.getElementById("combat-active-controls").style.display =
+              inCombat ? "flex" : "none";
+            render();
+            log(
+              `Loaded "${file.name}" — ${combatants.length} combatants, round ${round || "—"}`,
+              "log-round",
+            );
+            toast(`Loaded: ${file.name}`);
+          } catch {
+            toast("Failed to parse file");
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = "";
+      }
+
+      function broadcastState() {
+        const payload = {
+          round,
+          inCombat,
+          activeIndex,
+          combatants: combatants.map((c) => ({
+            id: c.id,
+            visibleToPlayers: c.visibleToPlayers,
+            name: c.name,
+            type: c.type,
+            hp: c.hp,
+            maxHp: c.maxHp,
+            conditions: c.conditions,
+            defeated: c.defeated,
+            initiative: c.initiative,
+            statSummary: computeConditionStatSummary(c),
+          })),
+        };
+        try {
+          localStorage.setItem("init_player_view", JSON.stringify(payload));
+        } catch (e) {}
+        scheduleAutosave();
+      }
+
+      function hpColor(pct) {
+        return pct > 0.5 ? "#7ab800" : pct > 0.25 ? "#e8a020" : "#c43030";
+      }
+      function escHtml(str) {
+        if (!str) return "";
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+      function escAttr(str) {
+        if (!str) return "";
+        return str.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+      }
+
+      // Conditions: each cond-group holds parent + bundled children (stacked vertically).
+      // Groups flow left-to-right inside cond-tags-wrap.
+      function buildConditionsHTML(c) {
+        const mains = c.conditions.filter((x) => x.bundledUnder == null);
+        let html = '<div class="cond-tags-wrap">';
+        for (const cond of mains) {
+          const isOverridden = !!cond.overriddenBy;
+          const overTitle = isOverridden
+            ? ` title="Overridden by ${escAttr(cond.overriddenBy)}"`
+            : ` title="Click for description"`;
+          html += `<div class="cond-group">`;
+          html += `<span class="cond-tag${isOverridden ? " overridden" : ""}"${overTitle} onclick="showCondDesc('${escAttr(cond.name)}')">`;
+          html += `<span class="cond-name">${escHtml(cond.name)}</span>`;
+          if (cond.value != null) {
+            html += `<span class="cond-val"> ${escHtml(String(cond.value))}</span>`;
+            const condDef = CONDITIONS_SF2.find((x) => x.name === cond.name);
+            if (!isOverridden && !condDef?.textValued) {
+              html += `<span class="cond-stepper">`;
+              html += `<button class="cond-step-btn" onclick="event.stopPropagation();adjustCondValue(${c.id},${cond.cid},-1)" title="Decrease value (removes at 0)">−</button>`;
+              html += `<button class="cond-step-btn" onclick="event.stopPropagation();adjustCondValue(${c.id},${cond.cid},1)" title="Increase value">+</button>`;
+              html += `</span>`;
+            }
+          }
+          if (isOverridden) {
+            html += `<span class="cond-remove" onclick="event.stopPropagation();removeCondition(${c.id},${cond.cid})" title="Remove (overridden by ${escAttr(cond.overriddenBy)})">✖</span>`;
+          } else {
+            html += `<span class="cond-remove" onclick="event.stopPropagation();removeCondition(${c.id},${cond.cid})" title="Remove">✖</span>`;
+          }
+          html += `</span>`;
+          // Bundled children stacked under parent
+          const children = c.conditions.filter(
+            (x) => x.bundledUnder === cond.cid,
+          );
+          for (const child of children) {
+            const childOverridden = !!child.overriddenBy;
+            const childTitle = childOverridden
+              ? ` title="Bundled with ${escAttr(cond.name)} — Overridden by ${escAttr(child.overriddenBy)}"`
+              : ` title="Bundled with ${escAttr(cond.name)} — click for description"`;
+            html += `<span class="cond-tag bundled${childOverridden ? " overridden" : ""}"${childTitle} onclick="showCondDesc('${escAttr(child.name)}')">`;
+            html += `<span class="bundled-arrow">⤷</span>`;
+            html += escHtml(child.name);
+            if (child.value != null)
+              html += `<span class="cond-val"> ${child.value}</span>`;
+            if (childOverridden)
+              html += `<span class="overridden-icon">⊘</span>`;
+            html += `</span>`;
+          }
+          html += `</div>`;
+        }
+        html += `</div>`;
+        return html;
+      }
+
+      function buildStatSummaryHTML(c) {
+        const STAT_ORDER = [
+          "AC",
+          "FORT",
+          "REFL",
+          "WILL",
+          "STR",
+          "DEX",
+          "CON",
+          "INT",
+          "WIS",
+          "CHA",
+        ];
+        const s = computeConditionStatSummary(c);
+        const entries = Object.entries(s);
+        if (!entries.length) return "";
+        entries.sort(([a], [b]) => {
+          const ai = STAT_ORDER.indexOf(a),
+            bi = STAT_ORDER.indexOf(b);
+          if (ai !== -1 && bi !== -1) return ai - bi;
+          if (ai !== -1) return -1;
+          if (bi !== -1) return 1;
+          return a.localeCompare(b);
+        });
+        let parts = "";
+        for (const [stat, val] of entries) {
+          const cls = val < 0 ? "neg" : "pos";
+          parts += `<span class="summary-stat"><span class="summary-stat-key">${escHtml(stat)}</span><span class="summary-stat-val ${cls}">${fmtMod(val)}</span></span>`;
+        }
+        return `<div class="stat-summary">${parts}</div>`;
+      }
+
+      function buildCombatantHTML(c, idx) {
+        const isActive = inCombat && idx === activeIndex;
+        const hpPct = c.maxHp > 0 ? c.hp / c.maxHp : 1;
+        const hpFill = hpPct * 100;
+        const isEditing = editingIds.has(c.id);
+        const acInfo = getEffectiveACInfo(c);
+
+        let acHTML = "";
+        let acValueHTML = "";
+        if (acInfo) {
+          if (acInfo.base > 0 && acInfo.mod !== 0) {
+            acHTML = `<div class="stat-block"><span class="stat-label">AC</span><span class="stat-val modified">${acInfo.effective}</span><span class="ac-effective">&nbsp;(${acInfo.base}${fmtMod(acInfo.mod)})</span></div>`;
+            acValueHTML = `<span class="stat-val modified">${acInfo.effective}</span><span class="ac-effective">&nbsp;(${acInfo.base}${fmtMod(acInfo.mod)})</span>`;
+          } else if (acInfo.base > 0) {
+            acHTML = `<div class="stat-block"><span class="stat-label">AC</span><span class="stat-val">${acInfo.base}</span></div>`;
+            acValueHTML = `<span class="stat-val">${acInfo.base}</span>`;
+          } else {
+            acHTML = `<div class="stat-block"><span class="stat-label">AC</span><span class="ac-mod-only">${fmtMod(acInfo.mod)}</span></div>`;
+            acValueHTML = `<span class="ac-mod-only">${fmtMod(acInfo.mod)}</span>`;
+          }
+        }
+
+        const editPanel = isEditing
+          ? `
+      <div class="edit-panel">
+        <div class="edit-field"><label>Name</label><input id="edit-name-${c.id}" type="text" value="${escHtml(c.name)}" onkeydown="if(event.key==='Enter')saveEdit(${c.id});if(event.key==='Escape')cancelEdit(${c.id})"></div>
+        <div class="edit-field"><label>Initiative</label><input id="edit-init-${c.id}" type="number" value="${c.initiative}" onkeydown="if(event.key==='Enter')saveEdit(${c.id});if(event.key==='Escape')cancelEdit(${c.id})"></div>
+        <div class="edit-field"><label>Max HP</label><input id="edit-maxhp-${c.id}" type="number" value="${c.maxHp}" min="0" onkeydown="if(event.key==='Enter')saveEdit(${c.id});if(event.key==='Escape')cancelEdit(${c.id})"></div>
+        <div class="edit-field"><label>AC</label><input id="edit-ac-${c.id}" type="number" value="${c.ac}" min="0" onkeydown="if(event.key==='Enter')saveEdit(${c.id});if(event.key==='Escape')cancelEdit(${c.id})"></div>
+        <div class="edit-field"><label>Notes</label><input id="edit-notes-${c.id}" type="text" value="${escHtml(c.notes)}" onkeydown="if(event.key==='Enter')saveEdit(${c.id});if(event.key==='Escape')cancelEdit(${c.id})"></div>
+        <div class="edit-actions">
+          <button class="edit-save-btn" onclick="saveEdit(${c.id})">Save</button>
+          <button class="edit-cancel-btn" onclick="cancelEdit(${c.id})">✕</button>
+        </div>
+      </div>`
+          : "";
+
+        const statSummaryHTML = buildStatSummaryHTML(c);
+
+        return `
+      <div class="combatant${isActive ? " active" : ""}${c.defeated ? " defeated" : ""}${!c.visibleToPlayers ? " hidden" : ""}${isEditing ? " editing" : ""}" id="comb-${c.id}" data-id="${c.id}" style="${isEditing ? "flex-wrap:wrap;display:grid;grid-template-columns:44px 1fr auto;" : ""}">
+        <div class="left-panel">
+          <span class="type-badge type-${c.type}">${c.type}</span>
+          <input
+            class="init-badge"
+            id="init-badge-${c.id}"
+            type="number"
+            value="${c.initiative}"
+            title="Click to edit initiative, then press Enter to save"
+            onkeydown="handleInitKey(event, ${c.id})"
+            onblur="revertInit(${c.id})"
+            onclick="this.select()"
+          />
+          <div
+            class="reaction-badge ${c.reactionUsed ? "used" : ""}"
+            onclick="toggleReaction(${c.id})"
+            title="Reaction"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" height="24" viewBox="0 0 24 24" style="color: inherit;"><g transform="translate(0 24) scale(1 -1)"><path fill="currentColor" d="M7 19v-2h7.1q1.575 0 2.738-1T18 13.5T16.838 11T14.1 10H7.8l2.6 2.6L9 14L4 9l5-5l1.4 1.4L7.8 8h6.3q2.425 0 4.163 1.575T20 13.5t-1.737 3.925T14.1 19z"></path></g></svg>
+            </div>
+        </div>
+
+        <div class="comb-body">
+          <div class="comb-top">
+            <span class="comb-name">${escHtml(c.name)}</span>
+            ${c.notes ? `<span style="font-size:11px;font-family:'Lexend',sans-serif">${escHtml(c.notes)}</span>` : ""}
+          </div>
+
+          <div class="comb-middle">
+            <div class="comb-left-col">
+              <!-- Fixed-width stats column -->
+              <div class="comb-stats-col">
+                ${
+                  c.maxHp > 0
+                    ? `
+                <div class="hp-row">
+                  <div class="hp-row-left">
+                    <div class="hp-row-left">
+                      <div class="hp-stat-row">
+                        <span class="stat-label">HP</span>
+                        <div>
+                          <span class="hp-display" style="color:${hpColor(hpPct)}">${c.hp}<span class="hp-max">/${c.maxHp}</span></span>
+                          <div class="hp-bar-bg"><div class="hp-bar-fill" style="width:${hpFill}%;background:${hpColor(hpPct)}"></div></div>
+                        </div>
+                      </div>
+                      ${acValueHTML ? `<div class="hp-stat-row"><span class="stat-label">AC</span><div class="stat-block">${acValueHTML}</div></div>` : ""}
+                    </div>
+                  </div>
+                  <div class="hp-row-right">
+                    <input class="hp-amt-input" id="hp-amt-${c.id}" type="number" placeholder="amt" min="1" onkeydown="if(event.key==='Escape'){event.preventDefault();this.value='';this.blur();}else if(event.key==='Enter'&&event.shiftKey){event.preventDefault();adjustCombatantHP(${c.id},1);}else if(event.key==='Enter'){adjustCombatantHP(${c.id},-1);}" onclick="this.select()">
+                    <div class="hp-button-container">
+                      <button class="hp-action-btn hp-dmg-btn" onclick="adjustCombatantHP(${c.id},-1)">DMG</button>
+                      <button class="hp-action-btn hp-heal-btn" onclick="adjustCombatantHP(${c.id},1)">HEAL</button>
+                    </div>
+                  </div>
+                </div>`
+                    : acHTML
+                      ? `<div class="stat-block-container">${acHTML}</div>`
+                      : ""
+                }
+              </div>
+              ${statSummaryHTML ? `<div class="stat-summary-row">${statSummaryHTML}</div>` : ""}
+            </div>
+
+            <!-- Conditions column — always starts at the same horizontal position -->
+            <div class="cond-col">
+              <div class="cond-col-header">
+                <span class="cond-col-label">CONDITIONS</span>
+                <button class="add-cond-btn" onclick="openCondModal(${c.id})">+ condition</button>
+              </div>
+              ${buildConditionsHTML(c)}
+            </div>
+          </div>
+        </div>
+
+
+        <div class="comb-actions">
+          <button class="icon-btn hidden-combatant"   onclick="setVisibility(${c.id}, true)" title="Click to show to players"   style="${c.visibleToPlayers ? "display:none" : ""}">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: inherit;"><path fill="currentColor" d="M8.073 12.194L4.212 8.333c-1.52 1.657-2.096 3.317-2.106 3.351L2 12l.105.316C2.127 12.383 4.421 19 12.054 19c.929 0 1.775-.102 2.552-.273l-2.746-2.746a3.987 3.987 0 0 1-3.787-3.787M12.054 5c-1.855 0-3.375.404-4.642.998L3.707 2.293L2.293 3.707l18 18l1.414-1.414l-3.298-3.298c2.638-1.953 3.579-4.637 3.593-4.679l.105-.316l-.105-.316C21.98 11.617 19.687 5 12.054 5m1.906 7.546c.187-.677.028-1.439-.492-1.96s-1.283-.679-1.96-.492L10 8.586A3.96 3.96 0 0 1 12.054 8c2.206 0 4 1.794 4 4a3.94 3.94 0 0 1-.587 2.053z"></path></svg>
+            </button>
+          <button class="icon-btn shown-combatant"   onclick="setVisibility(${c.id}, false)" title="Click to hide from players"   style="${!c.visibleToPlayers ? "display:none" : ""}">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: inherit;"><path fill="currentColor" d="M12 9a3.02 3.02 0 0 0-3 3c0 1.642 1.358 3 3 3s3-1.358 3-3s-1.359-3-3-3"></path><path fill="currentColor" d="M12 5c-7.633 0-9.927 6.617-9.948 6.684L1.946 12l.105.316C2.073 12.383 4.367 19 12 19s9.927-6.617 9.948-6.684l.106-.316l-.105-.316C21.927 11.617 19.633 5 12 5m0 12c-5.351 0-7.424-3.846-7.926-5C4.578 10.842 6.652 7 12 7c5.351 0 7.424 3.846 7.926 5c-.504 1.158-2.578 5-7.926 5"></path></svg>
+            </button>
+          <button class="icon-btn edit-btn${isEditing ? " active" : ""}" onclick="toggleEdit(${c.id})" title="Edit stats" style="${isEditing ? "color:#80b0e8;border-color:rgba(64,128,208,0.5)" : ""}">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 20 20" style="color:inherit;"><path fill="currentColor" d="m16.77 8l1.94-2a1 1 0 0 0 0-1.41l-3.34-3.3a1 1 0 0 0-1.41 0L12 3.23zM1 14.25V19h4.75l9.96-9.96l-4.75-4.75z"></path></svg>
+            </button>
+          <button class="icon-btn defeat-btn" onclick="toggleDefeated(${c.id})" title="${c.defeated ? "Restore" : "Mark Defeated"}">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 512 512" style="color: inherit;"><path fill="currentColor" d="M255.997 16.004c-120 0-239.997 60-239.997 149.998C16 226.002 61 256 61 316c0 45-15 45-15 75c0 14.998 48.01 32.002 89.998 44.998v60h239.997v-60s90.567-27.957 90-45c-.933-27.947-15-30-15-74.998c0-30 45.642-91.42 44.998-149.998c0-90-119.998-149.998-239.996-149.998m-90 179.997c33.137 0 60 26.864 60 60s-26.863 60-60 60C132.863 316 106 289.136 106 256s26.862-60 59.998-60zm179.998 0c33.136 0 60 26.864 60 60s-26.864 60-60 60s-60-26.864-60-60s26.864-60 60-60m-89.998 105c15 0 45 60 45 75c0 29.998 0 29.998-15 29.998h-60c-15 0-15 0-15-30c0-15 30-74.998 45-74.998"></path></svg>
+            </button>
+          <button class="icon-btn danger" onclick="removeCombatant(${c.id})" title="Remove">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: inherit;"><path fill="currentColor" d="M22.66 5.58a1.5 1.5 0 0 0 0-2.12l-2.12-2.12a1.49 1.49 0 0 0-2.12 0l-6.24 6.24a.27.27 0 0 1-.36 0L5.58 1.34a1.49 1.49 0 0 0-2.12 0L1.34 3.46a1.5 1.5 0 0 0 0 2.12l6.24 6.24a.25.25 0 0 1 0 .36l-6.24 6.24a1.5 1.5 0 0 0 0 2.12l2.12 2.12a1.49 1.49 0 0 0 2.12 0l6.24-6.24a.27.27 0 0 1 .36 0l6.24 6.24a1.47 1.47 0 0 0 1.06.44a1.45 1.45 0 0 0 1.06-.44l2.12-2.12a1.5 1.5 0 0 0 0-2.12l-6.24-6.24a.25.25 0 0 1 0-.36Z"></path></svg>
+            </button>
+        </div>
+        ${editPanel}
+      </div>`;
+      }
+
+      function render() {
+        const list = document.getElementById("combatant-list");
+        const empty = document.getElementById("empty-state");
+        if (!combatants.length) {
+          list.innerHTML = "";
+          empty.style.display = "";
+        } else {
+          empty.style.display = "none";
+          list.innerHTML = combatants
+            .map((c, i) => buildCombatantHTML(c, i))
+            .join("");
+        }
+        updateStats();
+        updateBanner();
+        broadcastState();
+      }
+      function renderSingle(id) {
+        const el = document.getElementById(`comb-${id}`);
+        if (!el) return;
+        const idx = combatants.findIndex((x) => x.id === id);
+        if (idx < 0) return;
+        const tmp = document.createElement("div");
+        tmp.innerHTML = buildCombatantHTML(combatants[idx], idx);
+        el.replaceWith(tmp.firstElementChild);
+        broadcastState();
+      }
+      function updateStats() {
+        document.getElementById("sc-total").textContent = combatants.length;
+        document.getElementById("sc-enemies").textContent = combatants.filter(
+          (c) => c.type === "enemy",
+        ).length;
+        document.getElementById("sc-alive").textContent = combatants.filter(
+          (c) => !c.defeated,
+        ).length;
+        document.getElementById("sc-round").textContent =
+          round > 0 ? round : "—";
+      }
+      function updateBanner() {
+        const el = document.getElementById("round-display");
+        if (el) el.textContent = round > 0 ? round : "—";
+      }
+
+      document
+        .querySelectorAll(".type-radio")
+        .forEach((r) =>
+          r.addEventListener("change", () =>
+            document
+              .querySelectorAll(".type-label")
+              .forEach((l) => l.classList.remove("checked")),
+          ),
+        );
+
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.key === "z") {
+          e.preventDefault();
+          undo();
+          return;
+        }
+        const tag = document.activeElement.tagName.toLowerCase();
+        if (tag === "input" || tag === "textarea" || tag === "select") return;
+        if (e.key === "n" || e.key === "ArrowRight") nextTurn();
+        if (e.key === "p" || e.key === "ArrowLeft") prevTurn();
+        if (e.key === "Escape") {
+          closeCondModal();
+          closeCondDesc();
+          if (editingIds.size > 0) {
+            editingIds.clear();
+            render();
+          }
+        }
+      });
+
+      function toggleSidebar() {
+        const main = document.querySelector("main");
+        const btn = document.getElementById("btn-sidebar-toggle");
+        btn.textContent = main.classList.toggle("sidebar-hidden") ? "⁝" : "☰";
+      }
+
+      (function init() {
+        const restored = loadFromLocalStorage();
+        render();
+        if (restored) {
+          const count = combatants.length;
+          toast(
+            count > 0
+              ? `Session restored — ${count} combatant${count !== 1 ? "s" : ""}`
+              : "Session restored",
+            2400,
+          );
+          log(
+            `Session restored from auto-save (${count} combatant${count !== 1 ? "s" : ""}, round ${round || "—"})`,
+            "log-round",
+          );
+        }
+      })();
+    </script>
+  </body>
+</html>
