@@ -12,8 +12,8 @@ The tracker is split into two views that sync in real time via the browser's `lo
 
 | File               | Purpose                                                                             |
 | ------------------ | ----------------------------------------------------------------------------------- |
-| `gm-view.html`     | Full GM control panel — add combatants, manage HP, apply conditions, advance turns  |
-| `player-view.html` | Read-only player display — shows the initiative order with live updates from the GM |
+| `gm-view.html`     | Full GM control panel - add combatants, manage HP, apply conditions, advance turns  |
+| `player-view.html` | Read-only player display - shows the initiative order with live updates from the GM |
 
 The player view is designed to be shown on a secondary display facing the table (it includes a **Flip Window** button to rotate 180° for across-the-table use).
 
@@ -30,9 +30,9 @@ The player view is designed to be shown on a secondary display facing the table 
 ### Setup
 
 1. Download `gm-view.html` and `player-view.html` from this repository
-2. Open `gm-view.html` in one browser tab — this is your GM screen
-3. Open `player-view.html` in a second browser tab or window — drag this to a secondary monitor or display facing your players
-4. That's it — no configuration required
+2. Open `gm-view.html` in one browser tab - this is your GM screen
+3. Open `player-view.html` in a second browser tab or window - drag this to a secondary monitor or display facing your players
+4. That's it - no configuration required
 
 > **Note:** The two files must be open in the same browser on the same device. They will not sync across different machines or browsers.
 
@@ -84,7 +84,7 @@ When a combatant's HP is reduced to 0 by damage, they are automatically marked a
 
 ### Conditions
 
-Click **+ condition** on any combatant card to open the condition picker. All standard SF2e conditions are listed. Clicking a valued condition (e.g. Frightened, Sickened) pre-fills the value field — adjust and press **Add** or **Enter** to apply.
+Click **+ condition** on any combatant card to open the condition picker. All standard SF2e conditions are listed. Clicking a valued condition (e.g. Frightened, Sickened) pre-fills the value field - adjust and press **Add** or **Enter** to apply.
 
 - **Bundled conditions** (e.g. Grabbed applies Off-Guard and Immobilised) are shown as attached rows beneath their parent pill
 - **Overridden conditions** (e.g. Blinded overriding Dazzled) are shown with strikethrough and can still be removed with ✖
@@ -104,8 +104,8 @@ Each combatant card has an eye icon button to toggle whether that combatant appe
 
 Use the **Encounter** section in the sidebar to:
 
-- **Save Encounter** — downloads a `.json` file of the full session state
-- **Load Encounter** — restores a previously saved `.json` file
+- **Save Encounter** - downloads a `.json` file of the full session state
+- **Load Encounter** - restores a previously saved `.json` file
 
 Session state is also **auto-saved** in the browser so refreshing the GM view restores your last session automatically.
 
@@ -157,6 +157,6 @@ This tool uses trademarks and/or copyrights owned by Paizo Inc., used under [Pai
 
 ## Technical Notes
 
-- **No dependencies** — everything is self-contained in the two HTML files. Fonts are loaded from Google Fonts (requires an internet connection on first load; they cache after that).
-- **Sync mechanism** — the GM view writes state to `localStorage` under the key `init_player_view` on every change. The player view listens for the `storage` event and re-renders immediately. This means both files must be open in the same browser on the same device.
-- **No build step** — the files can be edited directly in any text editor.
+- **No dependencies** - everything is self-contained in the two HTML files. Fonts are loaded from Google Fonts (requires an internet connection on first load; they cache after that).
+- **Sync mechanism** - the GM view writes state to `localStorage` under the key `init_player_view` on every change. The player view listens for the `storage` event and re-renders immediately. This means both files must be open in the same browser on the same device.
+- **No build step** - the files can be edited directly in any text editor.
