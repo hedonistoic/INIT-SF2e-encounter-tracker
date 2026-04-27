@@ -39,6 +39,7 @@ The player view is designed to be shown on a secondary display facing the table 
 ---
 
 ## GM View
+<img width="1503" height="1272" alt="image" src="https://github.com/user-attachments/assets/b536c747-687d-43fc-a86a-2b77bd09ae9a" />
 
 ### Adding Combatants
 
@@ -119,6 +120,7 @@ The GM view supports single-level undo. Every state-mutating action (adding/remo
 ---
 
 ## Player View
+<img width="1143" height="245" alt="image" src="https://github.com/user-attachments/assets/804d3680-6efd-44df-b839-11fe3f98dc91" />
 
 The player view updates automatically whenever the GM makes a change. It shows:
 
