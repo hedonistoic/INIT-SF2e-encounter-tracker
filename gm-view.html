@@ -898,6 +898,9 @@
         background: var(--bg);
         flex-wrap: wrap;
         align-items: flex-end;
+        position: sticky;
+        top: 56px;
+        z-index: 99;
       }
       .combat-active-controls {
         display: flex;
@@ -2513,6 +2516,18 @@
         render();
         toast("Sorted by initiative");
       }
+      function scrollToActive() {
+        const activeEl = document.querySelector(".combatant.active");
+        if (!activeEl) return;
+        const rect = activeEl.getBoundingClientRect();
+        const stickyTop = 56 + 60; // header + combat-controls
+        const inView =
+          rect.top >= stickyTop && rect.bottom <= window.innerHeight;
+        if (!inView) {
+          activeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+
       function startCombat() {
         if (!combatants.length) {
           toast("Add combatants first");
@@ -2561,6 +2576,7 @@
         activeIndex = next;
         log(`→ ${combatants[activeIndex].name}'s turn`, "log-turn");
         render();
+        setTimeout(scrollToActive, 50);
       }
 
       // TODO - stop this going
@@ -2592,6 +2608,7 @@
 
         activeIndex = prev;
         render();
+        setTimeout(scrollToActive, 50);
       }
 
       function addRound() {
