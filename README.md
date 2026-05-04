@@ -5,12 +5,13 @@ A self-contained, browser-based combat initiative tracker for **Starfinder 2e**.
 No server, no install, no accounts, just one HTML file.
 
 ## Contents
-- <a href="# Overview">Overview</a>
-- <a href="# Getting Started">Getting Started</a>
-- <a href="# GM View">GM View</a>
-- <a href="# Player View">Player View</a>
-- <a href="# Keyboard Shortcuts">Keyboard Shortcuts</a>
-- <a href="# Community Use Notice">Community Use Notice</a>
+
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+- [GM View](#gm-view)
+- [Player View](#player-view)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Community Use Notice](#community-use-notice)
 
 ---
 
@@ -47,6 +48,7 @@ The player view is designed to be shown on a secondary display facing the table 
 ---
 
 ## GM View
+
 <img width="1481" height="1259" alt="image" src="https://github.com/user-attachments/assets/54a576c7-f07f-4b3d-aff7-eb0725dc3a2c" />
 
 ### Adding Combatants
