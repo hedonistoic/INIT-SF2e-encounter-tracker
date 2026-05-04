@@ -81,7 +81,42 @@ Each combatant card with a Max HP set displays:
 | **HEAL** button                 | Heal using the amount field        |
 | **Escape** (while in amt field) | Clear the amount field             |
 
-When a combatant's HP is reduced to 0 by damage, they are automatically marked as **Defeated**.
+When a PC or Ally's HP is reduced to 0, the Dying mechanic triggers automatically (see below). Enemies are marked as **Defeated** directly.
+
+### Dying Mechanic (PC & Ally)
+
+When a PC or Ally reaches 0 HP, or when the GM clicks the **skull** button on their card, the dying mechanic activates:
+
+- HP is set to 0 and the **Dying** and **Unconscious** conditions are applied automatically
+- A `DYING [−] ○ ○ ○ ○ [+]` indicator appears above the CONDITIONS header, showing the current dying level as filled pills
+- The starting dying value is **1 + Wounded** (per SF2e rules)
+- **Doomed N** disables the last N circles, making death trigger sooner
+- If the starting dying value would immediately fill all active circles, the combatant dies instantly
+
+Use the **[−]** and **[+]** buttons to adjust the dying level each round:
+
+| Action                      | Result                                                                 |
+| --------------------------- | ---------------------------------------------------------------------- |
+| **[+]** fills all circles   | Combatant dies — card is marked defeated                               |
+| **[−]** reduces to 0        | Dying removed — Wounded incremented (or applied at 1 if not present)  |
+| Heal above 0 HP             | Dying and Unconscious removed — Wounded incremented automatically      |
+
+While a combatant is dying, the skull button is replaced by a **Heroic Recovery** button (heart icon). Clicking it removes the Dying condition without applying or incrementing Wounded — use this for out-of-rules narrative recoveries.
+
+### Restoring Defeated Combatants
+
+When any combatant (PC, Ally, or Enemy) is marked as defeated, the skull button is replaced by a **Restore** button (circular arrow icon). Clicking Restore clears the defeated state:
+
+- **PC / Ally**: defeated flag is cleared; HP and conditions remain as-is for the GM to manage
+- **Enemy**: HP is restored to the value it held at the moment they were marked defeated
+
+### Death-Warning Indicators
+
+When a PC or Ally's **Wounded** and **Doomed** conditions combine such that applying Dying would cause instant death (i.e. `1 + Wounded ≥ 4 − Doomed`), those condition pills are highlighted in **bold red** as a warning to the GM. The same warning appears on the player view.
+
+### Defeated Card Lockout
+
+When a combatant is defeated, all interactive controls on their card are disabled and dimmed, leaving only the **Restore** button and the **Remove** button active. This prevents accidental edits to a dead combatant's state.
 
 ### Conditions
 
@@ -95,7 +130,7 @@ Click **+ condition** on any combatant card to open the condition picker. All st
 
 ### Effects Summary
 
-When active conditions have stat modifiers (e.g. Off-Guard applies −2 AC), a compact **effects summary** bar appears beneath the HP block, listing each affected stat with its net modifier colour-coded green (bonus) or red (penalty). AC adjustments will automatically apply against the AC captured for that combatant
+When active conditions have stat modifiers (e.g. Off-Guard applies −2 AC), a compact **effects summary** bar appears beneath the HP block, listing each affected stat with its net modifier colour-coded green (bonus) or red (penalty). AC adjustments will automatically apply against the AC captured for that combatant.
 
 ### Visibility
 
@@ -117,6 +152,13 @@ The GM view supports single-level undo. Every state-mutating action (adding/remo
 - The **↩ Undo** button in the header
 - **Ctrl+Z** from anywhere on the page
 
+### Combat Log
+
+The combat log records all significant events during the encounter. Damage and healing entries use an arrow format to show the transition clearly:
+
+- **Damage**: `Troll took 15 damage (50 → 35/80)`
+- **Healing**: `Aldric healed 12 HP (18 → 30/80)`
+
 ---
 
 ## Player View
@@ -129,6 +171,8 @@ The player view updates automatically whenever the GM makes a change. It shows:
 - The **active combatant** is highlighted with an **▶ Active** marker
 - The view automatically scrolls to keep the active combatant in view
 - A round counter and **Live** / **Waiting** status indicator in the top-left corner
+
+When a PC or Ally is dying, a **pulsing skull icon** appears to the right of their name. The numeric dying value is intentionally hidden from players — only the GM sees the exact level. The **death-warning** highlight on Wounded and Doomed pills is visible on the player view so players can see the danger without GM intervention.
 
 ### Flip Window
 

@@ -212,9 +212,27 @@
         border-left: 3px solid var(--active-border);
         box-shadow: inset 4px 0 24px var(--active-glow);
       }
-      .combatant.hidden,
-      .combatant.defeated {
+      .combatant.hidden {
         opacity: 0.4;
+      }
+      /* Defeated: dim body/left-panel individually so action buttons can break out */
+      .combatant.defeated .left-panel,
+      .combatant.defeated .comb-body {
+        opacity: 0.4;
+        pointer-events: none;
+        user-select: none;
+      }
+      /* All action buttons on a defeated card are greyed-out & non-interactive … */
+      .combatant.defeated .comb-actions button:not(.restore-btn):not(.danger) {
+        opacity: 0.15;
+        pointer-events: none;
+        cursor: not-allowed;
+      }
+      /* … except Restore and Remove, which stay fully visible and clickable */
+      .combatant.defeated .comb-actions .restore-btn,
+      .combatant.defeated .comb-actions .danger {
+        opacity: 1 !important;
+        pointer-events: auto !important;
       }
       .combatant.defeated .comb-name {
         text-decoration: line-through;
@@ -1475,6 +1493,99 @@
           letter-spacing: 0.5px;
         }
       }
+
+      /* ── DYING MECHANIC (PC / Ally) ──────────────────────────────────────── */
+      .dying-circles-row {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 0 5px 0;
+      }
+      .dying-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: var(--red);
+        text-transform: uppercase;
+        margin-right: 2px;
+        flex-shrink: 0;
+      }
+      .dying-step-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1.5px solid var(--red);
+        background: transparent;
+        color: var(--red);
+        font-size: 14px;
+        line-height: 1;
+        cursor: pointer;
+        flex-shrink: 0;
+        padding: 0;
+        transition:
+          background 0.15s,
+          color 0.15s,
+          border-color 0.15s,
+          opacity 0.15s;
+      }
+      .dying-step-btn:hover:not(:disabled) {
+        background: rgba(196, 48, 48, 0.18);
+        border-color: var(--amber);
+        color: var(--amber);
+      }
+      .dying-step-btn:disabled {
+        opacity: 0.22;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .dying-circle {
+        width: 22px;
+        height: 13px;
+        border-radius: 7px;
+        border: 2px solid var(--red);
+        background: transparent;
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          opacity 0.15s;
+        flex-shrink: 0;
+      }
+      .dying-circle.filled {
+        background: var(--red);
+        border-color: var(--red);
+      }
+      .dying-circle.disabled {
+        border-color: var(--border);
+        opacity: 0.28;
+      }
+      /* Death-warning: Wounded/Doomed combo that causes instant death on Dying */
+      .cond-tag.death-warn {
+        border-color: var(--red) !important;
+        color: var(--red) !important;
+      }
+      .cond-tag.death-warn .cond-name,
+      .cond-tag.death-warn .cond-val {
+        color: var(--red) !important;
+        font-weight: 700;
+      }
+      /* Dying button: PC/Ally not yet in dying state */
+      .icon-btn.dying-btn:hover {
+        color: var(--amber);
+        border-color: rgba(232, 160, 32, 0.4);
+      }
+      /* Heroic Recovery button */
+      .icon-btn.heroic-btn:hover {
+        color: var(--green);
+        border-color: rgba(122, 184, 0, 0.4);
+      }
+      /* Restore from dead button (PC/Ally) */
+      .icon-btn.restore-btn:hover {
+        color: var(--pc-col);
+        border-color: rgba(64, 128, 208, 0.4);
+      }
     </style>
   </head>
   <body>
@@ -1826,7 +1937,7 @@
         </div>
         <div class="sidebar-section">
           <div class="sidebar-title"></div>
-          <div class="sidebar-text" style="text-align: right">Ver.20260428</div>
+          <div class="sidebar-text" style="text-align: right">Ver.20260504</div>
         </div>
       </div>
     </main>
@@ -2106,7 +2217,9 @@
           valued: true,
           description: `You're bleeding out or otherwise at death's door. While you have this condition, you're unconscious. Dying always includes a value, and if it ever reaches dying 4, you die. When you're dying, you must attempt a recovery check at the start of your turn each round to determine whether you get better or worse. Your dying condition increases by 1 if you take damage while dying, or by 2 if you take damage from an enemy's critical hit or a critical failure on your save.
 
-              If you lose the dying condition by succeeding at a recovery check and are still at 0 Hit Points, you remain unconscious, but you can wake up as described in that condition. You lose the dying condition automatically and wake up if you ever have 1 Hit Point or more. Any time you lose the dying condition, you gain the wounded 1 condition, or increase your wounded condition value by 1 if you already have that condition.`,
+              If you lose the dying condition by succeeding at a recovery check and are still at 0 Hit Points, you remain unconscious, but you can wake up as described in that condition. You lose the dying condition automatically and wake up if you ever have 1 Hit Point or more. Any time you lose the dying condition, you gain the wounded 1 condition, or increase your wounded condition value by 1 if you already have that condition.
+              
+              <a href="https://2e.aonsrd.com/rules/373-dying" target="_blank" style="color: var(--hyperlink);">Dying additional rules</a>`,
         },
         {
           name: "Encumbered",
@@ -2220,7 +2333,7 @@
               After you take persistent damage, roll a DC 15 flat check to see if you recover from the persistent damage. If you succeed, the condition ends.
               Persistent damage runs its course and automatically ends after a certain amount of time as fire burns out, blood clots, and the like. The GM determines when this occurs, but it usually takes 1 minute.
 
-              <a href="https://2e.aonsrd.com/conditions/30-persistent-damage" target="_blank" style="color: var(--hyperlink);">Persistent Damage additional rules</a>.`,
+              <a href="https://2e.aonsrd.com/conditions/30-persistent-damage" target="_blank" style="color: var(--hyperlink);">Persistent Damage additional rules</a>`,
         },
         {
           name: "Petrified",
@@ -2697,16 +2810,68 @@
         c.hp = Math.max(0, Math.min(c.maxHp || 9999, c.hp + sign * amt));
         const diff = Math.abs(c.hp - old);
         if (sign < 0)
-          log(`${c.name} took ${diff} damage (${c.hp}/${c.maxHp})`, "log-dmg");
-        else
-          log(`${c.name} healed ${diff} HP (${c.hp}/${c.maxHp})`, "log-heal");
+          log(`${c.name} took ${diff} DMG (${old} → ${c.hp})`, "log-dmg");
+        else log(`${c.name} healed ${diff} HP (${old} → ${c.hp})`, "log-heal");
+
+        // ── Damage to 0 HP ──────────────────────────────────────────────────
         if (c.hp === 0 && c.maxHp > 0 && sign < 0) {
-          log(`${c.name} dropped to 0 HP!`, "log-dmg");
           if (!c.defeated) {
-            c.defeated = true;
-            log(`${c.name} defeated`, "log-dmg");
+            if (c.type === "pc" || c.type === "ally") {
+              _applyDying(c);
+            } else {
+              c.defeated = true;
+              log(`${c.name} defeated`, "log-dmg");
+            }
           }
         }
+
+        // ── Heal from 0 HP (PC/Ally): remove Dying & Unconscious ────────────
+        if (
+          sign > 0 &&
+          old === 0 &&
+          c.hp > 0 &&
+          (c.type === "pc" || c.type === "ally")
+        ) {
+          const dyingCond = c.conditions.find(
+            (x) => x.bundledUnder == null && x.name === "Dying",
+          );
+          if (dyingCond) {
+            _removeConditionById(c, dyingCond.cid);
+            const woundedCond = c.conditions.find(
+              (x) => x.bundledUnder == null && x.name === "Wounded",
+            );
+            if (woundedCond) {
+              woundedCond.value = (woundedCond.value || 1) + 1;
+              log(
+                `${c.name}: healed — Dying removed, Wounded ↑ ${woundedCond.value}`,
+                "log-cond",
+              );
+            } else {
+              c.conditions.push({
+                cid: newCondId(),
+                name: "Wounded",
+                value: 1,
+                bundledUnder: null,
+                overriddenBy: null,
+              });
+              log(
+                `${c.name}: healed — Dying removed, Wounded 1 applied`,
+                "log-cond",
+              );
+            }
+          }
+          const uncCond = c.conditions.find(
+            (x) => x.bundledUnder == null && x.name === "Unconscious",
+          );
+          if (uncCond) {
+            _removeConditionById(c, uncCond.cid);
+            log(
+              `${c.name}: Unconscious removed (healed above 0 HP)`,
+              "log-cond",
+            );
+          }
+        }
+
         if (inputEl) inputEl.value = "";
         renderSingle(c.id);
         updateStats();
@@ -2727,7 +2892,26 @@
         if (!c) return;
         saveSnapshot();
         c.defeated = !c.defeated;
-        c.hp = c.defeated ? 0 : c.maxHp;
+        if (c.type === "pc" || c.type === "ally") {
+          // PC/Ally: zero HP on defeat; HP managed separately on restore
+          c.hp = c.defeated ? 0 : c.maxHp;
+          // Restoring a dead PC/Ally: clear any lingering Dying condition
+          if (!c.defeated) {
+            const dyingCond = c.conditions.find(
+              (x) => x.bundledUnder == null && x.name === "Dying",
+            );
+            if (dyingCond) _removeConditionById(c, dyingCond.cid);
+          }
+        } else {
+          // Enemy: stash HP before zeroing so Restore can return to prior value
+          if (c.defeated) {
+            c.preDefeatHp = c.hp;
+            c.hp = 0;
+          } else {
+            c.hp = c.preDefeatHp ?? c.hp;
+            delete c.preDefeatHp;
+          }
+        }
         log(
           `${c.name} ${c.defeated ? "defeated" : "restored"}`,
           c.defeated ? "log-dmg" : "log-heal",
@@ -2735,6 +2919,236 @@
         renderSingle(id);
         updateStats();
         scheduleAutosave();
+      }
+      // ── DYING MECHANIC — helpers & actions (PC / Ally) ───────────────────
+
+      function getConditionValue(c, name) {
+        const cond = c.conditions.find(
+          (x) => x.bundledUnder == null && x.name === name,
+        );
+        return cond ? cond.value || 0 : 0;
+      }
+
+      // Remove a condition and all its bundled children by cid.
+      // Does NOT call saveSnapshot — caller is responsible.
+      function _removeConditionById(c, cid) {
+        const toRemove = new Set([cid]);
+        c.conditions.forEach((x) => {
+          if (x.bundledUnder === cid) toRemove.add(x.cid);
+        });
+        c.conditions = c.conditions.filter((x) => !toRemove.has(x.cid));
+      }
+
+      // Internal: apply the dying state to c in-place.
+      // Caller must call saveSnapshot() first, then renderSingle + updateStats + autosave.
+      function _applyDying(c) {
+        const isPlayerType = c.type === "pc" || c.type === "ally";
+        if (!isPlayerType) return;
+        // Already dying — don't double-apply
+        if (
+          c.conditions.some((x) => x.bundledUnder == null && x.name === "Dying")
+        )
+          return;
+
+        if (c.maxHp > 0) c.hp = 0;
+
+        const woundedVal = getConditionValue(c, "Wounded");
+        const doomedVal = getConditionValue(c, "Doomed");
+        const activeCircles = Math.max(0, 4 - doomedVal);
+        const initialDying = 1 + woundedVal;
+
+        // Instant death: all active circles would be filled immediately
+        if (activeCircles <= 0 || initialDying >= activeCircles) {
+          c.defeated = true;
+          log(`${c.name} died instantly!`, "log-dmg");
+          toast(`${c.name} died instantly!`);
+          return;
+        }
+
+        // Add Dying condition
+        c.conditions.push({
+          cid: newCondId(),
+          name: "Dying",
+          value: initialDying,
+          bundledUnder: null,
+          overriddenBy: null,
+        });
+
+        // Add Unconscious (and its bundled conditions) if not already present
+        if (
+          !c.conditions.some(
+            (x) => x.bundledUnder == null && x.name === "Unconscious",
+          )
+        ) {
+          const uncCid = newCondId();
+          c.conditions.push({
+            cid: uncCid,
+            name: "Unconscious",
+            value: null,
+            bundledUnder: null,
+            overriddenBy: null,
+          });
+          const uncDef = CONDITIONS_SF2.find((x) => x.name === "Unconscious");
+          if (uncDef?.includes) {
+            for (const inclStr of uncDef.includes) {
+              const parsed = parseIncludedCond(inclStr);
+              c.conditions.push({
+                cid: newCondId(),
+                name: parsed.name,
+                value: parsed.value,
+                bundledUnder: uncCid,
+                overriddenBy: null,
+              });
+            }
+          }
+        }
+
+        log(
+          `${c.name} is dying! (${initialDying}/${activeCircles})`,
+          "log-dmg",
+        );
+        toast(`${c.name} is dying!`);
+      }
+
+      // Public: GM manually marks a PC/Ally as Dying via the button.
+      function markAsDying(id) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c || (c.type !== "pc" && c.type !== "ally")) return;
+        if (
+          c.conditions.some((x) => x.bundledUnder == null && x.name === "Dying")
+        )
+          return;
+        saveSnapshot();
+        _applyDying(c);
+        renderSingle(c.id);
+        updateStats();
+        scheduleAutosave();
+        broadcastState();
+      }
+
+      // Remove Dying without applying Wounded (Heroic Recovery action).
+      // Unconscious is NOT removed — the PC is still at 0 HP and unconscious.
+      function stepDying(id, delta) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c) return;
+        const dyingCond = c.conditions.find(
+          (x) => x.bundledUnder == null && x.name === "Dying",
+        );
+        if (!dyingCond) return;
+        const doomedVal = getConditionValue(c, "Doomed");
+        const activeCircles = Math.max(0, 4 - doomedVal);
+        const currentVal = dyingCond.value || 0;
+        const newVal = currentVal + delta;
+        // delegate to unified circle logic
+        if (delta > 0) {
+          // increase: clamp to activeCircles
+          const target = Math.min(newVal, activeCircles);
+          if (target === currentVal) return;
+          toggleDyingCircle(id, target);
+        } else {
+          // decrease: clicking currentVal unfills it (sets value to currentVal-1)
+          if (currentVal <= 0) return;
+          toggleDyingCircle(id, currentVal);
+        }
+      }
+
+      function heroicRecovery(id) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c) return;
+        const dyingCond = c.conditions.find(
+          (x) => x.bundledUnder == null && x.name === "Dying",
+        );
+        if (!dyingCond) return;
+        saveSnapshot();
+        _removeConditionById(c, dyingCond.cid);
+        log(
+          `${c.name}: Heroic Recovery — Dying removed (Wounded unchanged)`,
+          "log-heal",
+        );
+        toast(`${c.name}: Heroic Recovery!`);
+        renderSingle(c.id);
+        updateStats();
+        scheduleAutosave();
+        broadcastState();
+      }
+
+      // Restore a dead PC/Ally: clears defeated flag only.
+      // HP and conditions are left exactly as they are.
+      function restoreFromDead(id) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c || !c.defeated) return;
+        saveSnapshot();
+        c.defeated = false;
+        log(`${c.name} restored`, "log-heal");
+        renderSingle(c.id);
+        updateStats();
+        scheduleAutosave();
+        broadcastState();
+      }
+
+      // Toggle a dying circle (1-based index). Handles ordered fill/unfill,
+      // Wounded application on full-uncheck, and death on last active circle.
+      function toggleDyingCircle(id, circleIndex) {
+        const c = combatants.find((x) => x.id === id);
+        if (!c) return;
+        const dyingCond = c.conditions.find(
+          (x) => x.bundledUnder == null && x.name === "Dying",
+        );
+        if (!dyingCond) return;
+
+        const doomedVal = getConditionValue(c, "Doomed");
+        const activeCircles = Math.max(0, 4 - doomedVal);
+        if (circleIndex > activeCircles) return;
+
+        saveSnapshot();
+        const currentVal = dyingCond.value || 0;
+
+        if (circleIndex <= currentVal) {
+          // ── Uncheck: set dying to circleIndex - 1 (clears this + all above) ─
+          const newVal = circleIndex - 1;
+          if (newVal <= 0) {
+            // All circles unchecked — remove Dying and apply Wounded
+            _removeConditionById(c, dyingCond.cid);
+            const woundedCond = c.conditions.find(
+              (x) => x.bundledUnder == null && x.name === "Wounded",
+            );
+            if (woundedCond) {
+              woundedCond.value = (woundedCond.value || 1) + 1;
+              log(
+                `${c.name}: no longer dying — Wounded ↑ ${woundedCond.value}`,
+                "log-cond",
+              );
+            } else {
+              c.conditions.push({
+                cid: newCondId(),
+                name: "Wounded",
+                value: 1,
+                bundledUnder: null,
+                overriddenBy: null,
+              });
+              log(`${c.name}: no longer dying — Wounded 1 applied`, "log-cond");
+            }
+          } else {
+            dyingCond.value = newVal;
+            log(`${c.name}: Dying ↓ ${newVal}`, "log-cond");
+          }
+        } else {
+          // ── Check: fill up to circleIndex ──────────────────────────────────
+          const newVal = circleIndex;
+          dyingCond.value = newVal;
+          if (newVal >= activeCircles) {
+            c.defeated = true;
+            log(`${c.name} has died!`, "log-dmg");
+            toast(`${c.name} has died!`);
+          } else {
+            log(`${c.name}: Dying ↑ ${newVal}`, "log-cond");
+          }
+        }
+
+        renderSingle(c.id);
+        updateStats();
+        scheduleAutosave();
+        broadcastState();
       }
 
       function setVisibility(id, visible) {
@@ -3196,23 +3610,45 @@
       // Groups flow left-to-right inside cond-tags-wrap.
       function buildConditionsHTML(c) {
         const mains = c.conditions.filter((x) => x.bundledUnder == null);
+        // ── Death-warning: highlight Wounded/Doomed when combo = instant death ─
+        const isPlayerType =
+          (c.type === "pc" || c.type === "ally") && !c.defeated;
+        let deathWarnNames = new Set();
+        if (isPlayerType) {
+          const woundedVal = getConditionValue(c, "Wounded");
+          const doomedVal = getConditionValue(c, "Doomed");
+          const initialDying = 1 + woundedVal;
+          const activeCircles = Math.max(0, 4 - doomedVal);
+          if (initialDying >= activeCircles) {
+            if (woundedVal > 0) deathWarnNames.add("Wounded");
+            if (doomedVal > 0) deathWarnNames.add("Doomed");
+          }
+        }
         let html = '<div class="cond-tags-wrap">';
         for (const cond of mains) {
           const isOverridden = !!cond.overriddenBy;
+          const isDeathWarn = deathWarnNames.has(cond.name);
           const overTitle = isOverridden
             ? ` title="Overridden by ${escAttr(cond.overriddenBy)}"`
-            : ` title="Click for description"`;
+            : isDeathWarn
+              ? ` title="⚠ These conditions will cause instant death if Dying is applied"`
+              : ` title="Click for description"`;
           html += `<div class="cond-group">`;
-          html += `<span class="cond-tag${isOverridden ? " overridden" : ""}"${overTitle} onclick="showCondDesc('${escAttr(cond.name)}')">`;
+          html += `<span class="cond-tag${isOverridden ? " overridden" : ""}${isDeathWarn ? " death-warn" : ""}"${overTitle} onclick="showCondDesc('${escAttr(cond.name)}')">`;
           html += `<span class="cond-name">${escHtml(cond.name)}</span>`;
           if (cond.value != null) {
-            html += `<span class="cond-val"> ${escHtml(String(cond.value))}</span>`;
-            const condDef = CONDITIONS_SF2.find((x) => x.name === cond.name);
-            if (!isOverridden && !condDef?.textValued) {
-              html += `<span class="cond-stepper">`;
-              html += `<button class="cond-step-btn" onclick="event.stopPropagation();adjustCondValue(${c.id},${cond.cid},-1)" title="Decrease value (removes at 0)">−</button>`;
-              html += `<button class="cond-step-btn" onclick="event.stopPropagation();adjustCondValue(${c.id},${cond.cid},1)" title="Increase value">+</button>`;
-              html += `</span>`;
+            // For PC/Ally the Dying value is shown via the circles row, not inline
+            const isPCDying =
+              (c.type === "pc" || c.type === "ally") && cond.name === "Dying";
+            if (!isPCDying) {
+              html += `<span class="cond-val"> ${escHtml(String(cond.value))}</span>`;
+              const condDef = CONDITIONS_SF2.find((x) => x.name === cond.name);
+              if (!isOverridden && !condDef?.textValued) {
+                html += `<span class="cond-stepper">`;
+                html += `<button class="cond-step-btn" onclick="event.stopPropagation();adjustCondValue(${c.id},${cond.cid},-1)" title="Decrease value (removes at 0)">−</button>`;
+                html += `<button class="cond-step-btn" onclick="event.stopPropagation();adjustCondValue(${c.id},${cond.cid},1)" title="Increase value">+</button>`;
+                html += `</span>`;
+              }
             }
           }
           if (isOverridden) {
@@ -3316,6 +3752,63 @@
 
         const statSummaryHTML = buildStatSummaryHTML(c);
 
+        // ── Dying circles (PC / Ally) ─────────────────────────────────────────
+        const isPlayerType = c.type === "pc" || c.type === "ally";
+        const dyingCond = isPlayerType
+          ? c.conditions.find(
+              (x) => x.bundledUnder == null && x.name === "Dying",
+            )
+          : null;
+
+        let dyingCirclesHTML = "";
+        if (dyingCond) {
+          const dyingVal = dyingCond.value || 0;
+          const doomedVal = getConditionValue(c, "Doomed");
+          const activeCircles = Math.max(0, 4 - doomedVal);
+          const canDecrease = dyingVal > 0;
+          const canIncrease = dyingVal < activeCircles;
+          dyingCirclesHTML = '<div class="dying-circles-row">';
+          dyingCirclesHTML += '<span class="dying-label">Dying</span>';
+          dyingCirclesHTML += `<button class="dying-step-btn" title="Decrease dying" ${canDecrease ? `onclick="event.stopPropagation();stepDying(${c.id},-1)"` : "disabled"}>&#8722;</button>`;
+          for (let i = 1; i <= 4; i++) {
+            const filled = i <= dyingVal;
+            const disabled = i > activeCircles;
+            const cls =
+              "dying-circle" +
+              (filled ? " filled" : "") +
+              (disabled ? " disabled" : "");
+            dyingCirclesHTML += `<div class="${cls}" title="Dying ${i}"></div>`;
+          }
+          dyingCirclesHTML += `<button class="dying-step-btn" title="Increase dying" ${canIncrease ? `onclick="event.stopPropagation();stepDying(${c.id},1)"` : "disabled"}>&#43;</button>`;
+          dyingCirclesHTML += "</div>";
+        }
+
+        // ── Defeat / Dying / Heroic-Recovery action button ────────────────────
+        const _skullSVG = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 512 512" style="color: inherit;"><path fill="currentColor" d="M255.997 16.004c-120 0-239.997 60-239.997 149.998C16 226.002 61 256 61 316c0 45-15 45-15 75c0 14.998 48.01 32.002 89.998 44.998v60h239.997v-60s90.567-27.957 90-45c-.933-27.947-15-30-15-74.998c0-30 45.642-91.42 44.998-149.998c0-90-119.998-149.998-239.996-149.998m-90 179.997c33.137 0 60 26.864 60 60s-26.863 60-60 60C132.863 316 106 289.136 106 256s26.862-60 59.998-60zm179.998 0c33.136 0 60 26.864 60 60s-26.864 60-60 60s-60-26.864-60-60s26.864-60 60-60m-89.998 105c15 0 45 60 45 75c0 29.998 0 29.998-15 29.998h-60c-15 0-15 0-15-30c0-15 30-74.998 45-74.998"></path></svg>`;
+        const _heartSVG = `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: inherit;"><path fill="currentColor" d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.209 4.068 1.809 6.281 1.809c1.312 0 4.151.501 5.719 4.457c1.59-3.968 4.464-4.447 5.726-4.447c2.54 0 5.274 1.621 5.274 5.181c0 4.069-5.136 8.625-11 14.402"/></svg>`;
+
+        let defeatOrDyingBtn;
+        if (isPlayerType) {
+          if (c.defeated) {
+            // Deceased: show Restore button — checked first so a dying condition
+            // that caused death doesn't hijack the button to Heroic Recovery
+            defeatOrDyingBtn = `<button class="icon-btn restore-btn" onclick="restoreFromDead(${c.id})" title="Restore (clear defeated state)"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: inherit;"><path fill="currentColor" d="M12 4V1L8 5l4 4V6a6 6 0 0 1 6 6a6 6 0 0 1-6 6a6 6 0 0 1-6-6H4a8 8 0 0 0 8 8a8 8 0 0 0 8-8a8 8 0 0 0-8-8"/></svg></button>`;
+          } else if (dyingCond) {
+            // Currently dying (not dead): show Heroic Recovery button
+            defeatOrDyingBtn = `<button class="icon-btn heroic-btn" onclick="heroicRecovery(${c.id})" title="Heroic Recovery (remove Dying, no Wounded)">${_heartSVG}</button>`;
+          } else {
+            // Alive and not dying: show Dying button
+            defeatOrDyingBtn = `<button class="icon-btn dying-btn" onclick="markAsDying(${c.id})" title="Mark as Dying">${_skullSVG}</button>`;
+          }
+        } else {
+          // Enemy / non-player: Restore when defeated, skull when alive
+          if (c.defeated) {
+            defeatOrDyingBtn = `<button class="icon-btn restore-btn" onclick="toggleDefeated(${c.id})" title="Restore"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: inherit;"><path fill="currentColor" d="M12 4V1L8 5l4 4V6a6 6 0 0 1 6 6a6 6 0 0 1-6 6a6 6 0 0 1-6-6H4a8 8 0 0 0 8 8a8 8 0 0 0 8-8a8 8 0 0 0-8-8"/></svg></button>`;
+          } else {
+            defeatOrDyingBtn = `<button class="icon-btn defeat-btn" onclick="toggleDefeated(${c.id})" title="Mark Defeated">${_skullSVG}</button>`;
+          }
+        }
+
         return `
       <div class="combatant${isActive ? " active" : ""}${c.defeated ? " defeated" : ""}${!c.visibleToPlayers ? " hidden" : ""}${isEditing ? " editing" : ""}" id="comb-${c.id}" data-id="${c.id}" style="${isEditing ? "flex-wrap:wrap;display:grid;grid-template-columns:44px 1fr auto;" : ""}">
         <div class="left-panel">
@@ -3383,6 +3876,7 @@
 
             <!-- Conditions column — always starts at the same horizontal position -->
             <div class="cond-col">
+              ${dyingCirclesHTML}
               <div class="cond-col-header">
                 <span class="cond-col-label">CONDITIONS</span>
                 <button class="add-cond-btn" onclick="openCondModal(${c.id})">+ condition</button>
@@ -3403,9 +3897,7 @@
           <button class="icon-btn edit-btn${isEditing ? " active" : ""}" onclick="toggleEdit(${c.id})" title="Edit stats" style="${isEditing ? "color:#80b0e8;border-color:rgba(64,128,208,0.5)" : ""}">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 20 20" style="color:inherit;"><path fill="currentColor" d="m16.77 8l1.94-2a1 1 0 0 0 0-1.41l-3.34-3.3a1 1 0 0 0-1.41 0L12 3.23zM1 14.25V19h4.75l9.96-9.96l-4.75-4.75z"></path></svg>
             </button>
-          <button class="icon-btn defeat-btn" onclick="toggleDefeated(${c.id})" title="${c.defeated ? "Restore" : "Mark Defeated"}">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 512 512" style="color: inherit;"><path fill="currentColor" d="M255.997 16.004c-120 0-239.997 60-239.997 149.998C16 226.002 61 256 61 316c0 45-15 45-15 75c0 14.998 48.01 32.002 89.998 44.998v60h239.997v-60s90.567-27.957 90-45c-.933-27.947-15-30-15-74.998c0-30 45.642-91.42 44.998-149.998c0-90-119.998-149.998-239.996-149.998m-90 179.997c33.137 0 60 26.864 60 60s-26.863 60-60 60C132.863 316 106 289.136 106 256s26.862-60 59.998-60zm179.998 0c33.136 0 60 26.864 60 60s-26.864 60-60 60s-60-26.864-60-60s26.864-60 60-60m-89.998 105c15 0 45 60 45 75c0 29.998 0 29.998-15 29.998h-60c-15 0-15 0-15-30c0-15 30-74.998 45-74.998"></path></svg>
-            </button>
+          ${defeatOrDyingBtn}
           <button class="icon-btn danger" onclick="removeCombatant(${c.id})" title="Remove">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: inherit;"><path fill="currentColor" d="M22.66 5.58a1.5 1.5 0 0 0 0-2.12l-2.12-2.12a1.49 1.49 0 0 0-2.12 0l-6.24 6.24a.27.27 0 0 1-.36 0L5.58 1.34a1.49 1.49 0 0 0-2.12 0L1.34 3.46a1.5 1.5 0 0 0 0 2.12l6.24 6.24a.25.25 0 0 1 0 .36l-6.24 6.24a1.5 1.5 0 0 0 0 2.12l2.12 2.12a1.49 1.49 0 0 0 2.12 0l6.24-6.24a.27.27 0 0 1 .36 0l6.24 6.24a1.47 1.47 0 0 0 1.06.44a1.45 1.45 0 0 0 1.06-.44l2.12-2.12a1.5 1.5 0 0 0 0-2.12l-6.24-6.24a.25.25 0 0 1 0-.36Z"></path></svg>
             </button>

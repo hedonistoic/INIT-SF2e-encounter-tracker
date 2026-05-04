@@ -26,7 +26,7 @@
         --border2: #3a3e50;
         --text: #c8ccd8;
         --muted: #5a5f72;
-        --primary: rgb(130, 0, 253);
+        --primary: rgb(149 36 255);
         --muted-primary: rgba(130, 0, 253, 0.5);
         --amber: #e8a020;
         --green: #7ab800;
@@ -235,14 +235,39 @@
       } */
 
       /* Name */
+      .card-name-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding-left: 8px;
+      }
       .card-name {
         font-size: 17px;
         font-weight: 600;
         color: #e8eaf0;
         letter-spacing: 0.3px;
         line-height: 1.2;
-        padding-left: 8px;
         word-break: break-word;
+      }
+      .dying-skull {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        color: var(--red);
+        opacity: 0.9;
+        animation: skull-pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes skull-pulse {
+        0%,
+        100% {
+          opacity: 0.9;
+        }
+        50% {
+          opacity: 0.45;
+        }
+      }
+      .dying-skull svg {
+        display: block;
       }
       .card.type-pc .card-name {
         color: var(--pc-col);
@@ -319,6 +344,22 @@
         opacity: 0.3;
         text-decoration: line-through;
       }
+      /* Death-warning: Wounded/Doomed that cause instant death if Dying applied */
+      .cond-chip.death-warn {
+        border-color: var(--red) !important;
+        color: var(--red) !important;
+        font-weight: 700;
+      }
+      .cond-chip.death-warn .cval {
+        color: var(--red) !important;
+      }
+      .cond-chip.death-warn::before {
+        content: "⚠ ";
+        font-size: 9px;
+        vertical-align: middle;
+        opacity: 0.85;
+      }
+
       .bundled-arrow {
         color: var(--muted);
         font-size: 9px;
@@ -559,16 +600,39 @@
         const col = c.maxHp > 0 ? hpColor(hpPct) : "#5a5f72";
 
         // Build grouped condition HTML matching GM view structure (read-only)
+        const isPlayerType =
+          (c.type === "pc" || c.type === "ally") && !c.defeated;
+        // Death-warning: Wounded/Doomed that would cause instant death if Dying applied
+        const deathWarnNames = new Set();
+        if (isPlayerType) {
+          const getVal = (name) => {
+            const cx = c.conditions.find(
+              (x) => x.bundledUnder == null && x.name === name,
+            );
+            return cx ? cx.value || 0 : 0;
+          };
+          const woundedVal = getVal("Wounded");
+          const doomedVal = getVal("Doomed");
+          const initialDying = 1 + woundedVal;
+          const activeCircles = Math.max(0, 4 - doomedVal);
+          if (initialDying >= activeCircles) {
+            if (woundedVal > 0) deathWarnNames.add("Wounded");
+            if (doomedVal > 0) deathWarnNames.add("Doomed");
+          }
+        }
         function buildCondChips(conditions) {
           const mains = conditions.filter((x) => x.bundledUnder == null);
           if (!mains.length) return "";
           let html = '<div class="cond-tags-wrap">';
           for (const cond of mains) {
             const isOverridden = !!cond.overriddenBy;
+            const isDeathWarn = deathWarnNames.has(cond.name);
+            // For PC/Ally, hide the Dying value — it's shown via the skull icon instead
+            const isPCDying = isPlayerType && cond.name === "Dying";
             html += `<div class="cond-group">`;
-            html += `<span class="cond-chip${isOverridden ? " overridden" : ""}">`;
+            html += `<span class="cond-chip${isOverridden ? " overridden" : ""}${isDeathWarn ? " death-warn" : ""}">`;
             html += escHtml(cond.name);
-            if (cond.value != null)
+            if (cond.value != null && !isPCDying)
               html += `<span class="cval"> ${escHtml(String(cond.value))}</span>`;
             if (isOverridden)
               html += `<span class="overridden-icon" title="Overridden by ${escHtml(cond.overriddenBy)}"></span>`;
@@ -611,7 +675,10 @@
   <div class="card type-${c.type}${isActive ? " active" : ""}${c.defeated ? " defeated" : ""}" style="${glowStyle}">
     <div class="active-marker">▶ Active</div>
     <div class="init-num">${c.initiative}</div>
-    <div class="card-name">${escHtml(c.name)}</div>
+    <div class="card-name-row">
+      <span class="card-name">${escHtml(c.name)}</span>
+      ${isPlayerType && c.conditions.some((x) => x.bundledUnder == null && x.name === "Dying") ? `<span class="dying-skull" title="Dying"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 512"><path fill="currentColor" d="M255.997 16.004c-120 0-239.997 60-239.997 149.998C16 226.002 61 256 61 316c0 45-15 45-15 75c0 14.998 48.01 32.002 89.998 44.998v60h239.997v-60s90.567-27.957 90-45c-.933-27.947-15-30-15-74.998c0-30 45.642-91.42 44.998-149.998c0-90-119.998-149.998-239.996-149.998m-90 179.997c33.137 0 60 26.864 60 60s-26.863 60-60 60C132.863 316 106 289.136 106 256s26.862-60 59.998-60zm179.998 0c33.136 0 60 26.864 60 60s-26.864 60-60 60s-60-26.864-60-60s26.864-60 60-60m-89.998 105c15 0 45 60 45 75c0 29.998 0 29.998-15 29.998h-60c-15 0-15 0-15-30c0-15 30-74.998 45-74.998"/></svg></span>` : ""}
+    </div>
     ${statSummaryHTML}
     ${condHTML}
   </div>`;
