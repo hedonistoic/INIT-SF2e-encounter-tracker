@@ -39,7 +39,8 @@ The player view is designed to be shown on a secondary display facing the table 
 ---
 
 ## GM View
-<img width="1503" height="1272" alt="image" src="https://github.com/user-attachments/assets/b536c747-687d-43fc-a86a-2b77bd09ae9a" />
+<img width="1705" height="1266" alt="image" src="https://github.com/user-attachments/assets/2938ae7e-b561-4715-a92d-fb17a4b77193" />
+
 
 ### Adding Combatants
 
@@ -162,7 +163,8 @@ The combat log records all significant events during the encounter. Damage and h
 ---
 
 ## Player View
-<img width="1143" height="245" alt="image" src="https://github.com/user-attachments/assets/804d3680-6efd-44df-b839-11fe3f98dc91" />
+<img width="1050" height="466" alt="image" src="https://github.com/user-attachments/assets/c4d63a1a-969d-4037-b3bd-ca68d36fdada" />
+
 
 The player view updates automatically whenever the GM makes a change. It shows:
 
