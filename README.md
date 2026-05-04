@@ -2,20 +2,20 @@
 
 A self-contained, browser-based combat initiative tracker for **Starfinder 2e**.
 
-No server, no install, no accounts, just two HTML files.
+No server, no install, no accounts, just one HTML file.
 
 ---
 
 ## Overview
 
-The tracker is split into two views that sync in real time via the browser's `localStorage`:
+The tracker is a single file (`init-tracker.html`) that contains both the GM control panel and the player view. The player view opens as a popup window directly from the GM interface, with both windows staying in sync via the browser's `localStorage`.
 
-| File               | Purpose                                                                             |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| `gm-view.html`     | Full GM control panel - add combatants, manage HP, apply conditions, advance turns  |
-| `player-view.html` | Read-only player display - shows the initiative order with live updates from the GM |
+| View        | How to access                                                          |
+| ----------- | ---------------------------------------------------------------------- |
+| GM view     | Open `init-tracker.html` in your browser                               |
+| Player view | Click the **⧉ Player View** button in the GM header to open as a popup |
 
-The player view is designed to be shown on a secondary display facing the table (it includes a **Flip Window** button to rotate 180° for across-the-table use).
+The player view is designed to be shown on a secondary display facing the table (it includes a **Flip** button to rotate 180° for across-the-table use).
 
 ---
 
@@ -23,24 +23,24 @@ The player view is designed to be shown on a secondary display facing the table 
 
 ### Requirements
 
-- Any modern browser (Chrome, Firefox, Edge, Safari)
-- Both files must be open **in the same browser** on the same machine (they communicate via `localStorage`)
+- Any modern browser (Chrome, Firefox, Edge, Brave, Safari)
 - I use it with Obsidian using plug-ins like Surfing & Second Window
 
 ### Setup
 
-1. Download `gm-view.html` and `player-view.html` from this repository
-2. Open `gm-view.html` in one browser tab - this is your GM screen
-3. Open `player-view.html` in a second browser tab or window - drag this to a secondary monitor or display facing your players
-4. That's it - no configuration required
+1. Download `init-tracker.html` from this repository
+2. Open `init-tracker.html` in your browser — this is your GM screen
+3. Click **⧉ Player View** in the header to open the player view as a popup
+4. Drag the popup to a secondary monitor or display facing your players
+5. That's it — no configuration required
 
-> **Note:** The two files must be open in the same browser on the same device. They will not sync across different machines or browsers.
+> **Note:** If the popup is blocked, allow popups for the file in your browser settings. Both windows must be open in the same browser on the same device for sync to work.
 
 ---
 
 ## GM View
-<img width="1705" height="1266" alt="image" src="https://github.com/user-attachments/assets/2938ae7e-b561-4715-a92d-fb17a4b77193" />
 
+<img width="1705" height="1266" alt="image" src="https://github.com/user-attachments/assets/2938ae7e-b561-4715-a92d-fb17a4b77193" />
 
 ### Adding Combatants
 
@@ -96,11 +96,11 @@ When a PC or Ally reaches 0 HP, or when the GM clicks the **skull** button on th
 
 Use the **[−]** and **[+]** buttons to adjust the dying level each round:
 
-| Action                      | Result                                                                 |
-| --------------------------- | ---------------------------------------------------------------------- |
-| **[+]** fills all circles   | Combatant dies — card is marked defeated                               |
-| **[−]** reduces to 0        | Dying removed — Wounded incremented (or applied at 1 if not present)  |
-| Heal above 0 HP             | Dying and Unconscious removed — Wounded incremented automatically      |
+| Action                    | Result                                                               |
+| ------------------------- | -------------------------------------------------------------------- |
+| **[+]** fills all circles | Combatant dies — card is marked defeated                             |
+| **[−]** reduces to 0      | Dying removed — Wounded incremented (or applied at 1 if not present) |
+| Heal above 0 HP           | Dying and Unconscious removed — Wounded incremented automatically    |
 
 While a combatant is dying, the skull button is replaced by a **Heroic Recovery** button (heart icon). Clicking it removes the Dying condition without applying or incrementing Wounded — use this for out-of-rules narrative recoveries.
 
@@ -163,10 +163,10 @@ The combat log records all significant events during the encounter. Damage and h
 ---
 
 ## Player View
+
 <img width="1050" height="466" alt="image" src="https://github.com/user-attachments/assets/c4d63a1a-969d-4037-b3bd-ca68d36fdada" />
 
-
-The player view updates automatically whenever the GM makes a change. It shows:
+The player view opens as a resizable popup window when the GM clicks **⧉ Player View** in the header. It updates automatically whenever the GM makes a change. It shows:
 
 - A horizontal scrolling initiative track, one card per visible combatant
 - Each card displays: combatant name (colour-coded by type), initiative badge, HP health glow, active conditions, and the effects summary
@@ -200,11 +200,3 @@ Shortcuts `N`, `P`, and arrow keys are disabled when an input field is focused s
 ## Community Use Notice
 
 This tool uses trademarks and/or copyrights owned by Paizo Inc., used under [Paizo's Community Use Policy](https://paizo.com/licenses/communityuse). This tool is not published, endorsed, or specifically approved by Paizo. For more information about Paizo Inc. and Paizo products, visit [paizo.com](https://paizo.com).
-
----
-
-## Technical Notes
-
-- **No dependencies** - everything is self-contained in the two HTML files. Fonts are loaded from Google Fonts (requires an internet connection on first load; they cache after that).
-- **Sync mechanism** - the GM view writes state to `localStorage` under the key `init_player_view` on every change. The player view listens for the `storage` event and re-renders immediately. This means both files must be open in the same browser on the same device.
-- **No build step** - the files can be edited directly in any text editor.
