@@ -99,7 +99,7 @@ When a PC or Ally reaches 0 HP, or when the GM clicks the **skull** button on th
 
 - HP is set to 0 and the **Dying** and **Unconscious** conditions are applied automatically
 - A `DYING [−] ○ ○ ○ ○ [+]` indicator appears above the CONDITIONS header, showing the current dying level as filled pills
-- The starting dying value is **1 + Wounded** (per SF2e rules)
+- The starting dying value is **1 + Wounded**
 - **Doomed N** disables the last N circles, making death trigger sooner
 - If the starting dying value would immediately fill all active circles, the combatant dies instantly
 
@@ -111,7 +111,7 @@ Use the **[−]** and **[+]** buttons to adjust the dying level each round:
 | **[−]** reduces to 0      | Dying removed — Wounded incremented (or applied at 1 if not present) |
 | Heal above 0 HP           | Dying and Unconscious removed — Wounded incremented automatically    |
 
-While a combatant is dying, the skull button is replaced by a **Heroic Recovery** button (heart icon). Clicking it removes the Dying condition without applying or incrementing Wounded — use this for out-of-rules narrative recoveries.
+While a combatant is dying, the skull button is replaced by a **Heroic Recovery** button (heart icon). Clicking it removes the Dying condition without applying or incrementing Wounded.
 
 ### Restoring Defeated Combatants
 
@@ -136,11 +136,11 @@ Click **+ condition** on any combatant card to open the condition picker. All st
 - **Overridden conditions** (e.g. Blinded overriding Dazzled) are shown with strikethrough and can still be removed with ✖
 - **Persistent Damage** is the only condition that can be stacked multiple times
 - Valued conditions can be stepped up or down with the **−** / **+** buttons on the pill
-- Clicking any listed condition will pop-up description of what that condition does
+- Clicking any listed condition will pop-up description of what that condition does with links to aonsrd for the conditions with complex rules
 
 ### Effects Summary
 
-When active conditions have stat modifiers (e.g. Off-Guard applies −2 AC), a compact **effects summary** bar appears beneath the HP block, listing each affected stat with its net modifier colour-coded green (bonus) or red (penalty). AC adjustments will automatically apply against the AC captured for that combatant.
+When active conditions have stat modifiers (e.g. Off-Guard applies −2 AC), a compact **effects summary** bar appears beneath the HP block, listing each affected stat with its net modifier. AC adjustments will automatically apply against the AC captured for that combatant.
 
 ### Visibility
 
@@ -148,12 +148,10 @@ Each combatant card has an eye icon button to toggle whether that combatant appe
 
 ### Saving & Loading
 
-Use the **Encounter** section in the sidebar to:
-
 - **Save Encounter** - downloads a `.json` file of the full session state
 - **Load Encounter** - restores a previously saved `.json` file
 
-Session state is also **auto-saved** in the browser so refreshing the GM view restores your last session automatically.
+Session state is also **auto-saved** in the browser so accidental refreshes automatically restore your last session.
 
 ### Undo
 
@@ -166,8 +164,8 @@ The GM view supports single-level undo. Every state-mutating action (adding/remo
 
 The combat log records all significant events during the encounter. Damage and healing entries use an arrow format to show the transition clearly:
 
-- **Damage**: `Troll took 15 damage (50 → 35/80)`
-- **Healing**: `Aldric healed 12 HP (18 → 30/80)`
+- **Damage**: `Billy took 15 DMG (50 → 35)`
+- **Healing**: `Bobby healed 12 HP (18 → 30)`
 
 ---
 
