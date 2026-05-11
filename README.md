@@ -2,8 +2,6 @@
 
 A self-contained, browser-based combat initiative tracker for **Starfinder 2e**.
 
-No server, no install, no accounts, just one HTML file.
-
 ## Contents
 
 - [Overview](#overview)
@@ -22,9 +20,9 @@ The tracker is a single file (`init-tracker.html`) that contains both the GM con
 | View        | How to access                                                          |
 | ----------- | ---------------------------------------------------------------------- |
 | GM view     | Open `init-tracker.html` in your browser                               |
-| Player view | Click the **⧉ Player View** button in the GM header to open as a popup |
+| Player view | Click the **Open** button in the side pabnel to open as a popup        |
 
-The player view is designed to be shown on a secondary display facing the table (it includes a **Flip** button to rotate 180° for across-the-table use).
+The player view is designed to be shown on a secondary display facing the table.
 
 ---
 
@@ -39,7 +37,7 @@ The player view is designed to be shown on a secondary display facing the table 
 
 1. Download `init-tracker.html` from this repository
 2. Open `init-tracker.html` in your browser — this is your GM screen
-3. Click **⧉ Player View** in the header to open the player view as a popup
+3. Click **Open** from the player controls section of the side panel to open the player view as a popup
 4. Drag the popup to a secondary monitor or display facing your players
 5. That's it — no configuration required
 
@@ -49,7 +47,8 @@ The player view is designed to be shown on a secondary display facing the table 
 
 ## GM View
 
-<img width="1481" height="1259" alt="image" src="https://github.com/user-attachments/assets/54a576c7-f07f-4b3d-aff7-eb0725dc3a2c" />
+<img width="1552" height="1265" alt="image" src="https://github.com/user-attachments/assets/624d919a-e172-4b71-9545-3528fa9642bc" />
+
 
 ### Adding Combatants
 
@@ -68,13 +67,6 @@ Press **Add** or hit **Enter** to add the combatant to the list.
 
 Click **Start Combat** to begin. Combatants are automatically sorted by initiative. Use the combat controls bar at the top of the list:
 
-| Control                        | Action                                                       |
-| ------------------------------ | ------------------------------------------------------------ |
-| **Next Turn ▶**                | Advance to the next combatant                                |
-| **◀ Prev Turn**                | Step back to the previous combatant                          |
-| **+** / **−** (Round)          | Manually increment or decrement the round counter            |
-| **👁 Show All** / **Hide All** | Toggle all combatants' visibility on the player view at once |
-
 ### Managing HP
 
 Each combatant card with a Max HP set displays:
@@ -87,8 +79,6 @@ Each combatant card with a Max HP set displays:
 | ------------------------------- | ---------------------------------- |
 | Type amount → **Enter**         | Deal damage                        |
 | Type amount → **Shift+Enter**   | Heal                               |
-| **DMG** button                  | Deal damage using the amount field |
-| **HEAL** button                 | Heal using the amount field        |
 | **Escape** (while in amt field) | Clear the amount field             |
 
 When a PC or Ally's HP is reduced to 0, the Dying mechanic triggers automatically (see below). Enemies are marked as **Defeated** directly.
@@ -110,15 +100,11 @@ Use the **[−]** and **[+]** buttons to adjust the dying level each round:
 | **[+]** fills all circles | Combatant dies — card is marked defeated                             |
 | **[−]** reduces to 0      | Dying removed — Wounded incremented (or applied at 1 if not present) |
 | Heal above 0 HP           | Dying and Unconscious removed — Wounded incremented automatically    |
-
-While a combatant is dying, the skull button is replaced by a **Heroic Recovery** button (heart icon). Clicking it removes the Dying condition without applying or incrementing Wounded.
+| Heroic Recovery           | Dying and Unconscious removed — Wounded not incremented              |
 
 ### Restoring Defeated Combatants
 
 When any combatant (PC, Ally, or Enemy) is marked as defeated, the skull button is replaced by a **Restore** button (circular arrow icon). Clicking Restore clears the defeated state:
-
-- **PC / Ally**: defeated flag is cleared; HP and conditions remain as-is for the GM to manage
-- **Enemy**: HP is restored to the value it held at the moment they were marked defeated
 
 ### Death-Warning Indicators
 
@@ -132,15 +118,17 @@ When a combatant is defeated, all interactive controls on their card are disable
 
 Click **+ condition** on any combatant card to open the condition picker. All standard SF2e conditions are listed. Clicking a valued condition (e.g. Frightened, Sickened) pre-fills the value field - adjust and press **Add** or **Enter** to apply.
 
-- **Bundled conditions** (e.g. Grabbed applies Off-Guard and Immobilised) are shown as attached rows beneath their parent pill
-- **Overridden conditions** (e.g. Blinded overriding Dazzled) are shown with strikethrough and can still be removed with ✖
-- **Persistent Damage** is the only condition that can be stacked multiple times
 - Valued conditions can be stepped up or down with the **−** / **+** buttons on the pill
-- Clicking any listed condition will pop-up description of what that condition does with links to aonsrd for the conditions with complex rules
+- Round Remaining can be applied after the condition is added by clicking on it
+- Clicking on any condition will allow notes to be captured and also explains full rules for that condition
+- Bundled conditions (e.g. Grabbed applies Off-Guard and Immobilised) are shown with layer icon and clicking the condition will explain what conditions are included
+- Overridden conditions (e.g. Blinded overriding Dazzled) are shown with strikethrough and can still be removed with ✖
 
 ### Effects Summary
 
 When active conditions have stat modifiers (e.g. Off-Guard applies −2 AC), a compact **effects summary** bar appears beneath the HP block, listing each affected stat with its net modifier. AC adjustments will automatically apply against the AC captured for that combatant.
+
+Hover over the stat to see which condition/s are causing it
 
 ### Visibility
 
@@ -157,35 +145,30 @@ Session state is also **auto-saved** in the browser so accidental refreshes auto
 
 The GM view supports single-level undo. Every state-mutating action (adding/removing combatants, HP changes, condition changes, turn advances, etc.) can be reversed with:
 
-- The **↩ Undo** button in the header
+- The **Undo** button in the header
 - **Ctrl+Z** from anywhere on the page
 
 ### Combat Log
 
-The combat log records all significant events during the encounter. Damage and healing entries use an arrow format to show the transition clearly:
-
-- **Damage**: `Billy took 15 DMG (50 → 35)`
-- **Healing**: `Bobby healed 12 HP (18 → 30)`
-
+The combat log records all significant events during the encounter with prior values displayed in case you need to revert
 ---
 
 ## Player View
 
-<img width="1050" height="466" alt="image" src="https://github.com/user-attachments/assets/c4d63a1a-969d-4037-b3bd-ca68d36fdada" />
+https://github.com/user-attachments/assets/b10fe550-d42f-4ebe-bf5d-35e8b1b3a21a
 
-The player view opens as a resizable popup window when the GM clicks **⧉ Player View** in the header. It updates automatically whenever the GM makes a change. It shows:
-
-- A horizontal scrolling initiative track, one card per visible combatant
+The player view stays in sync with the GM view and show:
+- Auto-scrolling 'infinite' initiative track, one card per visible combatant
 - Each card displays: combatant name (colour-coded by type), initiative badge, HP health glow, active conditions, and the effects summary
-- The **active combatant** is highlighted with an **▶ Active** marker
+- The **active combatant** is highlighted with an **Active** marker
 - The view automatically scrolls to keep the active combatant in view
-- A round counter and **Live** / **Waiting** status indicator in the top-left corner
 
-When a PC or Ally is dying, a **pulsing skull icon** appears to the right of their name. The numeric dying value is intentionally hidden from players — only the GM sees the exact level. The **death-warning** highlight on Wounded and Doomed pills is visible on the player view so players can see the danger without GM intervention.
+When a PC or Ally is dying, a **pulsing skull icon** appears over their card. The numeric dying value is intentionally hidden from players, only the GM sees the exact level. The **death-warning** highlight on Wounded and Doomed pills is visible on the player view so players can see the danger.
 
-### Flip Window
-
-The **Flip** button in the corner tile rotates the entire view 180°, useful when the display is facing players across the table.
+### Player view controls
+-  **Rotate** button will rotate the  entire view 180°
+-  **Stretch** the transform the view along Y axis, helpful if the screen is at a sharp angle
+-  **Zoom* a discrete zoom control which can offer more granularity than browser zoom
 
 ---
 
@@ -193,14 +176,12 @@ The **Flip** button in the corner tile rotates the entire view 180°, useful whe
 
 | Shortcut      | Action                                                    |
 | ------------- | --------------------------------------------------------- |
-| `N` / `→`     | Next turn                                                 |
-| `P` / `←`     | Previous turn                                             |
+| `→`           | Next turn                                                 |
+| `←`           | Previous turn                                             |
 | `Enter`       | Deal damage (in HP field) / Add combatant (in name field) |
 | `Shift+Enter` | Heal combatant (in HP field)                              |
 | `Escape`      | Clear HP field / close modal / cancel edit                |
 | `Ctrl+Z`      | Undo last action                                          |
-
-Shortcuts `N`, `P`, and arrow keys are disabled when an input field is focused so they don't conflict with typing.
 
 ---
 
