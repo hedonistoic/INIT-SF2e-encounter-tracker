@@ -168,7 +168,7 @@ When a PC or Ally is dying, a **pulsing skull icon** appears over their card. Th
 ### Player view controls
 -  **Rotate** button will rotate the  entire view 180°
 -  **Stretch** the transform the view along Y axis, helpful if the screen is at a sharp angle
--  **Zoom* a discrete zoom control which can offer more granularity than browser zoom
+-  **Zoom** a discrete zoom control which can offer more granularity than browser zoom
 
 ---
 
