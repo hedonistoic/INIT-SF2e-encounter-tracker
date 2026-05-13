@@ -2,6 +2,13 @@
 
 A self-contained, browser-based combat initiative tracker for **Starfinder 2e**.
 
+## Community Use Notice
+
+This tool uses trademarks and/or copyrights owned by Paizo Inc., used under [Paizo's Community Use Policy](https://paizo.com/licenses/communityuse). This tool is not published, endorsed, or specifically approved by Paizo. For more information about Paizo Inc. and Paizo products, visit [paizo.com](https://paizo.com).
+
+## Disclaimer: 
+Generative AI technologies assisted in development of this tool.
+
 ## Contents
 
 - [Overview](#overview)
@@ -185,6 +192,4 @@ When a PC or Ally is dying, a **pulsing skull icon** appears over their card. Th
 
 ---
 
-## Community Use Notice
 
-This tool uses trademarks and/or copyrights owned by Paizo Inc., used under [Paizo's Community Use Policy](https://paizo.com/licenses/communityuse). This tool is not published, endorsed, or specifically approved by Paizo. For more information about Paizo Inc. and Paizo products, visit [paizo.com](https://paizo.com).
