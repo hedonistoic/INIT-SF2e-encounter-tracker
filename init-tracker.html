@@ -16,7 +16,6 @@
 
       /* ============================================================
      LAYER 1 — PRIMITIVES
-     These are the knobs. Adjust these to experiment globally.
      ============================================================ */
 
       /* --- Hues ---*/
@@ -49,9 +48,7 @@
       --l-color-bg-hover: 28%;
 
 
-      /* --- Chroma scale (neutral surfaces) ---
-     Increase to add more blue tint to backgrounds;
-     decrease toward 0 for a more neutral/gray feel */
+      /* --- Chroma scale (neutral surfaces) --- */
       --c-bg1: 0.005;
       --c-bg2: 0.008;
       --c-bg3: 0.013;
@@ -61,16 +58,12 @@
       --c-muted: 0.05;
 
 
-      /* --- Chroma scale (color family bgs) ---
-     Raise for more vivid tinted backgrounds,
-     lower for a more neutral/dark bg feel */
+      /* --- Chroma scale (color family bgs) --- */
       --c-color-bg: 0.02;
       --c-color-bg-hover: 0.06;
 
 
-      /* --- Alpha scale ---
-     Controls transparency of borders, glows, overlays.
-     Adjust globally here for subtler or more dramatic effects */
+      /* --- Alpha scale ---*/
       --a-border: 0.5;
       --a-primary-muted: 0.5;
       --a-glow: 0.7;
@@ -92,8 +85,6 @@
 
       /* ============================================================
      LAYER 2 — SEMANTIC TOKENS
-     Computed from primitives. Reference these in your CSS.
-     Don't edit these directly — adjust the primitives above.
      ============================================================ */
 
       /* --- Backgrounds --- */
@@ -111,12 +102,12 @@
       --text-bright: oklch(var(--l-text-bright) 0.00846 var(--hue-neutral));
       --text-dim: oklch(var(--l-text-dim) 0.03595 var(--hue-neutral));
       --cond-chip-text: oklch(66.769% 0.05901 284.682);
-      /* distinct hue, kept fixed */
+      
 
       /* --- Utility --- */
       --muted: oklch(var(--l-muted) var(--c-muted) var(--hue-neutral));
       --hyperlink: oklch(70.856% 0.20921 310.844);
-      /* distinct hue, kept fixed */
+      
 
       /* --- Buttons --- */
       --btn-bg: oklch(var(--l-btn-bg) var(--c-btn-bg) var(--hue-btn));
@@ -192,7 +183,6 @@
 
       --radius: 4px;
       --radius-lg: 8px;
-      /* Fixed width for the stats column — conditions always start at this offset */
       --stats-col-width: 240px;
       --hud-w: 90px;
     }
@@ -683,8 +673,6 @@
       color: var(--muted);
       text-transform: uppercase;
     }
-
-    /* Conditions flow left-to-right, wrapping — base in shared-vars */
 
     /* Each condition group: parent + bundled children — base in shared-vars */
     .condition-group {
