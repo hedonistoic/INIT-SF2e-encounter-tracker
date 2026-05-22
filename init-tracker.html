@@ -12,12 +12,7 @@
 
   <style id="shared-vars">
     :root {
-
-
-      /* ============================================================
-     LAYER 1 — PRIMITIVES
-     ============================================================ */
-
+      /* ======== LAYER 1 — PRIMITIVES ======== */
       /* --- Hues ---*/
       --hue-neutral: 270;
       --hue-primary: 310;
@@ -30,23 +25,18 @@
       --hue-enemy: 10;
 
       /* --- Lightness scale ---*/
-
       --l-bg1: 10%;
       --l-bg2: 16%;
       --l-bg3: 22%;
-
       --l-border1: 25%;
       --l-border2: 30%;
       --l-border3: 35%;
       --l-muted: 50%;
-
-
       --l-text-dim: 70%;
       --l-text: 85%;
       --l-text-bright: 95%;
       --l-color-bg: 16%;
       --l-color-bg-hover: 28%;
-
 
       /* --- Chroma scale (neutral surfaces) --- */
       --c-bg1: 0.005;
@@ -57,11 +47,9 @@
       --c-border3: 0.03;
       --c-muted: 0.05;
 
-
       /* --- Chroma scale (color family bgs) --- */
       --c-color-bg: 0.02;
       --c-color-bg-hover: 0.06;
-
 
       /* --- Alpha scale ---*/
       --a-border: 0.5;
@@ -83,10 +71,7 @@
       --l-btn-border: 40%;
       --c-btn-border: 0.05;
 
-      /* ============================================================
-     LAYER 2 — SEMANTIC TOKENS
-     ============================================================ */
-
+      /* ======== LAYER 2 — SEMANTIC TOKENS ======== */
       /* --- Backgrounds --- */
       --bg1: oklch(var(--l-bg1) var(--c-bg1) var(--hue-neutral));
       --bg2: oklch(var(--l-bg2) var(--c-bg2) var(--hue-neutral));
@@ -102,12 +87,12 @@
       --text-bright: oklch(var(--l-text-bright) 0.00846 var(--hue-neutral));
       --text-dim: oklch(var(--l-text-dim) 0.03595 var(--hue-neutral));
       --cond-chip-text: oklch(66.769% 0.05901 284.682);
-      
+
 
       /* --- Utility --- */
       --muted: oklch(var(--l-muted) var(--c-muted) var(--hue-neutral));
       --hyperlink: oklch(70.856% 0.20921 310.844);
-      
+
 
       /* --- Buttons --- */
       --btn-bg: oklch(var(--l-btn-bg) var(--c-btn-bg) var(--hue-btn));
@@ -187,6 +172,24 @@
       --hud-w: 90px;
     }
 
+    @font-face {
+      font-family: "Pathfinder-Icons";
+      src: url("data:font/truetype;base64,AAEAAAAMAIAAAwBAR1NVQuUp5qgAAADMAAAA6k9TLzIShYYQAAABuAAAAGBjbWFwTWtnEQAAAhgAAACcZ2FzcAAAABAAAAK0AAAACGdseWarHFczAAACvAAANgRoZWFkGSpjnQAAOMAAAAA2aGhlYQwCCIcAADj4AAAAJGhtdHjVARzIAAA5HAAAAdhsb2NhTcdBCAAAOvQAAADubWF4cAB8AI4AADvkAAAAIG5hbWVpLzHnAAA8BAAABSVwb3N0AAMAAAAAQSwAAAAgAAEAAAAKAB4ALAABbGF0bgAIAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAoAAAABAAoAAgASAKYAAQACAD4AdQAFAAwAKABIAF4AeABxAA0AVwBaAFIAEABEAEYAVwBMAFIAUQBWAEAAcAAPAFcASwBVAEgASAAQAEQARgBXAEwAUgBRAFYAQAB0AAoAVQBIAEQARgBXAEwAUgBRAEAAcgAMAFIAUQBIABAARABGAFcATABSAFEAQABzAA0ASQBVAEgASAAQAEQARgBXAEwAUgBRAEAAAQAEAHQAAgB1AAAAAwHVAZAABQAAApkCzAAAAI8CmQLMAAAB6wAzAQkAAAAAAAAAAAAAAACAAAADEAAAQgAAAAAAAAAAAAAAAABAAADpBQPA/8AAQAPAAEAAAAABAAAAAAIMAy8AAAAgAAAAAAADAAAAAwAAABwAAQADAAAAHAADAAEAAAAcAAQAgAAAABwAEAADAAwAAQB+AKYA1wD3IBQgGiAdIDogrCIS6QX//f//AAAAAAAgAKYA1wD3IBMgGCAcIDkgrCIS6QD//f//AAH/4/+8/4z/beBS4E/gTuAz38LeXRdwAAMAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAB//8ADwABAAAAAAAAAAAAAgAANzkBAAAAAAEAAAAAAAAAAAACAAA3OQEAAAAAAQAAAAAAAAAAAAIAADc5AQAAAAACAEcAtwB2Ay4ADQAZAAATIiY1ETQ2MzIWFREUBgcyFhUUBiMiJjU0Nl4GCAgGBgkJBgkPDwkKDQ0BMwkGAd0GCQkG/iMGCU4NCgoNDQoKDQAAAAACAEcCaQCrAywADQAbAAATMhYdARQGIyImPQE0NiMyFh0BFAYjIiY9ATQ2nQYICAYGCQlCBggIBgYICAMsCQamBggIBqYGCQkGpgYICAamBgkAAAACAEcB4QGOAykATABRAAATBw4BIyImNTQ2NyMiJjU0NjsBNyMiJjU0NjsBNz4BMzIWFRQGBzM3PgEzMhYVFAYHMzIWFRQGKwEHMzIWFRQGKwEHDgEjIiY1NDY3IzcHMzcjmxQBCAQGCA8CKAYICAYvFUQGCAgGShMBCAQHCBACfhQBCAQGCA8CKAYICAYvFUQGCAgGShMBCAQHCA8DfhoUfxR/Aj1RBQYIBgY/CQgGBglYCAUGCFIFBQgGBj4KUgUFCAYGPgoIBgUIWAkGBghRBQYIBgY/CXVYWAAAAwBHADMBrANYAD0ARABMAAATMhYVFhQXHgEXHgEXES4BNTQ2NzwBMzIUFR4BFRQGIyImJy4BJy4BJxEeARUUBgcVFAYjIiY9AS4BNTQ2MxMOARUUFhcXET4BNTQmJ1UHBwEBBSEbDiARO2NfPw8OQU4JBQgFAQIBAgs4K0BqYUkIBgYJSVUJBZAzT1MvHT1QWTQBbwkFBw8HIDQRCQwCAS0TRkhCVgIIICEJCF1ABggJBggTCikzBv75F1hMS1kBaQUJCQVrCWNJBggBpAJFNjo5ECj+3AFJPz5KEwAAAAAFAEcAnQKmAzMACwAYACQAMQBMAAATIiY1NDYzMhYVFAYDIgYVFBYzMjY1NCYjEzQ2MzIWFRQGIyImNyIGFRQWMzI2NTQmIwEiJjU0Nz4BNzY3PgEzMhYVFAcOAQcGBw4BI81DQ0NDQkNDQjczMzc2MjI2zkNCQ0NDQ0JDhTY0NDY2MzM2/soFCSopaC4tCQEIBAYIKilnLi4IAgcFAdB5OTh5eTg5eQFGZy0taGgtLWf+ODl3dzk5eHjOaC0tZ2ctLWj+zAgGA1lY2V9fEgQECAYDWVjZX2ARBAQAAwBHAHcC1AM4AEUAUgBnAAAlIiYnLgE1NDc+ATc2Ny4BNTQ2MzIWFRQGBxYXHgEXFhc+ATU0JicmNDU0NjMyFhUUBgceARceARUUBiMiJicGBw4BBwYjAxQWFz4BNTQmIyIGFRcGBw4BBwYVFBYzMjY3JicuAScmJwE2PIYcCAkSEzggIRwcMGA7NkdxMR8jI0onJicXGQUEAQgGEQcbGRg6FgMDCAUHYAsZISJLKCgoZC0ZKm43KS9PQRgfHjYSE45ESJIuJygnTCQkIHcsPBEkEyYhIDgYFxMiVy4/Sj83RFshIyAfOxsbGiFOKBEhEQICAQYJTQotViQRIRECBgQGCUAHIBYXHAcHAjkpUR4cVTksLTkyvhAWFTQeHiJTPjE4Gx0cPCEgJAAAAQBHAmkAYwMsAA0AABMyFh0BFAYjIiY9ATQ2VQYICAYGCAgDLAkGpgYICAamBgkAAQBH/+cA9QMZADMAABciJy4BJyYnLgE1NDY3Njc+ATc2MzIWFRQGIyIHDgEHBgcOARUUFhcWFx4BFxYzMhYVFAbmIxkaIwsKBAcGBgcECgsjGhkjBgkJBhsVFR4JCAMHBQUHAwgJHhUVGwYJCRkcHU4qKRooUykqUykaKSlPHRwJBQYJHBxKJiYTJk4oJ04mEyYmShwcCAYGCAAAAQBH/+cA9QMZADQAABciJjU0NjMyNz4BNzY3PgE1NCYnJicuAScmIyImNTQ2MzIXHgEXFhceARUUBgcGBw4BBwYjVQYICAYbFRUeCQkDBgUFBgMJCR4VFRsGCAgGIxkaIwsKBAcHBwcECgsjGhkjGQgGBggcHEomJhMmTicoTiYTJiZKHBwJBgUJHB1PKSkaKVMqKVMoGikqTh0cAAAAAAEARwHdAV8DHwA3AAATIiY1NDY/AScuATU0NjMyFhc1NDYzMhYdAT4BMzIWFRQGDwEXHgEVFAYjIiYnFRQGIyImPQEOAVUGCAMDcXEDAwgGCF0MCAYGCAxaCQYIAwNoaAMDCAYJWgwIBgYIDF0CFwgGBAYDS00DBgQGCEIIdgYICAZ7CEEIBwMHAkdFAgcDBwhBCHsGCAgGdghCAAEARwFnAYACoAAgAAATIyImNTQ2OwE1NDYzMhYdATMyFhUUBisBFRQGIyImPQHVgAYICAaACAYGCYAGCAgGgAkGBggB9QkGBgiABggIBoAIBgYJgAUJCQWAAAAAAQBHAGcAgADnABMAADcVFgYjIiY1MDY3LgE1NDYzMhYXgAEbEQYIGAIHCQ4JCg0BzwYRUQgGNw0CDQcKDg4KAAEARwH4AS0CFQAOAAATIiY1NDY7ATIWFRQGKwFVBggIBssFCAgFywH4CQYGCAgGBgkAAAABAEcAtwB2AOUACwAANzIWFRQGIyImNTQ2XgkPDwkKDQ3lDQoKDQ0KCg0AAAEARwCvARgDJQAaAAA3IiY1NDc+ATc2Nz4BMzIWFRQHDgEHBgcUBiNVBggaGkIdHQUBCAQGCRsaQR0dBggFrwgGA1hZ2l9gEQUFCAYDWVnZYF8RBQUAAAACAEIArgHpAzgAJwBPAAABMhYXFhceARcWFRQHDgEHBgcOASMiJicmJy4BJyY1NDc+ATc2Nz4BEzI2NzY3PgE3NjU0Jy4BJyYnLgEjIgYHBgcOAQcGFRQXHgEXFhceAQEWFisTIxgYHgcHBwceGBgjEyoXGCoTIxgYHgcHBwceGBgjEyoYEiMPHxYWGwcGBgcbFhYfDyMSEyMPHxYWGwcGBgcbFhYfDyMDOA8MFiMjUSsrJycrK1EjIxcMDg4MFyMjUSsrJycrK1EjIxYMD/2SDAsUICBMJygjIygnSyEgFQoLCwoVICFLJygjIygnTCAgFAsMAAAAAAEAhgC8ASsDJQAgAAA3MzIWFRQGKwEiJjU0NjsBEQ4BIyImNTQ2Nz4BMzIWFTHzKgYICAZwBggIBikIMQkGCAMDCkYIBgnZCQYFCQkFBgkCIwUlCQYDBgIHMggGAAAAAAEAQgC6AaADMgAuAAATMhYVFAcOAQcGByEyFhUUBiMhIiYjLwI0Nz4BNzY1NCYjIgYVFAYjIiY1NDYz8UlmMDB1MzIFASkGCQkG/sgBAwEFAwExMngxMlI/PlUIBgYIZUoDMmpJWjEwSyorTQkGBQkBAwUFXDAxTC0sUz5aWT0GCAgGSWoAAAABAEIArAG3AzUANgAAAR4BFRQGIyImNTQ2MzIWFRQWMzI2NTQmIyImNTQ2MzI2NTQmIyIGFRQGIyImNTQ2MzIWFRQGBwFEM0BvTEtvCAYGCF8/QF9fQAUICAY2WFg2N1gJBgYIaUNCaTkrAggVWjhNaGhNBggIBkFYWEFAWAkGBghHOjpHRzoGCAgGRVlZRTBNEgAAAQBCALgBqgMxACcAAAEzMhYVFAYrAREUBiMiJjURIyImPQETNDYzMhYHFQMzETQ2MzIWFREBYDwGCAgGPAkFBgj0BggyCQUGCQEv4wgGBQkCDggHBQn+1QYICAYBKwkFBAEhBgcJBgL+7gEUBgkJBv7sAAABAEIAsAGlAyAAPAAAEzIXHgEXFhUUBw4BBwYjIiY1NDYzMhYVFAYVFBYzMjY1NCYjIgYHDgEnBiY/ATQ2MyEyFhUUBiMhBz4BM/QqISEtDAwMDC0hISpRYQIPBgYBUUVJS0tJJUIaAwkEBw0BHQkFAQwGCQkG/wAXGkcjAmgUFT8nKCUmJyg/FBR3TQocCwUGCgZBZ4BAP4AiGQMCAgMJCPkFBwgGBgjOFR0AAgBCALEBuQMzADIAPwAAEzIXHgEXFhUUBw4BBwYjIiYnJjQ1NDc+ATc2Nz4BNzMyFhUUBgcOAQcGBw4BBwYHPgEzETI2NTQmIyIGFRQWM/4pIiIyDg4ODjIiIilJZwkDCQkmHRwmFTMbBQUJBwQKEwolHh8uDxAIG08uRllZRkVaWkUCPxEQNyQlJyckJDcQEGVHBSMHMjMyXyorIRMgCAkGBQYCBQYGFR8gSykpKSYt/o5oQkNoaENCaAABAEIAtQGgAyAAHwAAEyEyFhUUBw4BBwYHDgEjIiY1NDc+ATc2NyEiJjU0NjNPAUIHCCEhUSQkBwEIBAYIHyBOIyMG/tQGCAcGAyAJBQNXV9ZeXhEFBAgGA1RUz1tbEQkFBQkAAwBCAK8BtwM4ABgAJQAyAAABHgEVFAYjIiY1NDY3LgE1NDYzMhYVFAYHJxQWMzI2NTQmIyIGFRMyNjU0JiMiBhUUFjMBRDNAb0xLb0AzLDhpQ0JpOSvWWDc2WFg2N1iOQF9fQD9fXz8CDBVbOE1oaE04WxURTTBFWVlFME0RjjlISDk6R0c6/jFYQUBYWEBBWAAAAAIAQgCxAbcDMwAlADIAABMyFhUUBw4BBwYHDgEHDgEjIiY1NDY3PgE3PgE3DgEjIiY1NDYzETI2NTQmIyIGFRQWM/xSaQ0NLiAfJQ0eEAIEAgYJAwIOHg01ThIbTClLb29LQF9fQD9fXz8DM3BRNjU2ZS4uJw0eCgIBCAYEBQIOGQ05h0wgImlMTGr+sldBQVdXQUFXAAAAAgBHALYAdgIJAAsAFwAANzIWFRQGIyImNTQ2NyImNTQ2MzIWFRQGXgkPDwkKDQ0KCg0NCgkPD+UOCgkODgkKDvYNCgkODgkKDQAAAAIARwBnAIACCQAMACAAABMiJjU0NjMyFhUUBiMTFRYGIyImNTA2Ny4BNTQ2MzIWF2gJDg4JCg4OChgBGxEGCBgCBwkOCQoNAQHbDQoJDg4JCg3+9AYRUQgGNw0CDQcKDg4KAAABAEcBYAFEAq4AGwAAASoBLwEuATU0Nj8BPgEzMhYVFAYPARceARUUBgE1AgQC4AUBAwPgAgQCBgkDBNPTBAMJAWAClgMJBQQGApUCAgkGBAYCjI4BBwMGCAAAAAIARwHGAYACTgAOAB0AABMiJjU0NjMhMhYVFAYjIRUiJjU0NjMhMhYVFAYjIVUGCAgGAR0GCAgG/uMGCAgGAR0GCAgG/uMCMggGBQkJBQYIbAkFBwgIBwUJAAAAAQBHAWABRAKuABwAABMiJjU0Nj8BJy4BNTQ2MzIWHwEeARUUBg8BBiIjVQYIAwPT0wMDCAYCBALgBAMCBeACBAIBYAgGAwcBjowCBgQGCQIClQIGBAUJA5YCAAACAEcAtgGnAzMAJQAxAAATNDYzMhYVFAYHDgEVFAYjIiY9ATQ2Nz4BNTQmIyIGFRQGIyImNRMyFhUUBiMiJjU0NkdlTkdmSTApHgEMCgUiMClEVTw/VwUIBgmRCg4OCgkODgKHTl5ZSkRHJCBAMwgTDQcHOkskID07PklKQQYMCAb+Xg4KCQ4OCQoOAAIAR//pAyoDHQB/AIsAAAEyFx4BFxYVFAcOAQcGBw4BBwYiIyImNTQ2Nw4BIyImNTQ3PgE3NjMyFhc3NDYzMhYHAxQGFRQWOwE2Nz4BNzY1NCcuAScmIyIGBwYHDgEHBhUUFx4BFxYzOgE3PgE3PgEzMhYVFAYHBgcOAQcGIyInLgEnJjU0Nz4BNzY3PgEzAzI2NTQmIyIGFRQWAeFHPTxYGBkHBx4YGCIVLxkDBgMVFQcDGlAvQE4PDjMjIictRhALCgYFBwErAgYJBzMlJTALCxYWUDc3Qhs3Gj8yM0cTFBsbYEFCTQcRCD1qJgMFBAYIAQEUHh9HJiYiU0ZHZx0dFBVMNjZCHTweV0NePjVCXT0DHRkZVz08RykpKEwhIRkQFgQBGhQTKBQmMVo+JiQkOBIRMSlHBwYLBv7JAwUDCAoKHyBWMTIuQTc3UBcXCgkWJiZkPD1CTEJBYRwbAQUxMAMDCAYCBAIfFhUdBgceHmlHR1JHQEBrKSgYCgr9rW0/M0lsQDNJAAAAAAIAQgC0AfIDNQAjACYAADciJjU0Nz4BNzY3PgEzMhYXFhceARcWFRQGIyImLwEjBw4BIxMDM1AGCB0dSSAhBQIIBQQIAgUhIEkdHgkGBAgCTd1OAQgEymbLtAkFA1pa3mJhEgQFBQQRYmLdW1oDBQkFBevrBQUCRv7MAAADAEcAtQGaAy8AFQAfACgAADciJjURNDY7ATIWFRQGBx4BFRQGKwElNCYrAREzMjY1AzQmKwEVMzI2VgYJCAaLPlEoJDRDbEmPASdaPoKCPlorPzN9fDQ/tQsFAlsGCWA8KksUE1o4SmawPlX+2VY+AS4wT/1OAAABAEIArwHIAzkARgAAJSImJyYnLgEnJjU0Nz4BNzY3PgEzMhYXHgEVFAYjIiYnLgEjIgYHBgcOAQcGFRQXHgEXFhceATMyNjc+ATMyFhUUBgcOASMBFhgqEyMYGB4HBwcHHhgYIxMqGDFNGQUWCQYEBwIWSDgTIw8fFhYbBwYGBxsWFh8PIxM4SBYCBwQGCRYFGU0xrw4MFyMjUSsqJycrK1EjIxcMDzonBykHBggFBC1TDAoVICBLKCckIycoSyAgFQoMUy0EBQgGBygHKDkAAgBHALUBsAMtABgAKAAANyImNRE0NjsBMhYXHgEVFAYHDgErAQ4BIwE0JicuASsBETMyNjc+ATVVBggJBpNKWxIICAgIEltKjgEDAgE+BwgOTUCGhkBNDggHtQkFAloGCoA+Hz8gH0AfPn4BAQE8HjsdNXT9w3M1HTseAAEARwC4AXgDLQAhAAA3IiY1ETQ2MyEyFhUUBiMhFTMyFhUUBisBESEyFhUUBiMhVQYICAYBFAcICAf++qsGCQkGqwEGBwgIB/7suAkFAlgGCQkGBgj4CQUGCf7ZCAYFCQAAAAABAEcAtwF4AywAHAAANyImNRE0NjMhMhYVFAYjIRUzMhYVFAYrAREUBiNVBggIBgEUBwgIB/76qwYJCQarCAa3CQUCWAYJCQYGCPgIBgYJ/ssFCQABAEIAsAHpAzoAVQAAJSImJyYnLgEnJjU0Nz4BNzY3PgEzMhYXHgEVFAYjIiYnLgEnLgEjIgYHBgcOAQcGFRQXHgEXFhceATMyNjc+ATcjIiY1NDY7ATIWFRQHDgEHBgcOASMBFhgqEyMYGB4HBwcHHhgYIxMqGDFNGQUWCQYEBwIGCwcUQSkTIw8fFhYbBwYGBxsWFh8PIxNEVA8HBwGEBgkJBpMGCAcHHhgYIxMqF7AODBcjI1ErKycnKytRIyMWDQ46JwcpBwUJBQQLFgshMwsKFSAhSycoIyMoJ0wgIBUKDHo5GjMbCAYGCQkGJysrUSMjFwwOAAEARwC2AY0DLwAgAAA3IiY1ETQ2MzIWFREhETQ2MzIWFREUBiMiJjURIREUBiNVBggIBgYIAQ4IBgYICAYGCP7yCAa2CQUCXAYJCQb+9AEMBgkJBv2kBQkJBQEz/s0FCQAAAAABAEIAvgDPAyUAHwAANzQ2OwERIyImNTQ2OwEyFhUUBisBETMyFhUUBisBIiZCCAYqKgYICAZxBQkJBSoqBQkJBXEGCMwGCQIuCAYFCQkFBgj90gkGBQkJAAAAAAEAQgCxAeoDKAAsAAA3IiY1NDYzMhYVFBYzMjY1ETwBNyMiJjU0NjsBMhYVFAYrARQXHAEVFBUUBiPuRWcIBgYIVzlTPQFFBggIBqIGCAgGQgFNYLFeRwUJCQU7Tl9NAY4BAgIIBgYICAYGCAM6O49APw1YcAAAAAEARwC1AbQDMAApAAA3IiY1ETQ2MzIWFREBPgEzMhYVFAYPARYXHgEXFhUUBiMiJicDBxEUBiNVBggIBgYIASUCBQMHCAMB0gcmJVQiIQkFBAcB5FMIBrcIBgJcBgkJBv7aAS8DAwkGAwUC2g07O4U2NwUFCQQDAWtW/vQGCAAAAQBHALsBeAMvABMAADciJjURNDYzMhYVESEyFhUUBiMhVQYICAYGCAEGBwgIB/7suwgGAlcGCQkG/bgJBgYIAAEARwC1AhoDKgAmAAA3IiY1ETQ2MzIWFxsBPgEzMhYVERQGIyImNREDFAYjIiYnAxEUBiNVBggIBgUKAcvNAQgFBgkJBgYIvggGBAgBwQgGtQgGAlkGCAgF/dcCLQUECAb9pwYICAYCCv38BgkFBQIL/fQGCAAAAAEARwC1AY4DMAAdAAAlFAYjIiYnAREUBiMiJjURNDYzMhYXARE0NjMyFhUBjggGBAcB/u8IBgYICAYEBwIBEAgGBgjFBQkEBAIj/eEGCAgGAlwGCQUE/d4CHgYJCQYAAAIAQgCuAekDOAAnAE8AAAEyFhcWFx4BFxYVFAcOAQcGBw4BIyImJyYnLgEnJjU0Nz4BNzY3PgETMjY3Njc+ATc2NTQnLgEnJicuASMiBgcGBw4BBwYVFBceARcWFx4BARYWKxMjGBgeBwcHBx4YGCMTKhcYKhMjGBgeBwcHBx4YGCMTKhgSIw8fFhYbBwYGBxsWFh8PIxITIw8fFhYbBwYGBxsWFh8PIwM4DwwWIyNRKysnJysrUSMjFwwODgwXIyNRKysnJysrUSMjFgwP/ZIMCxQgIEwnKCMjKCdLISAVCgsLChUgIUsnKCMjKCdMICAUCwwAAAAAAgBGALUBigMtABoAJAAAEzIWFRQGKwERFAYjIiY1NDUmNDU0NzU0NjsBETI2NTQmKwERM9lJaGhJdggGBggBAQgGhD5XVz52dgMtaElJZ/73BQkJBRBfYNlYWAECBgn+vFY9Plb+2QACAEIArQHpAzcALgBcAAABMhYXFhceARcWFRQGBx4BFRQGIyImLwEOASMiJicmJy4BJyY1NDc+ATc2Nz4BMxM+ATU0Jy4BJyYnLgEjIgYHBgcOAQcGFRQXHgEXFhceATMyNjcuATU0NjMyFhcBFhYrEyMYGB4HBx4iBi0IBgMHASwZQScYKhMjGBgeBwcHBx4YGCMTKhiBHBoGBxsWFh8PIxITIw8fFhYbBwYGBxsWFh8PIxMiOBUHMQgGAwYCAzcODRYjI1ErKyc7fjEIOggGCAMDOh0mDgwXIyNRKysnJysrUSMjFg0O/ekubjYjKCdLISAVCgsLChUgIUsnKCMjKCdLICEUCwwlGghBCAUJAwMAAAACAEYAtgGTAygAKgA0AAABFhceARcWFRQGIyImJwMGJiMRFAYjIiY1NDUmNDU0NzU0NjsBMhYVFAYHJzI2NTQmKwERMwEIBRYWMhQUCAYEBwGPIUUhCAYGCAEBCAaESWhJOS89WFg9dnYB0AkqKV4nJwMGCAQDAQ0DAv76BggIBg9fX9dYVwECBghmSTteEBdWPD5V/tsAAAEAQgCsAaoDNgA6AAATFBYXHgEVFAYjIiY1NDYzMhYXFhQXHgEXHgEzMjY1NCYnLgE1NDYzMhYVFAYjIiYnJjQnLgEvASYGFV5gNEN1ZEpSaAgGBwYBAQEFIB0TLxc/U2w5PGpiQUpgCQYHBgECAw5DMgU1UgKbQDgRF1lQTFplUgYICAYGDwYhNRENDEpARkwSFEZLQ1hfSQYJCQYKFAoxMAEBAUg3AAEAQgC5AZoDJQAXAAABMhYVFAYrAREUBiMiJjURIyImNTQ2MyEBiwYJCQaPCAYHCI8GCAgGATsDJQgGBgj9vgYICAYCQggGBggAAAABAEcArwG+AzEAHAAAATIWFREUBiMiJjURNDYzMhYVERQWMzI2NRE0NjMBsAYIalFRawgGBghcREVaCQUDMQkG/jxWWVtUAcQGCQkG/jxIS0pJAcQGCQAAAQBCAKYB8gMtACIAAAEyFhUUBw4BBwYHDgEjIiYnJicuAScmNTQ2MzIWFxsBPgEzAeMGCR4dSSAhBQIIBAUIAgUhIEkdHQgGBAgBvbsCCAQDLQkGAlxb32NiEQUFBQURYmPgW1sCBgkFBf2+AkIFBQAAAAABAEIApgMbAy4AMgAAATIWFRQHDgEHBgcOASMiJicLAQ4BIyImJyYnLgEnJjU0NjMyFhcbAT4BMzIWFxsBPgEzAwwGCRoZQBwbBQEIBgQJAaGhAQgFBQgBBRwcPxoZCAYECQGhoQEIBQUIAaGiAQgEAy4JBgNbW+BiYhEFBgYFAjr9xgUGBgURYmLgW1sDBgkHBf3GAjoGBQUG/cYCOgUHAAAAAAEAQgC5Aa4DKgA4AAABMhYVFAcOAQcGBxYXHgEXFhUUBiMiJicLAQ4BIyImNTQ3PgE3NjcmJy4BJyY1NDYzMhYXGwE+ATMBoAUJGBc8GhsGBhsaPBcYCQUEBwOanAEHBAYIFxg7GxoGBhobOxgXCAYEBwGcmgMHBAMqCAYEKytpLi4LCy4vaCssBAYIBAMBFP7sAwQIBgQsK2gvLgsLLi5pKysEBggDBP7sARQEAwAAAQBCALcBqAMtACQAAAEyFhUUBw4BBwYHERQGIyImNREmJy4BJyY1NDYzMhYXGwE+ATMBmgYIGBc7GxoGCAYGCQUbGjsYFwgGBAcBmZgCBwQDLQkGBC4tbzExC/7iBggIBgEfCzAxby0uBAYJBQT+4gEeBAUAAAAAAQBCAMABrwMkACMAAAEUBw4BBwYHITIWFRQGIyEiJjU0Nz4BNzY3ISImNTQ2MyEyFgGvLy92NDUKAS8GCAgG/rkGCC8vdjQ0Cv7TBggIBgFGBggDFgRTU8taWREJBgYICAYFU1PKWlkSCQUGCAgAAAEAM//uAN0DIgAXAAATFAYrAREzMhYVFAYrASImNRE0NjsBMhbdCAZ/fwYICAaNBwgIB40GCAMUBQn9BQkGBggIBgMYBggIAAEAMwCvAQQDJQAaAAA3IiY1NDc+ATc2Nz4BMzIWFRQHDgEHBgcOASNCBwgbGkEdHQUBCAUFCRobQR0dBQIHBK8IBgNYWdpfYBEFBQgGA1lZ2WBfEQUFAAABADP/7gDdAyIAFwAAEzQ2OwEyFhURFAYrASImNTQ2OwERIyImMwgHjQYICAaNBwgIB4CABwgDFAYICAb86AYICAYGCQL7CQABADMCGQEpAxYAIQAAASImLwEHDgEjIiY1NDc+ATc2Nz4BMzIWFxYXHgEXFhUUBgEbBAcCYGACBwMHCBAPJxESBAIHBQUHAgUREiYQDwgCGQQEyckEBAgGBCIhUCQjCQQEBAQJIyRQISIEBggAAAAAAQBHAIQBzQCSAAMAADchFSFHAYb+epIOAAAAAAEARwKcAMIDFwAUAAATMhYfAR4BFRQGIyImLwEuATU0NjNVAwUCXgIDCQYDBQJeAwEIBgMXAgJeAwQEBggCAl4DBQMGCAAAAAIAQgCuAZICEgAbACgAAAEyFhURFAYjIiY9AQ4BIyImNTQ2MzIWFzU0NjMDMjY1NCYjIgYVFBYzAYQGCAgGBggWTC5IXFxILkwWCAaePUxMPTxMTDwCDAkG/sgGCAgGQigxbUVFbTInRAYJ/r5cOjlcXDk6XAAAAAIARwCsAZgDKAAbACcAABMyFhUUBiMiJicVFAYjIiY1ETQ2MzIWFRE+ATMRMjY1NCYjIgYVFBbzSF1dSC5MFggGBggIBgYIFkwuPExMPD1NTQIQbUVGbDEoQwUJCQUCWAUJCQX+nCgy/rhcOjlcXDk6XAAAAQBCAK4BcwISACsAAAEUBgcxDgEjIiY1NDYzMhYXHgEVFAYjIiYnLgEjIgYVFBYzMjY3PgEzMhYVAXMCARdIK0hcXEgiPRcEEQkGAwYCEjskPExMPCFADwIHBAYKAQUDAwMjK21FRW0cGAUWBgYIAgMdJFw5OlwjHQQFCAYAAAACAEIArQGSAykAGgAnAAABMhYVERQGIyImPQEOASMiJjU0NjMyFhcRNDYDMjY1NCYjIgYVFBYzAYQGCAgGBggWTC5IXFxILkwWCJg9TEw9PExMPAMpCAb9qQYICAZCKDFtRUVtMigBZAYI/aBcOjlcXDk6XAAAAAACAEIArgGMAhIAHwAnAAATMhYVFAYjIR4BMzI2Nz4BMzIWFRQGBw4BIyImNTQ2MwchLgEjIgYH5kldCQb+4gZJOCc6FQIHAwcIAQEWTitIXFxIhwEPBUs4OEkGAhJtRQYJNVIeHwMECAcCAwIlJW1FRW2kNVJSNQABAEIAtAF4AyoALAAAARQGKwERFAYjIiY1ESMiJjU0NjsBNTQ2MzIWFx4BFRQGIyImIyIGHQEzMhYVASQJBWgIBgYJQQYICAZBPzMbSQ4BAggHCS8tIjRoBQkCCwYJ/sYFCQkFAToJBgYIpzQ2IBgCBAMFCTMiJq0IBgAAAgBC//IBjQITADIAPwAAATIWFREUBgcOAQcOASMiJicuATU0NjMyFjMyNjc+ATc+AT0BDgEjIiY1NDYzMhYXNTQ2AzI2NTQmIyIGFRQWMwF/BggFAg49JAoVChxXEwIDCQYHPzYJEQkcMQwCBRdJK0hcXEgrSRcJlD1MTD08TEw8AgsIB/5nBhAFJSYHAgIaFwMEBAYILQECBRwbBA0EnCQsbUVFbSwlOgcI/sBdOTlcXDk5XQAAAAEARwC1AV8DKAAmAAATMhYdARQGIyImPQE0JiMiBhcUFh0BFAYjIiY1ETQ2MzIWFRE+ATPbP0UJBQYINDRCOwQBCAYGCAgGBggTPyYCEV07tgYICAa2Lk1gOwIKAYkGCAgGAlcFCQkF/q0hKQAAAAACAEcAtQB2AoUADAAaAAATFAYjIiY1NDYzMhYVBzIWFREUBiMiJjURNDZ2DwkKDQ0KCQ8YBgkJBgYICAJtCQ0NCQoODgpkCQb+yQUJCQUBNwYJAAAC//X/9AB8AoUACwAiAAATFAYjIiY1NDYzMhYHMhYVERQGIyImNTQ2Nz4BNz4BNRE0NnwNCgoNDQoKDRcGCTg5BQkIBhEcDBALCAJtCQ0NCQoODm4JBv5+NFAIBwYHAQEIDREuFQF/BgkAAAABAEcAtAFBAygAJQAAExceARUUBiMiJi8BBxUUBiMiJjURNDYzMhYVETc+ATMyFhUUBge1iQECCQYDBwGIPAgGBggIBgYIwQEGAgUJAgMBi8EBBQIGCAMDvjGFBQkJBQJYBQkJBf5TngEDCQUEBgIAAQBHALQAYwMoAA0AABMyFhURFAYjIiY1ETQ2VQYICAYGCAgDKAkF/agFCQkFAlgFCQAAAAEARwC1AloCEQA6AAABMhYdARQGIyImPQE0JiMiBh0BFAYjIiY9ATQmIyIGFxQWBxUUBiMiJjURNDYzMhYdAT4BMzIWFz4BMwHWP0UJBQYJNDNANwkFBgg0NEE5AgEBCAYGCAgGBggTPyYsQA4SQi0CEVw7twYICAa3LkxuNo0GCAgGty5MW0UBBQGKBggIBgE5BwgIBzQhKDMoKDMAAAABAEcAtgFeAhMAIwAAEzIWHQEUBiMiJj0BNCYjIgYdARQGIyImNRE0NjMyFh0BPgEz2j9FCQUGCDQ0QDcIBgYICAYGCBQ9JgITXTu2BggIBrYvTGJBjwYICAYBOQcICAcyIScAAgBCAK8BjAITAAsAGAAAEzIWFRQGIyImNTQ2EzI2NTQmIyIGFRQWM+ZJXV1JSFxcSD1MTD08TEw8AhNtRUZsbEZFbf64XDo5W1s5OlwAAAACAEf/8QGYAhIAGwAnAAATMhYVFAYjIiYnERQGIyImNRE0NjMyFh0BPgEzETI2NTQmIyIGFRQW80hdXUguTBYIBgYICAYGCBZMLjxMTDw9TU0CEm1FRW0xKP74BggIBgH+BgkJBkUoMv64XDo5XFw5OlwAAAIAQv/xAZICEgAaACcAAAEyFhURFAYjIiY1EQ4BIyImNTQ2MzIWFzU0NgMyNjU0JiMiBhUUFjMBhAYICAYGCBZMLkhcXEguTBYImD1MTD08TEw8AgwJBv4CBggIBgEIKDFtRUVtMShEBgn+vlw6OVxcOTpcAAAAAAEARwC2AOoCCwAbAAATMhYVFAYHDgEdARQGIyImNRE0NjMyFh0BPgEz2wYJBwY/OwgGBggIBgYIEkElAgsHBwYIAQlcPIkGCAgGATgHCAgHPx4wAAEAQgCtAVkCDwA1AAATFBceARcWFRQGIyImNTQ2MzIWFRQWMzI2NTQnLgEnJjU0NjMyFhUUBiMiJjUuAScuASMiBhViJyZdJyZbLzNaBQwGBUUsIksmJ1wnJlopMFgKBQcHAQcIEDUWG0wBuiELCxMUEzI2NC47Cg4MBTMhJSknDQ0TERAtMyMrOgYHCgYMEwoRCxQkAAAAAQAzALMBAwKIACAAABMzMhYVFAYrAREUBiMiJjURIyImNTQ2OwE1NDYzMhYdAahNBggIBk0IBgcISQcICAdJCAcGCAILCQYGCP7TBQkJBQEtCAYGCW4GCQkGbgABAEIArAFZAgkAIwAAATIWFREUBiMiJj0BDgEjIiY9ATQ2MzIWHQEUFjMyNj0BNDYzAUsFCQkFBgkRPShARAgGBgg0NEguCQYCCQkG/scGCAgGOyMtXTq3BgkJBrcuTXNLdAYJAAAAAAEAQgCtAVoCCwAhAAABMhYVFAcOAQcGBw4BIyImJyYnLgEnJjU0NjMyFhcbAT4BAUwGCBISLBUUBAEJBQYHAwQUFC0SEQgGBAgBcXACBwILCAcDLzB0MzMKBgMDBgozM3QwLwMHCAYD/tsBJQMGAAABAEIAsAIzAg0AMQAAATIWFRQHDgEHBgcOASMiJicLAQ4BIyImJyYnLgEnJjU0NjMyFhcbAT4BMzIWFxsBPgECJQYIEBEqEhMEAQgGBQgCZ2YCCAUGCAIEEhMpERAIBgQIAWhnAggEBgcDZmgBBwINCAcCLzB0MzMKBgMDBgEf/uEGAwMGCjMzdDAvAgcIBQT+3gEiBQQEBf7eASIEBQAAAQBCALUBNQIMACsAAAEyFhUUBg8BFx4BFRQGIyImLwEHDgEjIiY1NDY/AScuATU0NjMyFh8BNz4BAScGCAEBZmYBAQgGAwcBYV8CBgQGCAEBZmYBAQgGBAYCX2EBBwIMCAcBBAOUlgEFAgYIAwOMjAMDCAYCBQGWlAMEAQcIAwOMjAMDAAAAAAEAQv/uAWACDAAoAAABMhYVFAcOAQcGBw4BIyImNTQ3PgE3NjcmJy4BJyY1NDYzMhYXGwE+AQFSBggdHUggIAYCBwUFCQoLGgwMAwIVFTAUFAgGBAgBd3EBCAIMCAcCTEy5UlIPBAUJBQQcG0MeHQgBMjF3MTICBwgFA/7eASEEBQAAAAEAQgC+AVYCAQAeAAABFAYHAzMyFhUUBisBIiY1NDY3EyMiJjU0NjsBMhYVAVYDAePNBwgIB+wGCAEC484FCQkF7gUJAfIDBQH+8gkGBQkJBQMFAgEOCAYGCQkGAAAAAAEAR//vATQDKgAyAAABFAYrASIGFREUBgceARURFBY7ATIWFRQGKwEiJjURNCYjIiY1NDYzMjY1ETQ2OwEyFhUBNAkFSBghAwsLAyEYSAUJCQVIJDIEIAkUBwYmDjIkSAUJAxwGCCUY/wAQJw0MKRD/ABgkCAcFCTUkAQAdGQEOBQoKKwEAJTQIBgAAAQBH/+4AYwMtAA0AABM0NjMyFhURFAYjIiY1RwgGBggIBgYIAx4GCQkG/N4GCAgGAAAAAAEAR//vATQDKgAyAAATNDY7ATIWFREUFjMyFhUUBiMiBhURFAYrASImNTQ2OwEyNjURNDY3LgE1ETQmKwEiJjVHCAZIJDINJwYHFQkfBDIkSAYICAZIGCEDCwsDIRhIBggDHAYINCX/ACsKCgUOARkd/wAkNQkFBwgkGAEAECkMDScQAQAYJQgGAAAAAQBHAakBowIsAB4AAAEyFhUUBiMiJiMiBhUUBiMiJjU0NjMyFjMyNjU0NjMBkwoGJCxHNzYhGwgGBggqLkM2Ox8UBQgCJgoIJkVmMxwFCQkFKUNmNRkGDAAAAAACAEf/6wBjAywADgAcAAATMhYVERQGIyImNRE0NjMRMhYVERQGIyImNRE0NlUGCAgGBggIBgYICAYGCAgBNQgH/tMGCAgGAS0HCAH3CQb+0gUJCQUBLgYJAAAAAAEASwGVASgCcwAfAAATBwYiJyY0PwEnJjQ3NjIfATc2MhcWFA8BFxYUBwYiJ7laBAwEBARbWwQEBAwEWlsEDAQFBVpaBQUEDAQB8FsEBAQMBFtbBAwEBARbWwQEBAwEW1sEDAQEBAAAAwBHAbQBLQJfAA4AGwAnAAATIiY1NDY7ATIWFRQGKwEXMhYVFAYjIiY1NDYzNSImNTQ2MzIWFRQGVQYICAbLBQgIBctlCg4OCgoNDQoKDQ0KCg4OAfgJBgYICAYGCRUPCQoNDQoJD00NCgkPDwkKDQAAAAABAEcB+AGmAhUADQAAATIWFRQGIyEiJjU0NjMBmAUJCQX+vQYICAYCFQgGBgkJBgYIAAAAAQBHAfgCHAIVAA0AAAEyFhUUBiMhIiY1NDYzAg0GCQkG/kgGCAgGAhUIBgYJCQYGCAAAAAEATAKnAIUDJwATAAATNSY2MzIWFTAGBx4BFRQGIyImJ0wBGxEGCBgDBwoOCgkNAQK/BhBSCAY3DgILCAoODgoAAAAAAQBMAqcAhQMnABMAABMVFgYjIiY1MDY3LgE1NDYzMhYXhQEbEQYIGAIHCQ4KCQ0BAxAGEFMJBjcNAgwICg0NCgAAAAABAEcAZwCAAOcAEwAANxUWBiMiJjUwNjcuATU0NjMyFheAARsRBggYAgcJDgkKDQHPBhFRCAY3DQINBwoODgoAAgBMAqEA2wMnABMAJwAAEzUmNjMyFhUwBgceARUUBiMiJicXNSY2MzIWFTAGBx4BFRQGIyImJ0wBGxEGCBgDBwoOCgkNAVYBGxEGCBgCBgoOCgkNAQK/BhBSCAY3DgILCAoODgoGBhBSCAY4DQEMCAoODgoAAAAAAgBMAqEA2wMnABMAJwAAExUWBiMiJjUwNjcuATU0NjMyFhcnFRYGIyImNTA2Ny4BNTQ2MzIWF9sBGxEGCBgCBgoOCgkNAVYBGxEGCBgCBwkOCgkNAQMKBhFSCAc3DQMLCAoNDQoGBhBTCQY3DQIMCAoNDQoAAAAAAQBHALIArAILABoAABMeARUUBiMiJi8BJjY1NCY/AT4BMzIWFRQGB2MGQwkFBQcCSAIBAQJIAgcFBQlDBgFeDogIBggEBJwCAwMCBAKcAwYJBgiIDgAAAAEARwCyAKwCCwAZAAATLgE1NDYzMhYfARYUFRwBDwEOASMiJjU0No8HQQgGBAcCSQEBSQIHBAYIQQFeDogIBgkGA5wCBAIDAwKcBAQIBgiIAAAAAAEAMwCpAa0DNABWAAABIgcOAQcGBzMyFhUUBisBDgEVMzIWFRQGKwEWFx4BFxYzMjYzMhYVFAYHDgEjIicuAScmJyIGNTQyMzQ2NyIGNTQWMzY3PgE3NjMyFhceARUUBiMiJiMBMCcfHiwNDgW5BgkJBr0BAb8GCQkGvwILCy0hIi4wNgkGCAICFkEiNScnMw0OAggiIQkBAQkjJwkGDxAyJCQuIkEWAgIIBgk2MAMXFhZDJichCAYHCAsUCgkFBggmMC9UHB01CQUDBQIaIB8fWzU1LAEPDgoUCwEQEAInLCxKGBkhGgEGAgYINQAAAAEARwH4AS0CFQAOAAATIiY1NDY7ATIWFRQGKwFVBggIBssFCAgFywH4CQYGCAgGBgkAAAAEAAX/wAhLA8AABQALAA8AFQAACQEHCQEXCQEHFwcXAQcXNyUBBxcHFwQB/gD3AQn+9/cGSv6Yr7u7r/nZt7e3BNz+P9rp6doBwAIA9/73/vf3AgoBaK66u64CFre3twgBwdno6dkAAAMAAP/BBkADvwAFAAkADwAACQEHCQEXAQcXNyUBBxcHFwP6/gH2AQj++Pb+vLe3twTS/kDZ6OjZAcAB//f++P749wK2t7e3CAHA2Ojo2QAAAgAC/8AD/gPAAAYACwAACQEHCQEXASUHFzcnA/7+APcBCf739wIA/Lu3t7e3AcACAPf+9/739wIAt7e3t7cAAAMAAP/ABAADwAAFAAoAEQAAAQcJAwE3FwcnASc3JzcJAQIE+f71Af0CA/4E/rhtbW1tATdx+/V8AWf+iAPA+v70/gYCAwH9/hBtbW1t/oRx+/Z8/pn+iQACAAAAIgP3A1cAMQA2AAABJicuAScmBwYHDgEHBgc2Nz4BNzY3NhceARcWFxYHDgEHBgcOASceATc2Nz4BNzYnMQEFJzcBA/UXOzynZWVqS0FBZiQkERUdHUcpKi5VUVGHMDASEhARV0RDVRw3Gz+JRWpUVGwVFBb8owHpbTj+TAJHRzk5Sg0ODwsYGEQrKi8aFhckDQ0HDAsLOy4uOTo3N1shIAwEAwEOBgoPKShxRURI/kJnldf++wAAAAEAAAAAAAAAAAACAAA3OQEAAAAAAQAAAAIAALMrrBBfDzz1AAsEAAAAAADY5Q+QAAAAANjlD5D/9f/ACEsDwAAAAAgAAgAAAAAAAAABAAADwP/AAAAIUP/1AAAISwABAAAAAAAAAAAAAAAAAAAAdgQAAAAAAAAAAAAAAAIAAAAAvABHAPIARwHVAEcB8wBHAu0ARwMbAEcAqgBHATsARwE7AEcEAABHAccARwDHAEcBdABHALwARwFeAEcCKwBCAbEAhgHhAEIB+QBCAewAQgHmAEIB+wBCAeEAQgH5AEIB+QBCALwARwDHAEcBigBHAccARwGKAEcB7gBHA3EARwIzAEIB2wBHAgkAQgHyAEcBuQBHAbkARwIrAEIB1ABHARAAQgIsAEIB9gBHAbkARwJgAEcB1QBHAisAQgHMAEYCKwBCAcgARgHsAEIB2wBCAgUARwIzAEIDXABCAfAAQgHpAEIB8QBCARAAMwE3ADMBEAAzAVwAMwITAEcBCABHAdkAQgHZAEcBtABCAdkAQgHOAEIBuQBCAdQAQgGhAEcAvABHAMP/9QF1AEcAqgBHApwARwGgAEcBzgBCAdkARwHZAEIBLABHAZsAQgE2ADMBoABCAZwAQgJ1AEIBdwBCAaIAQgGYAEIBewBHAKoARwF7AEcB6QBHAKoARwFvAEsBdABHAe0ARwJiAEcAxwBMAMcATADHAEcBIgBMASIATADzAEcA8wBHAeAAMwF0AEcIUAAFBkAAAAQAAAIEAAAABAAAAAAAAAAAAAAAAAoAFAAeAEgAcgDgAVABvgJUAmwCugMKA1gDhgOmA8AD1gQCBH4ErgTyBTwFdgXMBioGXAamBvIHGAdKB3gHpgfUCBoI4AkeCVoJwgoACjIKXArYCwoLOAt0C7QL1AwQDEAMvAzwDXoNxg4aDkAObA6mDvgPUA+MD8QP6BAUEDgQcBB+EKIQ3hEYEVgRlBHQEg4SahKiEswTAhM6E1QTpBPWE/4UOBR0FJ4U6hUYFUwVhBXUFhgWWhaKFtAW6hcwF14XjBfAF/oYFBguGFAYchiSGM4ZChk2GWAZ2BnyGiYaThpuGpoa+BsCAAAAAQAAAHYAjAAFAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAABgBJgABAAAAAAAAABgBawABAAAAAAABABAAAAABAAAAAAACAAcDugABAAAAAAADABADWgABAAAAAAAEABADzwABAAAAAAAFAAsDOQABAAAAAAAGABADigABAAAAAAAJACABswABAAAAAAAKAGkAMAABAAAAAAALABQCEwABAAAAAAANACACTwABAAAAAAAOAC4CrwADAAEECQAAADABgwADAAEECQABACAAEAADAAEECQACAA4DwQADAAEECQADACADagADAAEECQAEACAD3wADAAEECQAFABYDRAADAAEECQAGACADmgADAAEECQAJAEAB0wADAAEECQAKANIAmQADAAEECQALACgCJwADAAEECQANAEACbwADAAEECQAOAFwC3VBhdGhmaW5kZXItSWNvbnMAUABhAHQAaABmAGkAbgBkAGUAcgAtAEkAYwBvAG4Ac0Egc3ltYm9sIGZvbnQgZm9yIHVzZSB3aXRoIHRoZSAybmQgRWRpdGlvbiBvZiB0aGUgUGF0aGZpbmRlciBSb2xlcGxheWluZyBHYW1lLgpGb250IGdlbmVyYXRlZCBieSBJY29Nb29uLgBBACAAcwB5AG0AYgBvAGwAIABmAG8AbgB0ACAAZgBvAHIAIAB1AHMAZQAgAHcAaQB0AGgAIAB0AGgAZQAgADIAbgBkACAARQBkAGkAdABpAG8AbgAgAG8AZgAgAHQAaABlACAAUABhAHQAaABmAGkAbgBkAGUAcgAgAFIAbwBsAGUAcABsAGEAeQBpAG4AZwAgAEcAYQBtAGUALgAKAEYAbwBuAHQAIABnAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAEkAYwBvAE0AbwBvAG4ALlBhaXpvIEluY29ycG9yYXRlZCwgMjAxOQBQAGEAaQB6AG8AIABJAG4AYwBvAHIAcABvAHIAYQB0AGUAZAAsACAAMgAwADEAOUphc29uIEJ1bG1haG4gYW5kIFNhcmFoIFJvYmluc29uAEoAYQBzAG8AbgAgAEIAdQBsAG0AYQBoAG4AIABhAG4AZAAgAFMAYQByAGEAaAAgAFIAbwBiAGkAbgBzAG8Abmh0dHA6Ly93d3cucGFpem8uY29tAGgAdAB0AHAAOgAvAC8AdwB3AHcALgBwAGEAaQB6AG8ALgBjAG8AbVBhdGhmaW5kZXIgQ29tcGF0YWJpbGl0eSBMaWNlbnNlAFAAYQB0AGgAZgBpAG4AZABlAHIAIABDAG8AbQBwAGEAdABhAGIAaQBsAGkAdAB5ACAATABpAGMAZQBuAHMAZWh0dHBzOi8vcGFpem8uY29tL3BhdGhmaW5kZXIvcnBnL2NvbXBhdGliaWxpdHkAaAB0AHQAcABzADoALwAvAHAAYQBpAHoAbwAuAGMAbwBtAC8AcABhAHQAaABmAGkAbgBkAGUAcgAvAHIAcABnAC8AYwBvAG0AcABhAHQAaQBiAGkAbABpAHQAeVZlcnNpb24gMi4wAFYAZQByAHMAaQBvAG4AIAAyAC4AMFBhdGhmaW5kZXItSWNvbnMAUABhAHQAaABmAGkAbgBkAGUAcgAtAEkAYwBvAG4Ac1BhdGhmaW5kZXItSWNvbnMAUABhAHQAaABmAGkAbgBkAGUAcgAtAEkAYwBvAG4Ac1JlZ3VsYXIAUgBlAGcAdQBsAGEAclBhdGhmaW5kZXItSWNvbnMAUABhAHQAaABmAGkAbgBkAGUAcgAtAEkAYwBvAG4AcwAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    .pf-icon {
+      font-family: "Pathfinder-Icons";
+      font-variant-ligatures: normal;
+      -webkit-font-feature-settings: "liga";
+      font-feature-settings: "liga";
+      line-height: 1;
+      display: inline-block;
+      font-size: 16px;
+    }
+
+
     .ui-icon {
       display: inline-block;
     }
@@ -224,7 +227,6 @@
       transform: translateY(2px);
     }
 
-    /* ── Shared: Stat-summary grid (used in both GM list and Player cards) ── */
     .statistic-summary {
       display: grid;
       grid-template-columns: repeat(var(--stat-cols, 6), 1fr);
@@ -246,6 +248,7 @@
       letter-spacing: 0.5px;
       line-height: 1.2;
       text-align: center;
+      white-space: nowrap;
     }
 
     .summary-statistic-value {
@@ -263,7 +266,6 @@
       color: var(--green);
     }
 
-    /* ── Shared: Condition layout (used in both GM list and Player cards) ── */
     .condition-tags-wrapper {
       display: flex;
       flex-direction: row;
@@ -287,19 +289,79 @@
       display: inline-block;
     }
 
-    /* ── Shared: Hyperlink colour for condition description <a> tags ── */
     .condition-link {
       color: var(--hyperlink);
     }
 
-    /* ── SVG sprite library — hidden from layout ── */
     .svg-sprite-lib {
       display: none;
     }
 
-
     .grow {
       flex-grow: 1;
+    }
+
+    .action-pips {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      --action-outline: var(--bg1);
+      --action-outline-width: 80;
+    }
+
+    .action-pip {
+      display: flex;
+      align-items: center;
+      color: var(--border2);
+      position: relative;
+    }
+
+    .action-pip+.action-pip {
+      margin-left: -10px;
+    }
+
+    .action-pip:nth-child(1) {
+      z-index: 4;
+    }
+
+    .action-pip:nth-child(2) {
+      z-index: 3;
+    }
+
+    .action-pip:nth-child(3) {
+      z-index: 2;
+    }
+
+    .action-pip:nth-child(4) {
+      z-index: 1;
+    }
+
+    .action-pip.available {
+      color: var(--blue);
+    }
+
+    .action-pip.slowed-lost {
+      color: var(--bg2);
+      --action-outline: var(--amber);
+    }
+
+    .action-pip.stunned-lost {
+      color: var(--bg2);
+      --action-outline: var(--red);
+    }
+
+    .action-pip.quickened {
+      color: var(--green);
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 2px;
     }
   </style>
   <style>
@@ -352,8 +414,6 @@
       font-size: 13px;
       font-family: "Audiowide", sans-serif;
       letter-spacing: 1px;
-      /* margin-left: 12px; */
-      /* vertical-align: middle; */
     }
 
     .header-controls {
@@ -395,7 +455,6 @@
       background: var(--blue);
     }
 
-    /* inline combat control groups — label + button row */
     .control-group {
       padding: 0;
       display: flex;
@@ -419,7 +478,6 @@
       align-items: center;
     }
 
-    /* round number sits inline between - and + */
     .control-round-number {
       font-family: "Lexend Exa", sans-serif;
       font-size: 22px;
@@ -429,7 +487,6 @@
       text-align: center;
     }
 
-    /* icon-only button — same vertical padding as .button so heights match */
     .visibility-button {
       padding: 7px;
       display: flex;
@@ -550,15 +607,12 @@
       color: var(--text);
       border: 1px solid var(--border3);
       border-radius: var(--radius);
-      padding: 8px 0;
+      padding: 4px 0;
       background: var(--bg3);
-      flex-shrink: 0;
       align-self: start;
       appearance: none;
       cursor: text;
-      cursor: text;
       outline: none;
-      line-height: 2;
       transition:
         border-color 0.15s,
         color 0.15s;
@@ -580,6 +634,7 @@
       color: var(--blue);
     }
 
+    .action-badge,
     .reaction-badge {
       width: 44px;
       display: flex;
@@ -594,7 +649,6 @@
       padding: 2px 0;
       background: var(--bg3);
       color: var(--muted);
-      cursor: pointer;
       user-select: none;
       transition:
         background 0.15s,
@@ -602,9 +656,14 @@
         color 0.15s;
     }
 
+    .reaction-badge {
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+
     .reaction-badge:hover {
-      border-color: var(--muted);
-      color: var(--text);
+      border-color: var(--amber-border);
+      color: var(--amber);
     }
 
     .reaction-badge.used {
@@ -674,12 +733,10 @@
       text-transform: uppercase;
     }
 
-    /* Each condition group: parent + bundled children — base in shared-vars */
     .condition-group {
       border-radius: var(--radius);
     }
 
-    /* Parent tag loses its own border/bg — the group provides it */
     .condition-group .condition-tag:not(.bundled) {
       border: none;
       background: transparent;
@@ -692,7 +749,6 @@
       background: var(--white-04);
     }
 
-    /* Stat summary pinned to bottom-left of combatant-body */
     .statistic-summary-row {
       align-self: flex-start;
       max-width: 240px;
@@ -1041,17 +1097,12 @@
       background: var(--amber-bg-hover);
     }
 
-    /* ── GM overrides for shared statistic-summary ── */
     .statistic-summary {
       overflow: hidden;
     }
 
     .summary-statistic {
       justify-content: flex-end;
-    }
-
-    .summary-statistic-key {
-      white-space: nowrap;
     }
 
     .summary-statistic-value {
@@ -1138,13 +1189,7 @@
       border-color: var(--blue-border);
     }
 
-    /* Dying button: PC/Ally not yet in dying state */
-    .icon-btn.dying-button:hover {
-      color: var(--amber);
-      background: var(--amber-bg-hover);
-      border-color: var(--amber-border);
-    }
-
+    .icon-btn.dying-button:hover,
     .icon-btn.restore-button:hover {
       color: var(--amber);
       background: var(--amber-bg-hover);
@@ -1162,8 +1207,8 @@
 
     .edit-close-button {
       position: absolute;
-      top: 6px;
-      right: 8px;
+      top: 8px;
+      right: 4px;
       background: none;
       border: none;
       color: var(--muted);
@@ -1328,23 +1373,19 @@
       cursor: not-allowed;
     }
 
-    /* ── Utility: full-width button variant ── */
     .button.button-full {
       width: 100%;
       margin-top: 4px;
     }
 
-    /* ── Log placeholder entry (awaiting combat) ── */
     .log-placeholder {
       color: var(--text-dim);
     }
 
-    /* ── Sidebar text alignment variant ── */
     .sidebar-text--right {
       text-align: right;
     }
 
-    /* ── Edit-field narrow variant (Max HP / AC fields) ── */
     .edit-field--narrow {
       width: 60px;
     }
@@ -1354,29 +1395,24 @@
       text-align: center;
     }
 
-    /* ── Combatant editing layout ── */
     .combatant.editing {
       flex-wrap: wrap;
     }
 
-    /* ── Edit button active state ── */
     .icon-btn.edit-button.active {
       color: var(--blue);
       background-color: var(--blue-bg);
       border-color: var(--blue-border);
     }
 
-    /* ── Stat-block-container: clickable variant ── */
     .statistic-block-container--clickable {
       cursor: pointer;
     }
 
-    /* ── Hidden file input (load encounter) ── */
     #load-input {
       display: none;
     }
 
-    /* ── JS-toggled states — default hidden, JS shows with explicit display value ── */
     #combat-controls-bar {
       display: none;
     }
@@ -1419,15 +1455,13 @@
     }
 
     .sidebar-text a {
-      font-family: "Lexend", sans-serif;
-      font-size: 12px;
       color: var(--hyperlink);
     }
 
     .field {
       margin-bottom: 10px;
     }
-    
+
     .field input,
     .field select {
       width: 100%;
@@ -1445,7 +1479,7 @@
     .field input:focus,
     .field select:focus {
       outline: none;
-      border-color: var(--blue);
+      border-color: var(--blue-border);
     }
 
     .field input::placeholder {
@@ -1471,10 +1505,10 @@
 
     .initiative-or {
       text-align: center;
-      align-self: center;
+      align-self: end;
       color: var(--muted);
       font-size: 16px;
-      padding-bottom: 16px;
+      padding-bottom: 8px;
       font-family: "Lexend", sans-serif;
     }
 
@@ -1632,15 +1666,6 @@
       height: 4px;
     }
 
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border2);
-      border-radius: 2px;
-    }
-
     #toast {
       position: fixed;
       bottom: 24px;
@@ -1690,6 +1715,11 @@
       max-width: 440px;
       width: 90%;
       position: relative;
+      transition: max-width 0.15s ease;
+    }
+
+    #condition-modal.az-mode {
+      max-width: 510px;
     }
 
     #condition-modal-submit,
@@ -1698,7 +1728,135 @@
     }
 
     .condition-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       padding-bottom: 14px;
+      min-width: 0;
+    }
+
+    /* When search is active: collapse title, fill with input */
+    .condition-modal-header.searching {
+      gap: 0;
+    }
+
+    .condition-modal-header.searching .modal-title {
+      flex: 0 0 0px;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .condition-modal-header.searching #condition-search {
+      flex: 1;
+      margin-right: 8px;
+    }
+
+    .condition-group-select {
+      background: var(--bg3);
+      border: 1px solid var(--border3);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: "Lexend", sans-serif;
+      font-size: 11px;
+      padding: 4px 8px;
+      cursor: pointer;
+      height: 28px;
+    }
+
+    .condition-group-select:focus {
+      outline: none;
+      border-color: var(--blue-border);
+    }
+
+    /* Close button inside the modal flex header — override absolute */
+    #condition-modal .condition-modal-header .edit-close-button {
+      position: static;
+      flex-shrink: 0;
+      padding: 4px 6px;
+      height: 28px;
+      width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #condition-search {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      background-color: var(--bg3);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23777' d='M3.5 0C1.57 0 0 1.57 0 3.5S1.57 7 3.5 7c.59 0 1.17-.14 1.66-.41a1 1 0 0 0 .13.13l1 1a1.02 1.02 0 1 0 1.44-1.44l-1-1a1 1 0 0 0-.16-.13c.27-.49.44-1.06.44-1.66c0-1.93-1.57-3.5-3.5-3.5zm0 1C4.89 1 6 2.11 6 3.5c0 .66-.24 1.27-.66 1.72l-.03.03a1 1 0 0 0-.13.13c-.44.4-1.04.63-1.69.63c-1.39 0-2.5-1.11-2.5-2.5s1.11-2.5 2.5-2.5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 12px 12px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      color: transparent;
+      caret-color: transparent;
+      outline: none;
+      font-family: "Lexend", sans-serif;
+      font-size: 12px;
+      transition: width 0.25s ease, padding 0.25s ease, background-color 0.15s, border-color 0.15s;
+      cursor: text;
+      overflow: hidden;
+    }
+
+    #condition-search:focus {
+      border-color: var(--blue-border);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%2309c0f1' d='M3.5 0C1.57 0 0 1.57 0 3.5S1.57 7 3.5 7c.59 0 1.17-.14 1.66-.41a1 1 0 0 0 .13.13l1 1a1.02 1.02 0 1 0 1.44-1.44l-1-1a1 1 0 0 0-.16-.13c.27-.49.44-1.06.44-1.66c0-1.93-1.57-3.5-3.5-3.5zm0 1C4.89 1 6 2.11 6 3.5c0 .66-.24 1.27-.66 1.72l-.03.03a1 1 0 0 0-.13.13c-.44.4-1.04.63-1.69.63c-1.39 0-2.5-1.11-2.5-2.5s1.11-2.5 2.5-2.5z'/%3E%3C/svg%3E");
+    }
+
+    #condition-search.expanded {
+      width: 170px;
+      padding: 0 8px;
+      background-image: none;
+      background-color: var(--blue-bg);
+      border-color: var(--blue-border);
+      color: var(--text);
+      caret-color: var(--text);
+    }
+
+    .condition-group-label {
+      width: 100%;
+      font-family: "Lexend", sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 2px 2px 2px;
+      margin-top: 2px;
+    }
+
+    .condition-group-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border1);
+      margin: 6px 0 4px;
+    }
+
+    .condition-group-buttons {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .condition-group-label-az {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Lexend", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      padding: 4px 10px;
+      min-width: 28px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
     }
 
     .modal-title {
@@ -1708,6 +1866,11 @@
       line-height: normal;
       letter-spacing: 1px;
       padding-left: 4px;
+      flex: 1 1 auto;
+      overflow: hidden;
+      white-space: nowrap;
+      min-width: 0;
+      transition: flex-basis 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
     }
 
     .condition-modal-grid {
@@ -1715,7 +1878,7 @@
       flex-wrap: wrap;
       gap: 6px;
       margin-bottom: 14px;
-      max-height: 300px;
+      max-height: 65vh;
       overflow-y: auto;
       justify-content: space-between;
     }
@@ -1787,6 +1950,53 @@
       text-align: left;
     }
 
+    /* Condition search hint speech bubble */
+    .cond-search-hint {
+      position: absolute;
+      background: var(--blue-bg);
+      border: 1px solid var(--blue-border);
+      color: var(--blue);
+      border-radius: var(--radius);
+      padding: 5px 11px;
+      font-family: "Lexend", sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .cond-search-hint.visible {
+      opacity: 1;
+    }
+
+    /* Arrow pointing down toward the search icon */
+    .cond-search-hint::before {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      top: auto;
+      left: var(--arrow-offset, 50%);
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 7px solid var(--blue-border);
+    }
+
+    .cond-search-hint::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      top: auto;
+      left: var(--arrow-offset, 50%);
+      transform: translateX(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--blue-bg);
+    }
+
     /* Inline edit fields inside the desc-overlay */
     .description-fields-row {
       display: flex;
@@ -1815,7 +2025,8 @@
       text-align: center;
     }
 
-    .description-field-label {
+    .description-field-label,
+    .pv-display-control-label {
       font-family: "Lexend Exa", monospace;
       font-size: 10px;
       color: var(--muted);
@@ -2313,7 +2524,7 @@
     }
 
 
-    /* ── Player View Display controls (GM sidebar) ── */
+    /* ── Player View Display controls── */
     .pv-display-control-row {
       display: flex;
       align-items: center;
@@ -2323,16 +2534,12 @@
     }
 
     .pv-display-control-label {
-      font-family: "Lexend Exa", monospace;
-      font-size: 10px;
       letter-spacing: 1px;
-      color: var(--muted);
-      text-transform: uppercase;
       min-width: 52px;
       flex-shrink: 0;
     }
 
-    /* ── Stretch slider — tweak these variables to restyle ── */
+    /* ── Stretch slider  ── */
     .pv-display-slider {
       /* Layout */
       flex: 1;
@@ -2380,7 +2587,7 @@
       border: var(--slider-track-border);
     }
 
-    /* Filled portion (Firefox only — WebKit has no native equivalent) */
+    /* Filled portion (Firefox only) */
     .pv-display-slider::-moz-range-progress {
       height: var(--slider-track-height);
       background: var(--slider-track-fill);
@@ -2493,38 +2700,31 @@
         d="M8.073 12.194L4.212 8.333c-1.52 1.657-2.096 3.317-2.106 3.351L2 12l.105.316C2.127 12.383 4.421 19 12.054 19c.929 0 1.775-.102 2.552-.273l-2.746-2.746a3.987 3.987 0 0 1-3.787-3.787M12.054 5c-1.855 0-3.375.404-4.642.998L3.707 2.293L2.293 3.707l18 18l1.414-1.414l-3.298-3.298c2.638-1.953 3.579-4.637 3.593-4.679l.105-.316l-.105-.316C21.98 11.617 19.687 5 12.054 5m1.906 7.546c.187-.677.028-1.439-.492-1.96s-1.283-.679-1.96-.492L10 8.586A3.96 3.96 0 0 1 12.054 8c2.206 0 4 1.794 4 4a3.94 3.94 0 0 1-.587 2.053z" />
     </symbol>
 
-    <symbol id="icon-d20" viewBox="0 0 480 512">
+    <symbol id="icon-d20" viewBox="-16 0 512 512">
       <path fill="currentColor"
         d="M106.75 215.06L1.2 370.95c-3.08 5 .1 11.5 5.93 12.14l208.26 22.07zM7.41 315.43L82.7 193.08L6.06 147.1c-2.67-1.6-6.06.32-6.06 3.43v162.81c0 4.03 5.29 5.53 7.41 2.09M18.25 423.6l194.4 87.66c5.3 2.45 11.35-1.43 11.35-7.26v-65.67l-203.55-22.3c-4.45-.5-6.23 5.59-2.2 7.57m81.22-257.78L179.4 22.88c4.34-7.06-3.59-15.25-10.78-11.14L17.81 110.35c-2.47 1.62-2.39 5.26.13 6.78zM240 176h109.21L253.63 7.62C250.5 2.54 245.25 0 240 0s-10.5 2.54-13.63 7.62L130.79 176zm233.94-28.9l-76.64 45.99l75.29 122.35c2.11 3.44 7.41 1.94 7.41-2.1V150.53c0-3.11-3.39-5.03-6.06-3.43m-93.41 18.72l81.53-48.7c2.53-1.52 2.6-5.16.13-6.78l-150.81-98.6c-7.19-4.11-15.12 4.08-10.78 11.14zm79.02 250.21L256 438.32v65.67c0 5.84 6.05 9.71 11.35 7.26l194.4-87.66c4.03-1.97 2.25-8.06-2.2-7.56m-86.3-200.97l-108.63 190.1l208.26-22.07c5.83-.65 9.01-7.14 5.93-12.14zM240 208H139.57L240 383.75L340.43 208z" />
     </symbol>
 
-    <symbol id="icon-skull" viewBox="2 2 20 20">
+    <symbol id="icon-skull" viewBox="1.5 2 21 21">
       <path fill="currentColor"
         d="M12 2c5.523 0 10 4.477 10 10v3.764a2 2 0 0 1-1.106 1.789L18 19v1a3 3 0 0 1-2.824 2.995L14.95 23q.033-.161.044-.33L15 22.5V22a2 2 0 0 0-1.85-1.994L13 20h-2a2 2 0 0 0-1.995 1.85L9 22v.5q0 .258.05.5H9a3 3 0 0 1-3-3v-1l-2.894-1.447A2 2 0 0 1 2 15.763V12C2 6.477 6.477 2 12 2m-4 9a2 2 0 1 0 0 4a2 2 0 0 0 0-4m8 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4" />
     </symbol>
 
-    <symbol id="icon-heart" viewBox="0 0 24 24">
+    <symbol id="icon-heart" viewBox="1 0.7 22 22">
       <path fill="currentColor"
         d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.209 4.068 1.809 6.281 1.809c1.312 0 4.151.501 5.719 4.457c1.59-3.968 4.464-4.447 5.726-4.447c2.54 0 5.274 1.621 5.274 5.181c0 4.069-5.136 8.625-11 14.402" />
     </symbol>
 
-    <symbol id="icon-undo" viewBox="0 0 512 512">
+    <symbol id="icon-undo" viewBox="48 48 416 416">
       <path fill="currentColor"
         d="M448 440a16 16 0 0 1-12.61-6.15c-22.86-29.27-44.07-51.86-73.32-67C335 352.88 301 345.59 256 344.23V424a16 16 0 0 1-27 11.57l-176-168a16 16 0 0 1 0-23.14l176-168A16 16 0 0 1 256 88v80.36c74.14 3.41 129.38 30.91 164.35 81.87C449.32 292.44 464 350.9 464 424a16 16 0 0 1-16 16" />
     </symbol>
 
-    <symbol id="icon-drag" viewBox="0 0 24 24">
+    <symbol id="icon-drag" viewBox="3 3 18 18">
       <path fill="currentColor" d="M4 9a1 1 0 0 0 0 2h16a1 1 0 1 0 0-2zm0 4a1 1 0 1 0 0 2h16a1 1 0 1 0 0-2z" />
     </symbol>
 
-    <symbol id="icon-reaction" viewBox="0 0 24 24">
-      <g transform="translate(0 24) scale(1 -1)">
-        <path fill="currentColor"
-          d="M7 19v-2h7.1q1.575 0 2.738-1T18 13.5T16.838 11T14.1 10H7.8l2.6 2.6L9 14L4 9l5-5l1.4 1.4L7.8 8h6.3q2.425 0 4.163 1.575T20 13.5t-1.737 3.925T14.1 19z" />
-      </g>
-    </symbol>
-
-    <symbol id="icon-edit" viewBox="0 0 20 20">
+    <symbol id="icon-edit" viewBox="1 1 18 18">
       <path fill="currentColor"
         d="m16.77 8l1.94-2a1 1 0 0 0 0-1.41l-3.34-3.3a1 1 0 0 0-1.41 0L12 3.23zM1 14.25V19h4.75l9.96-9.96l-4.75-4.75z" />
     </symbol>
@@ -2534,7 +2734,7 @@
         d="M11.9.499a2.226 2.226 0 0 1 2.81 0c.09.073.186.169.378.362a6 6 0 0 1 .362.378a2.23 2.23 0 0 1-.136 2.961l-.226.228l-3.57 3.57l3.57 3.57l.226.228a2.226 2.226 0 0 1 .136 2.96c-.073.09-.169.186-.362.378a6 6 0 0 1-.378.362c-.82.666-1.99.666-2.81 0a5 5 0 0 1-.378-.362l-3.57-3.57l-3.57 3.57c-.192.192-.29.289-.379.362a2.23 2.23 0 0 1-2.81 0a5 5 0 0 1-.378-.362a6 6 0 0 1-.362-.378a2.226 2.226 0 0 1 0-2.81c.073-.09.169-.186.362-.378l3.57-3.57l-3.57-3.57a6 6 0 0 1-.362-.379a2.23 2.23 0 0 1 0-2.81c.073-.09.169-.186.362-.378a6 6 0 0 1 .378-.362a2.23 2.23 0 0 1 2.81 0c.09.073.187.169.379.362l3.57 3.57l3.57-3.57A6 6 0 0 1 11.9.499" />
     </symbol>
 
-    <symbol id="icon-x-thin" viewBox="0 0 11 11">
+    <symbol id="icon-x-thin" viewBox="1 1 9 9">
       <path
         d="M2.2 1.19l3.3 3.3L8.8 1.2a.67.67 0 0 1 .5-.2a.75.75 0 0 1 .7.7a.66.66 0 0 1-.2.48L6.49 5.5L9.8 8.82c.13.126.202.3.2.48a.75.75 0 0 1-.7.7a.67.67 0 0 1-.5-.2L5.5 6.51L2.21 9.8a.67.67 0 0 1-.5.2a.75.75 0 0 1-.71-.71a.66.66 0 0 1 .2-.48L4.51 5.5L1.19 2.18A.66.66 0 0 1 1 1.7a.75.75 0 0 1 .7-.7a.67.67 0 0 1 .5.19z"
         fill="currentColor">
@@ -2546,68 +2746,58 @@
         d="M1408 608v192q0 40-28 68t-68 28H896v416q0 40-28 68t-68 28H608q-40 0-68-28t-28-68V896H96q-40 0-68-28T0 800V608q0-40 28-68t68-28h416V96q0-40 28-68t68-28h192q40 0 68 28t28 68v416h416q40 0 68 28t28 68" />
     </symbol>
 
-
-    <symbol id="icon-plus-thin" viewBox="2 2 20 20">
+    <symbol id="icon-plus-thin" viewBox="4 4 16 16">
       <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
         d="M12 5v14m-7-7h14" />
     </symbol>
 
-    <symbol id="icon-rotate" viewBox="0 0 24 24">
+    <symbol id="icon-rotate" viewBox="2 2 20 20">
       <path fill="currentColor"
         d="M6.09 19h12l-1.3 1.29a1 1 0 0 0 1.42 1.42l3-3a1 1 0 0 0 0-1.42l-3-3a1 1 0 0 0-1.42 0a1 1 0 0 0 0 1.42l1.3 1.29h-12a1.56 1.56 0 0 1-1.59-1.53V13a1 1 0 0 0-2 0v2.47A3.56 3.56 0 0 0 6.09 19m-.3-9.29a1 1 0 1 0 1.42-1.42L5.91 7h12a1.56 1.56 0 0 1 1.59 1.53V11a1 1 0 0 0 2 0V8.53A3.56 3.56 0 0 0 17.91 5h-12l1.3-1.29a1 1 0 0 0 0-1.42a1 1 0 0 0-1.42 0l-3 3a1 1 0 0 0 0 1.42Z" />
     </symbol>
 
 
-    <symbol id="icon-save" viewBox="25 25 590 590">
+    <symbol id="icon-save" viewBox="96 96 448 448">
       <path fill="currentColor"
         d="M160 96c-35.3 0-64 28.7-64 64v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V237.3c0-17-6.7-33.3-18.7-45.3L448 114.7c-12-12-28.3-18.7-45.3-18.7zm32 96c0-17.7 14.3-32 32-32h160c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H224c-17.7 0-32-14.3-32-32zm128 160c35.3 0 64 28.7 64 64s-28.7 64-64 64s-64-28.7-64-64s28.7-64 64-64" />
-
     </symbol>
 
-
-    <symbol id="icon-load" viewBox="2 2 20 20">
+    <symbol id="icon-load" viewBox="2 2.5 19 19">
       <path fill="currentColor" fill-rule="evenodd"
         d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 .087.586l2.977-7.937A1 1 0 0 1 6 10h12V9a2 2 0 0 0-2-2h-4.532l-1.9-2.28A2 2 0 0 0 8.032 4zm2.693 8H6.5l-3 8H18l3-8z"
         clip-rule="evenodd" />
     </symbol>
 
-
-    <symbol id="icon-start" viewBox="2 2 20 20">
+    <symbol id="icon-start" viewBox="5.3 3.8 16.4 16.4">
       <path fill="currentColor" fill-rule="evenodd"
         d="M19.5 14.598c2-1.155 2-4.041 0-5.196l-9-5.196C8.5 3.05 6 4.494 6 6.804v10.392c0 2.31 2.5 3.753 4.5 2.598z"
         clip-rule="evenodd" />
     </symbol>
 
-
-    <symbol id="icon-stop" viewBox="2 2 20 20">
+    <symbol id="icon-stop" viewBox="4 4 16 16">
       <path fill="currentColor" fill-rule="evenodd"
         d="M7 4a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3z" clip-rule="evenodd" />
     </symbol>
 
-
-    <symbol id="icon-next-turn" viewBox="0 0 17 16">
+    <symbol id="icon-next-turn" viewBox="1.5 0 16 16">
       <path fill="currentColor" fill-rule="evenodd"
         d="M2.002 1c0-.553.442-1 .989-1H4.97c.547 0 .989.447.989 1v14c0 .553-.442 1-.989 1H2.991a.994.994 0 0 1-.989-1zm8.111 14.495c-.582.581-2.103.9-2.103-1.001V1.506c0-1.839 1.521-1.582 2.103-1l6.444 6.442a1.49 1.49 0 0 1 0 2.104z" />
 
     </symbol>
 
-
-    <symbol id="icon-prev-turn" viewBox="0 0 17 16">
+    <symbol id="icon-prev-turn" viewBox="-0.5 0 16 16">
       <g transform="translate(17 0) scale(-1 1)">
         <path fill="currentColor" fill-rule="evenodd"
           d="M2.002 1c0-.553.442-1 .989-1H4.97c.547 0 .989.447.989 1v14c0 .553-.442 1-.989 1H2.991a.994.994 0 0 1-.989-1zm8.111 14.495c-.582.581-2.103.9-2.103-1.001V1.506c0-1.839 1.521-1.582 2.103-1l6.444 6.442a1.49 1.49 0 0 1 0 2.104z" />
       </g>
     </symbol>
 
-
     <symbol id="icon-next-round" viewBox="4 4 16 16">
       <path fill="currentColor"
         d="m11 13.94l1.58-1.13c.26-.19.42-.49.42-.81s-.16-.63-.42-.81L11 10.06L5.58 6.19A.997.997 0 0 0 4 7v10c0 .37.21.72.54.89c.14.07.3.11.46.11c.21 0 .41-.06.58-.19z" />
       <path fill="currentColor"
         d="m19.58 11.19l-7-5A.997.997 0 0 0 11 7v1.83l2.16 1.54c.52.38.84.98.84 1.63s-.31 1.25-.84 1.63L11 15.17V17c0 .37.21.72.54.89c.14.07.3.11.46.11c.21 0 .41-.06.58-.19l7-5c.26-.19.42-.49.42-.81s-.16-.63-.42-.81" />
-
     </symbol>
-
 
     <symbol id="icon-prev-round" viewBox="4 4 16 16">
       <g transform="translate(24 0) scale(-1 1)">
@@ -2618,8 +2808,7 @@
       </g>
     </symbol>
 
-
-    <symbol id="icon-player-view" viewBox="0 0 24 24">
+    <symbol id="icon-player-view" viewBox="2 2 20 20">
       <g transform="translate(24 0) scale(-1 1)" fill="none" fill-rule="evenodd">
         <path
           d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
@@ -2628,18 +2817,34 @@
       </g>
     </symbol>
 
-    <symbol id="icon-next-player" viewBox="8 8  32 32  ">
-      <path fill="currentColor" stroke="currentColor" stroke-linejoin="round" stroke-width="4" d="m20 12l12 12l-12 12z"
-        \>
+    <symbol id="icon-next-player" viewBox="14 12 24 24">
+      <path fill="currentColor" stroke="currentColor" stroke-linejoin="round" stroke-width="4"
+        d="m20 12l12 12l-12 12z" />
     </symbol>
 
-    <symbol id="icon-reset" viewBox="0 0 24 24">
+    <symbol id="icon-reset" viewBox="2 2 20 20">
       <path fill="currentColor"
         d="M9 21q-.425 0-.712-.288T8 20v-1H4q-.825 0-1.412-.587T2 17V5q0-.825.588-1.412T4 3h16q.825 0 1.413.588T22 5v2q0 .425-.288.713T21 8t-.712-.288T20 7V5H4v12h16v-5h-7.2l1.15 1.15q.275.275.275.7t-.275.7t-.7.275t-.7-.275L9.7 11.7q-.3-.3-.3-.7t.3-.7l2.85-2.85q.275-.275.7-.275t.7.275t.275.7t-.275.7L12.8 10H20q.825 0 1.413.588T22 12v5q0 .825-.587 1.413T20 19h-4v1q0 .425-.288.713T15 21zm4-10" />
     </symbol>
 
+    <symbol id="icon-action-front" viewBox="-60 -60 634 634">
+      <path fill="currentColor" stroke="var(--action-outline)" stroke-width="var(--action-outline-width)"
+        paint-order="stroke fill"
+        d="M 286 12 C 270.4 -3.6 245.1 -3.6 229.4 12 L 131.4 110 L 245.4 228 C 261 243.6 261 268.9 245.4 284.6 L 131.4 402.6 L 229.4 500.6 C 245 516.2 270.3 516.2 286 500.6 L 502 284.6 C 517.6 269 517.6 243.7 502 228 Z M 101.4 140 L 13.4 228 C -2.2 243.6 -2.2 268.9 13.4 284.6 L 101.4 372.6 L 189.4 284.6 C 205 269 205 243.7 189.4 228 Z" />
+    </symbol>
 
+    <symbol id="icon-action-back" viewBox="-60 -60 634 634">
+      <path fill="currentColor" stroke="var(--action-outline)" stroke-width="var(--action-outline-width)"
+        paint-order="stroke fill"
+        d="m 284.3 11.7 c -15.6 -15.6 -40.9 -15.6 -56.6 0 l -216 216 c -15.6 15.6 -15.6 40.9 0 56.6 l 216 216 c 15.6 15.6 40.9 15.6 56.6 0 l 216 -216 c 15.6 -15.6 15.6 -40.9 0 -56.6 z" />
+    </symbol>
+
+    <symbol id="icon-search" viewBox="0 0 8 8">
+      <path fill="currentColor"
+        d="M3.5 0C1.57 0 0 1.57 0 3.5S1.57 7 3.5 7c.59 0 1.17-.14 1.66-.41a1 1 0 0 0 .13.13l1 1a1.02 1.02 0 1 0 1.44-1.44l-1-1a1 1 0 0 0-.16-.13c.27-.49.44-1.06.44-1.66c0-1.93-1.57-3.5-3.5-3.5zm0 1C4.89 1 6 2.11 6 3.5c0 .66-.24 1.27-.66 1.72l-.03.03a1 1 0 0 0-.13.13c-.44.4-1.04.63-1.69.63c-1.39 0-2.5-1.11-2.5-2.5s1.11-2.5 2.5-2.5z" />
+    </symbol>
   </svg>
+
   <header>
     <div class="header-logo">INIT <span>// Encounter Tracker</span></div>
     <div class="header-controls">
@@ -2765,48 +2970,61 @@
         <div class="field">
           <label>Type</label>
           <div class="type-select-row">
-            <input class="type-radio" type="radio" name="ctype" id="radio-enemy" value="enemy" checked />
+            <input class="type-radio" type="radio" name="ctype" id="radio-enemy" value="enemy" checked
+              onchange="updateQtyVisibility()" />
             <label class="type-label" for="radio-enemy" for-type="enemy">Enemy</label>
-            <input class="type-radio" type="radio" name="ctype" id="radio-player-character" value="pc" />
+            <input class="type-radio" type="radio" name="ctype" id="radio-player-character" value="pc"
+              onchange="updateQtyVisibility()" />
             <label class="type-label" for="radio-player-character" for-type="pc">PC</label>
-            <input class="type-radio" type="radio" name="ctype" id="radio-ally" value="ally" />
+            <input class="type-radio" type="radio" name="ctype" id="radio-ally" value="ally"
+              onchange="updateQtyVisibility()" />
             <label class="type-label" for="radio-ally" for-type="ally">Ally</label>
           </div>
         </div>
-        <div class="field">
-          <label>Name</label>
-          <input type="text" id="field-name" placeholder="Character name…"
-            onkeydown="if (event.key === 'Enter') addCombatant();" />
+        <div class="field-row" id="field-name-row" style="grid-template-columns: 3fr 1fr;">
+          <div class="field">
+            <label>Name</label>
+            <input type="text" id="field-name" placeholder="Character name…"
+              onkeydown="if (event.key === 'Enter') addCombatant();" />
+          </div>
+          <div class="field" id="field-quantity-wrapper">
+            <label>Qty</label>
+            <input type="text" inputmode="numeric" id="field-quantity" placeholder="1" min="1"
+              onkeydown="if (event.key === 'Enter') addCombatant();" />
+          </div>
         </div>
         <div class="field">
-          <label>Init</label>
+
           <div class="initiative-row">
             <div>
+              <label>Init Value</label>
               <input type="text" inputmode="numeric" id="field-initiative-value" placeholder="20"
-                title="Enter final initiative score directly" />
-              <div class="roll-hint">Value</div>
+                title="Enter final initiative score directly" onkeydown="if (event.key === 'Enter') addCombatant();" />
             </div>
             <div class="initiative-or">OR</div>
             <div>
+              <label>Init Mod</label>
               <input type="text" inputmode="numeric" id="field-initiative-modifier" placeholder="+0"
-                title="Perc/skill modifier — click Roll" />
-              <div class="roll-hint">Mod (rolls d20)</div>
+                title="Gets added to d20 roll" onkeydown="if (event.key === 'Enter') addCombatant();" />
             </div>
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <label>Max HP</label>
-            <input type="text" inputmode="numeric" id="field-hit-points" placeholder="0" min="0" />
+            <input type="text" inputmode="numeric" id="field-hit-points" placeholder="0" min="0"
+              onkeydown="if (event.key === 'Enter') addCombatant();" />
           </div>
           <div class="field">
             <label>AC</label>
-            <input type="text" inputmode="numeric" id="field-armor-class" placeholder="0" min="0" />
+            <input type="text" inputmode="numeric" id="field-armor-class" placeholder="0" min="0"
+              onkeydown="if (event.key === 'Enter') addCombatant();" />
           </div>
         </div>
         <div class="field">
           <label>Notes (GM only)</label>
-          <input type="text" id="field-notes" placeholder="abilities, weaknesses, etc…" />
+          <input type="text" id="field-notes" placeholder="abilities, weaknesses, etc…"
+            onkeydown="if (event.key === 'Enter') addCombatant();" />
         </div>
         <button class="button green button-full" onclick="addCombatant()">
           Add Combatant
@@ -2893,30 +3111,41 @@
       </div>
       <div class="sidebar-section">
         <div class="sidebar-title"></div>
-        <div class="sidebar-text sidebar-text--right">Ver.20260511</div>
+        <div class="sidebar-text sidebar-text--right">Ver.20260523</div>
       </div>
     </div>
   </main>
 
   <div id="condition-modal-overlay" onclick="if (event.target === this) closeCondModal();">
     <div id="condition-modal">
-      <button class="edit-close-button" onclick="closeCondModal()" title="Close"><svg class="ui-icon s18">
-          <use href="#icon-x-thin"></use>
-        </svg></button>
       <div class="condition-modal-header">
         <div class="modal-title">Add Condition</div>
+        <input id="condition-search" type="text" oninput="filterCondGrid(this.value)" onfocus="onCondSearchFocus()"
+          onkeydown="if(event.key==='Escape'){if(this.value){this.value='';filterCondGrid('');}else{closeCondModal();}}else if(event.key==='Enter'){const btns=document.querySelectorAll('#condition-modal-grid .condition-modal-button:not([disabled])');if(btns.length===1)btns[0].click();}else if(event.key==='Tab'){event.preventDefault();document.getElementById('condition-modal-name').focus();}" />
+        <select id="condition-group-select" class="condition-group-select" onchange="setCondGrouping(this.value)"
+          title="Group by">
+          <option value="-none-">No Grouping</option>
+          <option value="A-Z">A-Z</option>
+          <option value="Category">Category</option>
+          <option value="StatChange">Stat Change</option>
+        </select>
+        <button class="edit-close-button" onclick="closeCondModal()" title="Close"><svg class="ui-icon s16">
+            <use href="#icon-x-thin"></use>
+          </svg></button>
       </div>
+      <div id="cond-search-hint" class="cond-search-hint">Start typing to search</div>
       <div class="condition-modal-grid" id="condition-modal-grid"></div>
       <div class="modal-row">
         <input class="modal-input" id="condition-modal-name" placeholder="Custom condition"
-          onkeydown="if (event.key === 'Enter') submitCondition();" />
+          onkeydown="if (event.key === 'Enter') submitCondition(); else if (event.key === 'Escape') closeCondModal();" />
         <input class="modal-input" id="condition-modal-value" type="text" inputmode="numeric" placeholder="Value"
           min="1" title="Condition value (e.g. Frightened 2)"
-          onkeydown="if (event.key === 'Enter') submitCondition();" />
+          onkeydown="if (event.key === 'Enter') submitCondition(); else if (event.key === 'Escape') closeCondModal();" />
         <input class="modal-input" id="condition-modal-rounds" type="text" inputmode="numeric" placeholder="# rounds"
           min="1" title="Rounds remaining (blank = indefinite)"
-          onkeydown="if (event.key === 'Enter') submitCondition();" />
-        <button class="button green" id="condition-modal-submit" onclick="submitCondition()">
+          onkeydown="if (event.key === 'Enter') submitCondition(); else if (event.key === 'Escape') closeCondModal();" />
+        <button class="button green" id="condition-modal-submit" onclick="submitCondition()"
+          onkeydown="if(event.key==='Tab'){event.preventDefault();document.getElementById('condition-group-select').focus();}">
           <svg class="ui-icon s12 move-down">
             <use href="#icon-plus-thick"></use>
           </svg>
@@ -2938,19 +3167,19 @@
           </div>
         </div>
         <div class="description-fields-row" id="description-fields-row">
-          <div class="description-field-wrapper" id="description-notes-wrapper">
-            <span class="description-field-label">Notes</span>
-            <input class="description-field-input" id="description-field-notes" type="text" placeholder="Add a note…" />
-          </div>
           <div class="description-field-wrapper narrow" id="description-value-wrapper">
             <span class="description-field-label centered">Value</span>
             <input class="description-field-input centered" id="description-field-value" type="text" inputmode="numeric"
-              placeholder="–" />
+              placeholder="–" onfocus="this.select()" />
           </div>
           <div class="description-field-wrapper narrow">
             <span class="description-field-label centered">Rounds Left</span>
             <input class="description-field-input centered" id="description-field-rounds" type="text"
-              inputmode="numeric" placeholder="#" />
+              inputmode="numeric" placeholder="#" onfocus="this.select()" />
+          </div>
+          <div class="description-field-wrapper" id="description-notes-wrapper">
+            <span class="description-field-label">Notes</span>
+            <input class="description-field-input" id="description-field-notes" type="text" placeholder="Add a note…" />
           </div>
           <button class="description-confirm-button" id="description-confirm-button" onclick="saveCondFields()"
             title="Save changes">
@@ -2987,9 +3216,28 @@
     let undoSnapshot = null;
     let descOverlayCombId = null;
     let descOverlayCondCid = null;
+    let condGrouping = localStorage.getItem('condGroupPref') || '-none-';
+    if (performance.getEntriesByType('navigation')[0]?.type === 'reload') {
+      sessionStorage.removeItem('conditionSearchHintSeen');
+    }
+    const STAT_ORDER = [
+      "FORT",
+      "REFL",
+      "WILL",
+      "PERC",
+      "SPD",
+      "STR",
+      "DEX",
+      "CON",
+      "INT",
+      "WIS",
+      "CHA",
+      "ATK",
+    ];
     const CONDITIONS_SF2 = [
       {
         name: "Blinded",
+        category: "Sensory",
         valued: false,
         statchanges: {
           PERC: { value: -4, type: "status" },
@@ -2999,6 +3247,7 @@
       },
       {
         name: "Clumsy",
+        category: "Debilitating",
         valued: true,
         statchanges: {
           AC: { value: (val) => -val, type: "status" },
@@ -3010,13 +3259,15 @@
       },
       {
         name: "Concealed",
+        category: "Sensory",
         valued: false,
         description: `You're difficult for one or more creatures to see due to thick fog or some other obscuring feature. You can be concealed to some creatures but not others. While concealed, you can still be observed, but you're tougher to target. A creature that you're concealed from must succeed at a DC 5 flat check when targeting you with an attack, spell, or other effect. If the check fails, you aren't affected. Area effects aren't subject to this flat check.`,
       },
       {
         name: "Confused",
+        category: "Compelled",
         valued: false,
-        includses: ["Off-Guard"],
+        includes: ["Off-Guard"],
         description: `You don't have your wits about you, and you attack wildly. You're off-guard, you don't treat anyone as your ally (though they might still treat you as theirs), and you can't Delay, Ready, or use reactions.
 
               You use all your actions to Strike or cast offensive cantrips, though the GM can have you use other actions to facilitate your attacks, such as drawing a weapon, moving so that a target is in reach, and so forth. Your targets are determined randomly by the GM. If you have no other viable targets, you target yourself, automatically hitting but not scoring a critical hit. If it's impossible for you to attack or cast spells, you babble incoherently, wasting your actions.
@@ -3025,16 +3276,19 @@
       },
       {
         name: "Controlled",
+        category: "Compelled",
         valued: false,
         description: `You've been commanded or magically dominated, or you otherwise had your will subverted. The controller dictates how you act and can make you use any of your actions, including attacks, reactions, or even Delay. The controller usually doesn't have to spend their own actions when controlling you.`,
       },
       {
         name: "Dazzled",
+        category: "Sensory",
         valued: false,
         description: `Your eyes are overstimulated or your vision is swimming. If vision is your only precise sense, all creatures and objects are concealed from you.`,
       },
       {
         name: "Deafened",
+        category: "Sensory",
         valued: false,
         statchanges: {
           PERC: { value: -2, type: "status" },
@@ -3043,6 +3297,7 @@
       },
       {
         name: "Doomed",
+        category: "Death / Injury",
         valued: true,
         description: `Your soul has been gripped by a powerful force that calls you closer to death. Doomed always includes a value. The dying value at which you die is reduced by your doomed value. If your maximum dying value is reduced to 0, you instantly die. When you die, you're no longer doomed.
 
@@ -3050,6 +3305,7 @@
       },
       {
         name: "Drained",
+        category: "Debilitating",
         valued: true,
         statchanges: {
           CON: { value: (val) => -val, type: "status" },
@@ -3061,6 +3317,7 @@
       },
       {
         name: "Dying",
+        category: "Death / Injury",
         valued: true,
         includes: ["Unconscious"],
         description: `You're bleeding out or otherwise at death's door. While you have this condition, you're unconscious. Dying always includes a value, and if it ever reaches dying 4, you die. When you're dying, you must attempt a recovery check at the start of your turn each round to determine whether you get better or worse. Your dying condition increases by 1 if you take damage while dying, or by 2 if you take damage from an enemy's critical hit or a critical failure on your save.
@@ -3071,6 +3328,7 @@
       },
       {
         name: "Encumbered",
+        category: "Restricted Movement",
         valued: false,
         includes: ["Clumsy 1"],
         statchanges: {
@@ -3080,6 +3338,7 @@
       },
       {
         name: "Enfeebled",
+        category: "Debilitating",
         valued: true,
         statchanges: {
           STR: { value: (val) => -val, type: "status" },
@@ -3090,12 +3349,14 @@
       },
       {
         name: "Fascinated",
+        category: "Compelled",
         valued: false,
         statchanges: { PERC: { value: -2, type: "status" } },
         description: `You're compelled to focus your attention on something, distracting you from whatever else is going on around you. You take a –2 status penalty to Perception and skill checks, and you can't use concentrate actions unless they (or their intended consequences) are related to the subject of your fascination, as determined by the GM. For instance, you might be able to Seek and Recall Knowledge about the subject, but you likely couldn't cast a spell targeting a different creature. This condition ends if a creature uses hostile actions against you or any of your allies.`,
       },
       {
         name: "Fatigued",
+        category: "Debilitating",
         valued: false,
         statchanges: {
           AC: { value: -1, type: "status" },
@@ -3109,11 +3370,13 @@
       },
       {
         name: "Fleeing",
+        category: "Compelled",
         valued: false,
         description: `You're forced to run away due to fear or some other compulsion. On your turn, you must spend each of your actions trying to escape the source of the fleeing condition as expediently as possible (such as by using move actions to flee, or opening doors barring your escape). The source is usually the effect or creature that gave you the condition, though some effects might define something else as the source. You can't Delay or Ready while fleeing.`,
       },
       {
         name: "Frightened",
+        category: "Debilitating",
         valued: true,
         statchanges: {
           STR: { value: (val) => -val, type: "status" },
@@ -3131,6 +3394,7 @@
       },
       {
         name: "Glitching",
+        category: "Debilitating",
         valued: true,
         description: `A glitching creature, hazard, or object with the tech trait experiences a combination of debilitating effects and moments of seizing up. The glitching condition always includes a value. If you have glitching equipment and take any action involving that equipment, you must attempt a flat check to see what occurs. If you have the glitching condition, you must attempt this flat check at the beginning of each of your turns. The DC of the flat check equals 5 plus your condition value or the item's condition value.
 
@@ -3145,34 +3409,40 @@
       },
       {
         name: "Grabbed",
+        category: "Restricted Movement",
         valued: false,
         includes: ["Off-Guard", "Immobilized"],
         description: `You're held in place by another creature, giving you the offguard and immobilized conditions. If you attempt a manipulate action while grabbed, you must succeed at a DC 5 flat check or it's lost; roll the check after spending the action, but before any effects are applied.`,
       },
       {
         name: "Immobilized",
+        category: "Restricted Movement",
         valued: false,
         description: `You're incapable of movement. You can't use any actions that have the move trait. If you're immobilized by something holding you in place and an external force would move you out of your space, the force must succeed at a check against either the DC of the effect holding you in place or the relevant defense (usually Fortitude DC) of the creature holding you in place.`,
       },
       {
         name: "Invisible",
+        category: "Sensory",
         valued: false,
         description: `You can't be seen. You're undetected to everyone. Creatures can Seek to detect you; if a creature succeeds at its Perception check against your Stealth DC, you become hidden to that creature until you Sneak to become undetected again. If you become invisible while someone can already see you, you start out hidden to them (instead of undetected) until you successfully Sneak. You can't become observed while invisible except via special abilities or magic.`,
       },
       {
         name: "Off-Guard",
+        category: "Debilitating",
         valued: false,
         statchanges: { AC: { value: -2, type: "circumstance" } },
         description: `You're distracted or otherwise unable to focus your full attention on defense. You take a –2 circumstance penalty to AC. Some effects give you the off-guard condition only to certain creatures or against certain attacks. Others—especially conditions—can make you off-guard against everything. If a rule doesn't specify that the condition applies only to certain circumstances, it applies to all of them, such as “The target is off-guard.”`,
       },
       {
         name: "Paralyzed",
+        category: "Restricted Movement",
         valued: false,
         includes: ["Off-Guard"],
         description: `You're frozen in place. You have the off-guard condition and can't act except to Recall Knowledge and use actions that require only your mind (as determined by the GM). Your senses still function, but only in the areas you can perceive without moving, so you can't Seek.`,
       },
       {
         name: "Persistent Damage",
+        category: "Death / Injury",
         valued: true,
         textValued: true,
         description: `You're taking damage from an ongoing effect, such as from being lit on fire. This appears as “X persistent [type] damage,” where “X” is the amount of damage dealt and “[type]” is the damage type. Like normal damage, it can be doubled or halved based on the results of an attack roll or saving throw. Instead of taking persistent damage immediately, you take it at the end of each of your turns as long as you have the condition, rolling any damage dice anew each time. After you take persistent damage, roll a DC 15 flat check to see if you recover from the persistent damage. If you succeed, the condition ends. 
@@ -3183,11 +3453,13 @@
       },
       {
         name: "Petrified",
+        category: "Restricted Movement",
         valued: false,
         description: `You've been turned to stone. You can't act, nor can you sense anything. You become an object with a Bulk double your normal Bulk (typically 12 for a petrified Medium creature or 6 for a petrified Small creature), AC 9, Hardness 8, and the same current Hit Points you had when alive. You don't have a Broken Threshold. When the petrified condition ends, you have the same number of Hit Points you had as a statue. If the statue is destroyed, you immediately die. While petrified, your mind and body are in stasis, so you don't age or notice the passing of time.`,
       },
       {
         name: "Prone",
+        category: "Restricted Movement",
         valued: false,
         includes: ["Off-Guard"],
         statchanges: {
@@ -3199,6 +3471,7 @@
       },
       {
         name: "Quickened",
+        category: "Action economy",
         valued: false,
         actionchanges: +1,
         description: `You're able to act more quickly. You gain 1 additional action at the start of your turn each round. Many effects that make you quickened require you use this extra action only in certain ways. If you become quickened from multiple sources, you can use the extra action you've been granted for any single action allowed by any of the effects that made you quickened. Because quickened has its effect at the start of your turn, you don't immediately gain actions if you become quickened during your turn.
@@ -3207,6 +3480,7 @@
       },
       {
         name: "Restrained",
+        category: "Restricted Movement",
         valued: false,
         includes: ["Off-Guard", "Immobilized"],
         override: ["Grabbed"],
@@ -3214,6 +3488,7 @@
       },
       {
         name: "Sickened",
+        category: "Debilitating",
         valued: true,
         statchanges: {
           STR: { value: (val) => -val, type: "status" },
@@ -3233,6 +3508,7 @@
       },
       {
         name: "Slowed",
+        category: "Action economy",
         valued: true,
         actionchanges: (val) => -val,
         description: `You have fewer actions. Slowed always includes a value. When you regain your actions, reduce the number of actions regained by your slowed value. Because you regain actions at the start of your turn, you don't immediately lose actions if you become slowed during your turn.
@@ -3241,6 +3517,7 @@
       },
       {
         name: "Stunned",
+        category: "Action economy",
         valued: true,
         actionchanges: (val) => -val,
         override: ["Slowed"],
@@ -3252,6 +3529,7 @@
       },
       {
         name: "Stupefied",
+        category: "Debilitating",
         valued: true,
         statchanges: {
           INT: { value: (val) => -val, type: "status" },
@@ -3263,6 +3541,7 @@
       },
       {
         name: "Suppressed",
+        category: "Debilitating",
         valued: false,
         statchanges: {
           ATK: { value: -1, type: "circumstance" },
@@ -3272,6 +3551,7 @@
       },
       {
         name: "Unconscious",
+        category: "Death / Injury",
         valued: false,
         statchanges: {
           AC: { value: -4, type: "status" },
@@ -3285,12 +3565,14 @@
       },
       {
         name: "Untethered",
+        category: "Restricted Movement",
         valued: false,
         includes: ["Clumsy 1", "Off-Guard"],
         description: `You're in a zero gravity (or similar) environment without a means of movement and float without support. You can't take move actions unless they specify they can be used in your current environment. At the end of your turn, you move 5 feet in the last direction you moved. You can take the <a href="https://2e.aonsrd.com/actions/27-push-off" target="_blank" class="condition-link">Push Off</a> action to change directions and the distance moved. Once you gain a means of moving in your environment, you lose this condition. Typically, a creature with the untethered condition in zero-gravity also gains the clumsy 1 and off-guard conditions while untethered.`,
       },
       {
         name: "Wounded",
+        category: "Death / Injury",
         valued: true,
         description: `You've been seriously injured. If you lose the dying condition and don't already have the wounded condition, you become wounded 1. If you already have the wounded condition when you lose the dying condition, your wounded condition value increases by 1. If you gain the dying condition while wounded, increase your dying condition value by your wounded value.
 
@@ -3298,7 +3580,6 @@
       },
     ];
 
-    // Enter key in any desc-overlay field commits the save
     document.getElementById("description-fields-row").addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -3460,6 +3741,8 @@
           if (cond.skipFirstTick === undefined) cond.skipFirstTick = false;
           if (cond.expiryRound === undefined) cond.expiryRound = null;
         }
+        _cleanOrphanedBundled(c);
+        _cleanStaleOverrides(c);
       }
       // Backfill ranks for encounters saved before rank was introduced
       if (list.length > 0 && list.every((c) => c.rank === undefined)) {
@@ -3567,6 +3850,11 @@
       return summary;
     }
     function getEffectiveACInfo(c) {
+      const isPetrified = c.conditions.some((x) => x.name === "Petrified");
+      if (isPetrified) {
+        // Petrified sets AC to exactly 9, overriding all other modifications
+        return { base: c.ac || 0, mod: 0, effective: 9, sources: ["Petrified"], petrified: true };
+      }
       const s = computeConditionStatSummary(c);
       let mod = 0;
       if (s.AC) mod += s.AC.value;
@@ -3649,6 +3937,14 @@
         cond.roundsRemaining != null ? cond.roundsRemaining : "";
 
       document.getElementById("description-overlay").classList.add("open");
+      const valueWrapCheck = document.getElementById("description-value-wrapper");
+      if (valueWrapCheck.style.display !== "none") {
+        document.getElementById("description-field-value").focus();
+        document.getElementById("description-field-value").select();
+      } else {
+        document.getElementById("description-field-rounds").focus();
+        document.getElementById("description-field-rounds").select();
+      }
     }
     function saveCondFields() {
       if (descOverlayCombId == null || descOverlayCondCid == null) return;
@@ -3712,12 +4008,19 @@
       descOverlayCondCid = null;
     }
 
+    function updateQtyVisibility() {
+      const type = document.querySelector('input[name="ctype"]:checked')?.value;
+      const isEnemy = type === "enemy";
+      document.getElementById("field-quantity-wrapper").style.display = isEnemy ? "" : "none";
+      document.getElementById("field-name-row").style.gridTemplateColumns = isEnemy ? "3fr 1fr" : "1fr";
+    }
     function addCombatant() {
       const name = document.getElementById("field-name").value.trim();
       if (!name) {
         toast("Enter a name first");
         return;
       }
+      const qty = Math.max(1, parseInt(document.getElementById("field-quantity").value) || 1);
       saveSnapshot();
       const type = document.querySelector(
         'input[name="ctype"]:checked',
@@ -3727,46 +4030,52 @@
       const maxHp = parseInt(document.getElementById("field-hit-points").value) || 0;
       const ac = parseInt(document.getElementById("field-armor-class").value) || 0;
       const notes = document.getElementById("field-notes").value.trim();
-      const visibleToPlayers =
-        document.querySelector('input[name="ctype"]:checked').value === "pc";
+      const visibleToPlayers = type === "pc";
 
-      let initiative,
-        roll = null;
-      if (fixedVal !== "") {
-        initiative = parseInt(fixedVal);
-      } else {
-        roll = rollD20();
-        initiative = roll + mod;
+      for (let i = 0; i < qty; i++) {
+        const displayName = qty > 1 ? `${name} - ${i + 1}` : name;
+        let initiative, roll = null;
+        if (fixedVal !== "") {
+          initiative = parseInt(fixedVal);
+        } else {
+          roll = rollD20();
+          initiative = roll + mod;
+        }
+        const c = {
+          id: uid(),
+          name: displayName,
+          type,
+          initiative,
+          mod,
+          maxHp,
+          hp: maxHp,
+          ac,
+          notes,
+          visibleToPlayers,
+          conditions: [],
+          defeated: false,
+          reactionUsed: false,
+        };
+        combatants.push(c);
+        if (roll !== null) {
+          log(
+            `${displayName} joined — rolled d20(${roll})${mod >= 0 ? "+" : ""}${mod} = <strong>${initiative}</strong>`,
+            "log-round",
+          );
+        } else {
+          log(`${displayName} joined — initiative ${initiative}`, "log-round");
+        }
       }
-      const c = {
-        id: uid(),
-        name,
-        type,
-        initiative,
-        mod,
-        maxHp,
-        hp: maxHp,
-        ac,
-        notes,
-        visibleToPlayers,
-        conditions: [],
-        defeated: false,
-        reactionUsed: false,
-      };
-      combatants.push(c);
       // Use type-based tiebreaker for initial placement, then lock in ranks
       combatants.sort(naturalSortFn);
       rerank();
-      if (roll !== null) {
-        log(
-          `${name} joined — rolled d20(${roll})${mod >= 0 ? "+" : ""}${mod} = <strong>${initiative}</strong>`,
-          "log-round",
-        );
-        toast(
-          `${name}: d20(${roll})${mod >= 0 ? "+" : ""}${mod} = ${initiative}`,
-        );
+      if (qty === 1) {
+        const added = combatants.find((x) => x.name === name);
+        if (added && document.getElementById("field-initiative-modifier").value.trim() !== "") {
+          toast(`${name}: d20+${added.mod} = ${added.initiative}`);
+        }
       } else {
-        log(`${name} joined — initiative ${initiative}`, "log-round");
+        toast(`Added ${qty}× ${name}`);
       }
       [
         "field-name",
@@ -3776,6 +4085,7 @@
         "field-armor-class",
         "field-notes",
       ].forEach((id) => (document.getElementById(id).value = ""));
+      document.getElementById("field-quantity").value = "";
       document.getElementById("field-name").focus();
       if (inCombat && activeIndex >= 0) {
         const activeId = combatants[activeIndex]?.id;
@@ -3839,6 +4149,7 @@
         document.getElementById("button-sidebar-toggle").textContent = "⁝";
       }
       log(`Combat started — Round 1`, "log-round");
+      initTurnSnapshot(combatants[activeIndex]);
       render();
     }
     function nextTurn() {
@@ -3846,6 +4157,8 @@
       saveSnapshot();
 
       combatants[activeIndex].reactionUsed = false;
+      combatants[activeIndex].stunnedActionsLostThisTurn = 0;
+      combatants[activeIndex].turnActionSnapshot = null;
       endOfTurnTickDownCondition(combatants[activeIndex]);
 
       let next = (activeIndex + 1) % combatants.length;
@@ -3870,6 +4183,7 @@
         log(`⚑ Round ${round} begins`, "log-round");
       }
       activeIndex = next;
+      initTurnSnapshot(combatants[activeIndex]);
       log(`→ ${combatants[activeIndex].name}'s turn`, "log-turn");
       render();
       setTimeout(scrollToActive, 50);
@@ -3901,6 +4215,8 @@
       }
 
       activeIndex = prev;
+      combatants[activeIndex].stunnedActionsLostThisTurn = 0;
+      combatants[activeIndex].turnActionSnapshot = null;
       render();
       setTimeout(scrollToActive, 50);
     }
@@ -3927,9 +4243,8 @@
       render();
     }
     function endOfTurnTickDownCondition(c) {
-      const tickDown = ["Frightened", "Slowed"];
+      const tickDown = ["Frightened"];
       c.conditions = c.conditions.filter((cond) => {
-        // ── Built-in value tick-down (Frightened, Slowed) ─────────────────
         if (
           cond.value &&
           tickDown.some((v) =>
@@ -3975,6 +4290,43 @@
         }
         return true;
       });
+      _cleanStaleOverrides(c);
+    }
+
+    // Called at the START of a combatant's turn (when they become active).
+    // Called when a combatant becomes the active player. Snapshots the action-
+    // relevant conditions (slowed, quickened, stunned loss) so that any
+    // conditions applied or changed during their turn don't affect the display
+    // until they next become active.
+    function initTurnSnapshot(c) {
+      const isQuickened = c.conditions.some(
+        (x) => x.bundledUnder == null && x.name === "Quickened",
+      );
+      const slowedVal = getConditionValue(c, "Slowed");
+
+      // Tick stunned and record how many actions are lost.
+      const stunnedCond = c.conditions.find(
+        (x) => x.bundledUnder == null && x.name === "Stunned",
+      );
+      let stunnedActionsLost = 0;
+      if (stunnedCond && stunnedCond.value != null) {
+        const pool = isQuickened ? 4 : 3;
+        stunnedActionsLost = Math.min(stunnedCond.value, pool);
+        const newVal = stunnedCond.value - stunnedActionsLost;
+        if (newVal <= 0) {
+          _removeConditionById(c, stunnedCond.cid);
+          log(`${c.name}: Stunned expired`, "log-condition");
+        } else {
+          stunnedCond.value = newVal;
+          log(
+            `${c.name}: Stunned ↓ ${newVal} (lost ${stunnedActionsLost} action${stunnedActionsLost !== 1 ? "s" : ""} to Stunned)`,
+            "log-condition",
+          );
+        }
+      }
+
+      c.stunnedActionsLostThisTurn = stunnedActionsLost;
+      c.turnActionSnapshot = { isQuickened, slowedVal, stunnedActionsLost };
     }
     function resetAll() {
       if (!confirm("Reset everything?")) return;
@@ -4152,6 +4504,125 @@
       );
       return cond ? cond.value || 0 : 0;
     }
+    function computeAvailableActions(c, isActive) {
+      const BASE = 3;
+      const snap = isActive && c.turnActionSnapshot;
+      const slowedVal = snap ? snap.slowedVal : getConditionValue(c, "Slowed");
+      const isQuickened = snap ? snap.isQuickened : c.conditions.some(
+        (x) => x.bundledUnder == null && x.name === "Quickened",
+      );
+      const pool = isQuickened ? BASE + 1 : BASE;
+
+      let lostToStunned;
+      if (snap) {
+        lostToStunned = snap.stunnedActionsLost;
+      } else {
+        const stunnedCond = c.conditions.find(
+          (x) => x.bundledUnder == null && x.name === "Stunned",
+        );
+        if (!stunnedCond) {
+          lostToStunned = 0;
+        } else if (stunnedCond.value != null && stunnedCond.value > 0) {
+          lostToStunned = Math.min(stunnedCond.value, pool);
+        } else {
+          lostToStunned = pool; // duration-based stun
+        }
+      }
+
+      const lostToSlowed = Math.max(0, Math.min(slowedVal - lostToStunned, pool - lostToStunned));
+      return Math.max(0, pool - lostToStunned - lostToSlowed);
+    }
+    // Returns a helper object describing how each action slot should be coloured.
+    // Quickened slot absorbs losses first (slowed before stunned within it).
+    function _computePipBreakdown(isQuickened, lostToStunned, lostToSlowed) {
+      const BASE = 3;
+      // Stunned eats the quickened slot first, then slowed takes what's left.
+      const qAbsorbedByStunned = isQuickened ? Math.min(lostToStunned, 1) : 0;
+      const qAbsorbedBySlowed = isQuickened && qAbsorbedByStunned === 0 ? Math.min(lostToSlowed, 1) : 0;
+      const quickenedPipClass = !isQuickened ? null
+        : qAbsorbedByStunned ? "stunned-lost"
+          : qAbsorbedBySlowed ? "slowed-lost"
+            : "quickened";
+      // Remaining losses fall on the 3 regular slots.
+      const slowedOnRegular = lostToSlowed - qAbsorbedBySlowed;
+      const stunnedOnRegular = lostToStunned - qAbsorbedByStunned;
+      const regularAvailable = Math.max(0, BASE - slowedOnRegular - stunnedOnRegular);
+      return { regularAvailable, slowedOnRegular, stunnedOnRegular, quickenedPipClass };
+    }
+    function buildActionPipsHTML(c, isActive) {
+      const BASE = 3;
+
+      // Non-active combatants: always 3 plain grey pips — no condition detail.
+      if (!isActive) {
+        let html = '<div class="action-pips" title="3 actions">';
+        for (let i = 0; i < BASE; i++) {
+          html += '<span class="action-pip"><svg class="ui-icon s18"><use href="' + (i === 0 ? '#icon-action-front' : '#icon-action-back') + '"></use></svg></span>';
+        }
+        html += "</div>";
+        return html;
+      }
+
+      // Active combatant: use the turn-start snapshot so mid-turn condition
+      // changes don't affect the display until they next become active.
+      const snap = c.turnActionSnapshot;
+      const isQuickened = snap ? snap.isQuickened : c.conditions.some((x) => x.bundledUnder == null && x.name === "Quickened");
+      const slowedVal = snap ? snap.slowedVal : getConditionValue(c, "Slowed");
+      const lostToStunned = snap ? snap.stunnedActionsLost : c.stunnedActionsLostThisTurn || 0;
+      const pool = isQuickened ? 4 : 3;
+      const lostToSlowed = Math.max(0, Math.min(slowedVal - lostToStunned, pool - lostToStunned));
+      const available = computeAvailableActions(c, true);
+
+      const { regularAvailable, slowedOnRegular, stunnedOnRegular, quickenedPipClass } =
+        _computePipBreakdown(isQuickened, lostToStunned, lostToSlowed);
+
+      // Tooltip
+      const reasons = [];
+      if (lostToStunned > 0) reasons.push("Stunned (−" + lostToStunned + " this turn)");
+      if (slowedVal > 0) reasons.push("Slowed " + slowedVal);
+      if (isQuickened) reasons.push("Quickened");
+      const tooltipBase = available + " action" + (available !== 1 ? "s" : "") + " available";
+      const tooltip = reasons.length ? tooltipBase + " (" + reasons.join(", ") + ")" : tooltipBase;
+
+      // Regular pips: available (blue) | slowed-lost (amber) | stunned-lost (red)
+      let html = '<div class="action-pips" title="' + escAttr(tooltip) + '">';
+      for (let i = 0; i < BASE; i++) {
+        const cls = i < regularAvailable ? " available"
+          : i < regularAvailable + slowedOnRegular ? " slowed-lost"
+            : stunnedOnRegular > 0 ? " stunned-lost"
+              : " slowed-lost";
+        html += '<span class="action-pip' + cls + '"><svg class="ui-icon s18"><use href="' + (i === 0 ? '#icon-action-front' : '#icon-action-back') + '"></use></svg></span>';
+      }
+      // Quickened pip (rightmost)
+      if (isQuickened) {
+        html += '<span class="action-pip ' + quickenedPipClass + '"><svg class="ui-icon s18"><use href="#icon-action-back"></use></svg></span>';
+      }
+      html += "</div>";
+      return html;
+    }
+    // Clear any overriddenBy references that point to a condition no longer
+    // present as a top-level entry. Called after any programmatic removal so
+    // surviving conditions don't stay stuck in the "overridden" display state.
+    function _cleanStaleOverrides(c) {
+      const activeNames = new Set(
+        c.conditions
+          .filter((x) => x.bundledUnder == null)
+          .map((x) => x.name),
+      );
+      c.conditions.forEach((x) => {
+        if (x.overriddenBy && !activeNames.has(x.overriddenBy)) {
+          x.overriddenBy = null;
+        }
+      });
+    }
+    // Remove any bundled conditions whose parent cid no longer exists.
+    // Prevents orphaned children (e.g. from corrupt save data) from applying
+    // stat changes that can never be cleared by the user.
+    function _cleanOrphanedBundled(c) {
+      const allCids = new Set(c.conditions.map((x) => x.cid));
+      c.conditions = c.conditions.filter(
+        (x) => x.bundledUnder == null || allCids.has(x.bundledUnder)
+      );
+    }
     function _removeConditionById(c, cid) {
       const toRemove = new Set([cid]);
       let changed = true;
@@ -4165,6 +4636,8 @@
         });
       }
       c.conditions = c.conditions.filter((x) => !toRemove.has(x.cid));
+      _cleanOrphanedBundled(c);
+      _cleanStaleOverrides(c);
     }
 
     // Recursively add a condition (by includes string) bundled under parentCid,
@@ -4739,7 +5212,59 @@
       updateBanner();
     }
 
+    function _positionAndShowCondSearchHint() {
+      const hint = document.getElementById('cond-search-hint');
+      const searchEl = document.getElementById('condition-search');
+      const modal = document.getElementById('condition-modal');
+      const header = document.querySelector('.condition-modal-header');
+      if (!hint || !searchEl || !modal || !header) return;
+
+      const modalRect = modal.getBoundingClientRect();
+      const searchRect = searchEl.getBoundingClientRect();
+
+      const searchCenterX = searchRect.left + searchRect.width / 2 - modalRect.left;
+      const bubbleW = hint.offsetWidth;
+      const bubbleH = hint.offsetHeight;
+      const arrowH = 7;
+      const gap = 2; // px between arrow tip and top of search box
+
+      // Position above the search input; arrow tip nearly touches the box top
+      const topPx = searchRect.top - modalRect.top - bubbleH - arrowH - gap;
+
+      let leftPx = searchCenterX - bubbleW / 2;
+      const pad = 10;
+      leftPx = Math.max(pad, Math.min(leftPx, modal.offsetWidth - bubbleW - pad));
+
+      hint.style.top = topPx + 'px';
+      hint.style.left = leftPx + 'px';
+      hint.style.setProperty('--arrow-offset', (searchCenterX - leftPx) + 'px');
+
+      // Double rAF ensures the browser renders the opacity:0 base state first
+      // so the CSS transition actually fires when we add .visible
+      requestAnimationFrame(() => requestAnimationFrame(() => hint.classList.add('visible')));
+    }
+
+    // Called on first modal open — only shows once per session (sessionStorage guard).
+    function showCondSearchHint() {
+      if (sessionStorage.getItem('conditionSearchHintSeen')) return;
+      _positionAndShowCondSearchHint();
+      sessionStorage.setItem('conditionSearchHintSeen', '1');
+    }
+
+    function onCondSearchFocus() {
+      const searchEl = document.getElementById('condition-search');
+      if (!searchEl || searchEl.classList.contains('expanded')) return;
+      _positionAndShowCondSearchHint();
+    }
+
+    function hideCondSearchHint() {
+      const hint = document.getElementById('cond-search-hint');
+      if (hint) hint.classList.remove('visible');
+    }
+
+
     function openCondModal(id) {
+      closeCondDesc();
       condTargetId = id;
       document.getElementById("condition-modal-name").value = "";
       const valInput = document.getElementById("condition-modal-value");
@@ -4747,6 +5272,8 @@
       valInput.inputMode = "numeric";
       valInput.placeholder = "Value";
       document.getElementById("condition-modal-rounds").value = "";
+      const sel = document.getElementById("condition-group-select");
+      if (sel) sel.value = condGrouping;
       const c = combatants.find((x) => x.id === id);
       // Collect names already active as main (non-bundled) conditions.
       // Persistent Damage is excluded — multiple instances are allowed.
@@ -4757,13 +5284,72 @@
           )
           .map((x) => x.name),
       );
+      const searchEl = document.getElementById("condition-search");
+      if (searchEl) {
+        searchEl.value = "";
+        searchEl.classList.remove("expanded");
+        const header = searchEl.closest(".condition-modal-header");
+        if (header) header.classList.remove("searching");
+      }
+      renderCondGrid(activeNames);
+      document.getElementById("condition-modal-overlay").classList.add("open");
+      if (searchEl) { searchEl.focus(); } else { document.getElementById("condition-modal-name").focus(); }
+      setTimeout(showCondSearchHint, 200);
+    }
+    function closeCondModal() {
+      document.getElementById("condition-modal-overlay").classList.remove("open");
+      condTargetId = null;
+      const searchEl = document.getElementById("condition-search");
+      if (searchEl) {
+        searchEl.value = "";
+        searchEl.classList.remove("expanded");
+        const header = searchEl.closest(".condition-modal-header");
+        if (header) header.classList.remove("searching");
+      }
+    }
+    function setCondGrouping(val) {
+      condGrouping = val;
+      localStorage.setItem('condGroupPref', val);
+      hideCondSearchHint();
+      if (condTargetId != null) {
+        const c = combatants.find((x) => x.id === condTargetId);
+        const activeNames = new Set(
+          (c?.conditions || [])
+            .filter((x) => x.bundledUnder == null && x.name !== "Persistent Damage")
+            .map((x) => x.name)
+        );
+        renderCondGrid(activeNames);
+      }
+    }
+    function filterCondGrid(query) {
+      if (condTargetId == null) return;
+      if (query.length > 0) hideCondSearchHint();
+      const searchEl = document.getElementById("condition-search");
+      const isSearching = query.length > 0;
+      if (searchEl) {
+        searchEl.classList.toggle("expanded", isSearching);
+        const header = searchEl.closest(".condition-modal-header");
+        if (header) header.classList.toggle("searching", isSearching);
+      }
+      const c = combatants.find((x) => x.id === condTargetId);
+      const activeNames = new Set(
+        (c?.conditions || [])
+          .filter((x) => x.bundledUnder == null && x.name !== "Persistent Damage")
+          .map((x) => x.name)
+      );
+      renderCondGrid(activeNames, query);
+    }
+    function renderCondGrid(activeNames, searchQuery) {
+      const modal = document.getElementById("condition-modal");
+      modal.classList.toggle("az-mode", condGrouping === "A-Z");
       const grid = document.getElementById("condition-modal-grid");
       grid.innerHTML = "";
-      CONDITIONS_SF2.forEach((cond) => {
+      const q = (searchQuery ?? "").trim().toLowerCase();
+      const allConds = q ? CONDITIONS_SF2.filter((c) => c.name.toLowerCase().includes(q)) : CONDITIONS_SF2;
+      function makeButton(cond) {
         const isActive = activeNames.has(cond.name);
         const button = document.createElement("button");
-        button.className =
-          "condition-modal-button" + (isActive ? " already-active" : "");
+        button.className = "condition-modal-button" + (isActive ? " already-active" : "");
         button.textContent = cond.name;
         if (isActive) {
           button.disabled = true;
@@ -4771,28 +5357,101 @@
         } else {
           button.title = `Add ${cond.name}`;
           button.onclick = () => {
-            const roundsRaw = document
-              .getElementById("condition-modal-rounds")
-              .value.trim();
-            const rounds =
-              roundsRaw !== "" ? parseInt(roundsRaw) || null : null;
-            const defaultVal = cond.valued
-              ? cond.textValued
-                ? ""
-                : 1
-              : null;
-            applyCondition(condTargetId, cond.name, defaultVal, rounds);
+            const roundsRaw = document.getElementById("condition-modal-rounds").value.trim();
+            const rounds = roundsRaw !== "" ? parseInt(roundsRaw) || null : null;
+            const defaultVal = cond.valued ? (cond.textValued ? "" : 1) : null;
+            const _quickTargetId = condTargetId;
+            const quickCid = applyCondition(condTargetId, cond.name, defaultVal, rounds);
             closeCondModal();
+            if (quickCid) showCondDesc(_quickTargetId, quickCid);
           };
         }
-        grid.appendChild(button);
-      });
-      document.getElementById("condition-modal-overlay").classList.add("open");
-      document.getElementById("condition-modal-name").focus();
-    }
-    function closeCondModal() {
-      document.getElementById("condition-modal-overlay").classList.remove("open");
-      condTargetId = null;
+        return button;
+      }
+      function renderGrouped(groups, inlineLabel) {
+        const nonEmpty = groups.filter((g) => g.conditions.length > 0);
+        nonEmpty.forEach((group, i) => {
+          if (inlineLabel) {
+            const row = document.createElement("div");
+            row.className = "condition-group-buttons";
+            const labelEl = document.createElement("div");
+            labelEl.className = "condition-group-label-az";
+            labelEl.textContent = group.label;
+            row.appendChild(labelEl);
+            group.conditions.forEach((cond) => row.appendChild(makeButton(cond)));
+            grid.appendChild(row);
+          } else {
+            const labelEl = document.createElement("div");
+            labelEl.className = "condition-group-label";
+            labelEl.textContent = group.label;
+            grid.appendChild(labelEl);
+            const row = document.createElement("div");
+            row.className = "condition-group-buttons";
+            group.conditions.forEach((cond) => row.appendChild(makeButton(cond)));
+            grid.appendChild(row);
+            if (i < nonEmpty.length - 1) {
+              const divider = document.createElement("div");
+              divider.className = "condition-group-divider";
+              grid.appendChild(divider);
+            }
+          }
+        });
+      }
+      if (condGrouping === "-none-") {
+        allConds.forEach((cond) => grid.appendChild(makeButton(cond)));
+        return;
+      }
+      if (condGrouping === "A-Z") {
+        const sorted = [...allConds].sort((a, b) => a.name.localeCompare(b.name));
+        const byLetter = {};
+        sorted.forEach((cond) => {
+          const letter = cond.name[0].toUpperCase();
+          if (!byLetter[letter]) byLetter[letter] = [];
+          byLetter[letter].push(cond);
+        });
+        const groups = Object.keys(byLetter).sort().map((letter) => ({
+          label: letter,
+          conditions: byLetter[letter],
+        }));
+        renderGrouped(groups, true);
+        return;
+      }
+      if (condGrouping === "Category") {
+        const sorted = [...allConds].sort((a, b) => a.name.localeCompare(b.name));
+        const byCategory = {};
+        sorted.forEach((cond) => {
+          const cat = cond.category || "Uncategorized";
+          if (!byCategory[cat]) byCategory[cat] = [];
+          byCategory[cat].push(cond);
+        });
+        const groups = Object.keys(byCategory).sort().map((cat) => ({
+          label: cat,
+          conditions: byCategory[cat],
+        }));
+        renderGrouped(groups);
+        return;
+      }
+      if (condGrouping === "StatChange") {
+        const allStats = new Set();
+        allConds.forEach((cond) => {
+          if (cond.statchanges) Object.keys(cond.statchanges).forEach((s) => allStats.add(s));
+        });
+        const extraStats = [...allStats].filter((s) => !STAT_ORDER.includes(s)).sort();
+        const fullOrder = [...STAT_ORDER, ...extraStats];
+        const sorted = [...CONDITIONS_SF2].sort((a, b) => a.name.localeCompare(b.name));
+        const groups = fullOrder.map((stat) => ({
+          label: stat,
+          conditions: sorted.filter((cond) => cond.statchanges && stat in cond.statchanges),
+        }));
+        const undefinedConds = sorted.filter(
+          (cond) => !cond.statchanges || Object.keys(cond.statchanges).length === 0
+        );
+        if (undefinedConds.length > 0) {
+          groups.push({ label: "undefined", conditions: undefinedConds });
+        }
+        renderGrouped(groups);
+        return;
+      }
     }
     function computeExpiryRound(targetIdx, n) {
       if (n == null) return null;
@@ -4884,7 +5543,7 @@
       }
       renderSingle(c.id);
       scheduleAutosave();
-      return true;
+      return cid;
     }
     function submitCondition() {
       const name = document.getElementById("condition-modal-name").value.trim();
@@ -4902,8 +5561,11 @@
         value = def?.textValued ? valRaw : parseInt(valRaw);
       }
       const rounds = roundsRaw !== "" ? parseInt(roundsRaw) || null : null;
-      if (applyCondition(condTargetId, name, value, rounds)) {
+      const _submitTargetId = condTargetId;
+      const newCid = applyCondition(condTargetId, name, value, rounds);
+      if (newCid) {
         closeCondModal();
+        showCondDesc(_submitTargetId, newCid);
       }
     }
     function adjustCondValue(combId, cid, delta) {
@@ -5129,6 +5791,8 @@
           defeated: c.defeated,
           initiative: c.initiative,
           statSummary: computeConditionStatSummary(c),
+          stunnedActionsLostThisTurn: c.stunnedActionsLostThisTurn || 0,
+          turnActionSnapshot: c.turnActionSnapshot || null,
         })),
       };
       try {
@@ -5228,24 +5892,10 @@
       html += `</div>`;
       return html;
     }
-    function buildStatSummaryHTML(c) {
-      const STAT_ORDER = [
-        "FORT",
-        "REFL",
-        "WILL",
-        "PERC",
-        "SPD",
-        "STR",
-        "DEX",
-        "CON",
-        "INT",
-        "WIS",
-        "CHA",
-        "ATK",
-      ];
-      const s = computeConditionStatSummary(c);
+    function buildStatSummaryHTML(statSummary) {
+      if (!statSummary) return "";
       // AC is shown in its own dedicated area — exclude it from the summary grid
-      const entries = Object.entries(s).filter(([stat]) => stat !== "AC");
+      const entries = Object.entries(statSummary).filter(([stat]) => stat !== "AC");
       if (!entries.length) return "";
       entries.sort(([a], [b]) => {
         const ai = STAT_ORDER.indexOf(a),
@@ -5278,18 +5928,31 @@
       let acValueHTML = "";
       let acTitle = "Click to edit AC";
       if (acInfo) {
-        if (acInfo.mod !== 0 && acInfo.sources.length) {
-          acTitle = escHtml(acInfo.sources.join(", "));
-        }
-        if (acInfo.base > 0 && acInfo.mod !== 0) {
-          acHTML = `<div class="statistic-block"><span class="statistic-label">AC</span><span class="statistic-value modified">${acInfo.effective}</span><span class="armor-class-effective">&nbsp;(${acInfo.base}${fmtMod(acInfo.mod)})</span></div>`;
-          acValueHTML = `<span class="statistic-value modified">${acInfo.effective}</span><span class="armor-class-effective">&nbsp;(${acInfo.base}${fmtMod(acInfo.mod)})</span>`;
-        } else if (acInfo.base > 0) {
-          acHTML = `<div class="statistic-block"><span class="statistic-label">AC</span><span class="statistic-value">${acInfo.base}</span></div>`;
-          acValueHTML = `<span class="statistic-value">${acInfo.base}</span>`;
+        if (acInfo.petrified) {
+          acTitle = "Petrified: AC set to 9";
+          if (acInfo.base > 0) {
+            // Has a captured AC — show red 9 with original AC in muted brackets
+            acHTML = `<div class="statistic-block"><span class="statistic-label">AC</span><span class="statistic-value modified">9</span><span class="armor-class-effective">&nbsp;(${acInfo.base})</span></div>`;
+            acValueHTML = `<span class="statistic-value modified">9</span><span class="armor-class-effective">&nbsp;(${acInfo.base})</span>`;
+          } else {
+            // No AC captured — just show red 9
+            acHTML = `<div class="statistic-block"><span class="statistic-label">AC</span><span class="statistic-value modified">9</span></div>`;
+            acValueHTML = `<span class="statistic-value modified">9</span>`;
+          }
         } else {
-          acHTML = `<div class="statistic-block"><span class="statistic-label">AC</span><span class="armor-class-modifier-only">${fmtMod(acInfo.mod)}</span></div>`;
-          acValueHTML = `<span class="armor-class-modifier-only">${fmtMod(acInfo.mod)}</span>`;
+          if (acInfo.mod !== 0 && acInfo.sources.length) {
+            acTitle = escHtml(acInfo.sources.join(", "));
+          }
+          if (acInfo.base > 0 && acInfo.mod !== 0) {
+            acHTML = `<div class="statistic-block"><span class="statistic-label">AC</span><span class="statistic-value modified">${acInfo.effective}</span><span class="armor-class-effective">&nbsp;(${acInfo.base}${fmtMod(acInfo.mod)})</span></div>`;
+            acValueHTML = `<span class="statistic-value modified">${acInfo.effective}</span><span class="armor-class-effective">&nbsp;(${acInfo.base}${fmtMod(acInfo.mod)})</span>`;
+          } else if (acInfo.base > 0) {
+            acHTML = `<div class="statistic-block"><span class="statistic-label">AC</span><span class="statistic-value">${acInfo.base}</span></div>`;
+            acValueHTML = `<span class="statistic-value">${acInfo.base}</span>`;
+          } else {
+            acHTML = `<div class="statistic-block"><span class="statistic-label">AC</span><span class="armor-class-modifier-only">${fmtMod(acInfo.mod)}</span></div>`;
+            acValueHTML = `<span class="armor-class-modifier-only">${fmtMod(acInfo.mod)}</span>`;
+          }
         }
       }
 
@@ -5307,7 +5970,7 @@
       </div>`
         : "";
 
-      const statSummaryHTML = buildStatSummaryHTML(c);
+      const statSummaryHTML = buildStatSummaryHTML(computeConditionStatSummary(c));
 
       // ── Dying circles (PC / Ally) ─────────────────────────────────────────
       const isPlayerType = c.type === "pc" || c.type === "ally";
@@ -5382,13 +6045,16 @@
             onblur="revertInit(${c.id})"
             onclick="this.select()"
           />
+          <div class="action-badge">
+          ${buildActionPipsHTML(c, isActive)}
+          </div>
           <div
             class="reaction-badge ${c.reactionUsed ? "used" : ""}"
             onclick="toggleReaction(${c.id})"
             title="Reaction"
             >
-            <svg class="ui-icon s24"><use href="#icon-reaction"></use></svg>
-          </div>
+            <span class="pf-icon">[reaction]</span>
+          </div>          
         </div>
 
         <div class="combatant-body">
@@ -5680,8 +6346,8 @@
       left: 0;
       z-index: 100;
       background: var(--bg2);
-      border-right: 1px solid var(--border2);
-      border-bottom: 1px solid var(--border2);
+      border: solid var(--border2);
+      border-width: 0 1px 1px 0;
       border-radius: 0 0 var(--radius-lg) 0;
       padding: 14px 0 8px;
       display: flex;
@@ -5759,15 +6425,6 @@
 
     #track::-webkit-scrollbar {
       height: 4px;
-    }
-
-    #track::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    #track::-webkit-scrollbar-thumb {
-      background: var(--border2);
-      border-radius: 2px;
     }
 
     /* ── ROUND SECTIONS (prev / current / next) ── */
@@ -5943,7 +6600,7 @@
       background: var(--bg2);
       border: 1px solid var(--border2);
       border-radius: var(--radius-lg);
-      padding: 12px 28px 14px 28px;
+      padding: 14px 28px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -5979,21 +6636,23 @@
       top: -10px;
       left: 50%;
       transform: translateX(-50%);
-      font-family: "Orbitron", monospace;
+      font-family: "Audiowide", monospace;
       font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--blue);
       background: var(--bg1);
-      padding: 1px 8px;
-      border: 1px solid var(--primary);
+      padding: 1px 10px;
+      border: 2px solid var(--primary);
       border-radius: 20px;
       white-space: nowrap;
       text-transform: uppercase;
     }
 
     .player-card.active .player-card-active-marker {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .player-card-name-row {
@@ -6195,10 +6854,6 @@
       justify-content: center;
     }
 
-    .summary-statistic-key {
-      white-space: nowrap;
-    }
-
     /* muted pipe separator between stats */
     .summary-statistic+.summary-statistic {
       border-left: 1px solid var(--border1);
@@ -6310,66 +6965,6 @@
 
       document.title = "Initiative — Player View";
 
-      function hpColor(pct) {
-        return pct > 0.7
-          ? "var(--green)"
-          : pct > 0.3
-            ? "var(--amber)"
-            : "var(--red)";
-      }
-
-      function escHtml(s) {
-        return String(s)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;");
-      }
-
-      const STAT_ORDER = [
-        "FORT",
-        "REFL",
-        "WILL",
-        "PERC",
-        "SPD",
-        "STR",
-        "DEX",
-        "CON",
-        "INT",
-        "WIS",
-        "CHA",
-        "ATK",
-      ];
-
-      function fmtMod(v) {
-        return (v >= 0 ? "+" : "") + v;
-      }
-
-      function buildStatSummaryHTML(statSummary) {
-        if (!statSummary) return "";
-        // AC is shown next to the name — exclude from the summary grid
-        const entries = Object.entries(statSummary).filter(([stat]) => stat !== "AC");
-        if (!entries.length) return "";
-        entries.sort(([a], [b]) => {
-          const ai = STAT_ORDER.indexOf(a),
-            bi = STAT_ORDER.indexOf(b);
-          if (ai !== -1 && bi !== -1) return ai - bi;
-          if (ai !== -1) return -1;
-          if (bi !== -1) return 1;
-          return a.localeCompare(b);
-        });
-        let parts = "";
-        for (const [stat, data] of entries) {
-          const val = data.value;
-          const cls = val < 0 ? "neg" : "pos";
-          const display = stat === "SPD" ? (val >= 0 ? "+" : "") + val + "ft" : fmtMod(val);
-          const title = data.sources.join(", ");
-          parts += `<span class="summary-statistic" title="${escHtml(title)}"><span class="summary-statistic-key">${escHtml(stat)}</span><span class="summary-statistic-value ${cls}">${display}</span></span>`;
-        }
-        const rows = Math.ceil(entries.length / 5);
-        const cols = Math.ceil(entries.length / rows);
-        return `<div class="statistic-summary" style="--stat-cols:${cols}">${parts}</div>`;
-      }
-
       function buildCard(c, idx, activeIndex) {
         const isActive = idx === activeIndex;
         const hpPct = c.maxHp > 0 ? c.hp / c.maxHp : 1;
@@ -6429,8 +7024,11 @@
         const acBase = c.ac || 0;
         const acEntry = c.statSummary?.AC;
         const acMod = acEntry?.value ?? 0;
+        const isPetrifiedPC = c.conditions.some((x) => x.name === "Petrified");
         let acHTML = "";
-        if (acMod !== 0) {
+        if (isPetrifiedPC) {
+          acHTML = `<span class="player-card-armor-class-block" title="Petrified: AC set to 9"><span class="player-card-armor-class-label">AC</span><span class="player-card-armor-class-modifier" style="color:var(--red)">9</span></span>`;
+        } else if (acMod !== 0) {
           const acSources = acEntry?.sources ?? [];
           const acTitle = acSources.length ? acSources.join(", ") : "AC";
           acHTML = `<span class="player-card-armor-class-block" title="${escHtml(acTitle)}"><span class="player-card-armor-class-label">AC</span><span class="player-card-armor-class-modifier">${acMod >= 0 ? "+" : ""}${acMod}</span></span>`;
@@ -6448,7 +7046,7 @@
 
         return `
   <div class="player-card type-${c.type}${isActive ? " active" : ""}${c.defeated ? " defeated" : ""}" style="${glowStyle}">
-    <div class="player-card-active-marker">▶ Active</div>
+    <div class="player-card-active-marker">Active${buildActionPipsHTML(c, isActive)}</div>
     ${isPlayerType &&
             c.conditions.some((x) => x.bundledUnder == null && x.name === "Dying")
             ? `
@@ -6517,6 +7115,8 @@
         if (state.round > 1) {
           html += buildRoundSection(visible, state.combatants, state.activeIndex, "prev");
           html += buildRoundDivider(state.round);
+        } else {
+          html += `<div class="player-card-arrow"><svg class="ui-icon"><use href="#icon-next-player"></use></svg></div>`;
         }
         html += buildRoundSection(visible, state.combatants, state.activeIndex, "current");
         html += buildRoundDivider(state.round + 1, true);
@@ -6560,12 +7160,18 @@
         oldCurrent.classList.replace("current-round", "prev-round-pending");
         oldCurrent.querySelectorAll(".player-card").forEach(c => c.classList.remove("active"));
 
-        // 2. Promote next → current, mark the active card
+        // 2. Promote next → current, rebuild card content with the real active
+        //    index so the action pips and active styling render correctly.
         oldNext.classList.replace("next-round", "current-round");
-        if (activeVisibleIdx !== -1) {
-          const cards = oldNext.querySelectorAll(".player-card");
-          if (cards[activeVisibleIdx]) cards[activeVisibleIdx].classList.add("active");
-        }
+        const wrappers = oldNext.querySelectorAll(".player-card-wrapper");
+        visible.forEach((c, i) => {
+          if (!wrappers[i]) return;
+          const origIdx = state.combatants.indexOf(c);
+          const arrow = i < visible.length - 1
+            ? `<div class="player-card-arrow"><svg class="ui-icon"><use href="#icon-next-player"></use></svg></div>`
+            : "";
+          wrappers[i].innerHTML = buildCard(c, origIdx, state.activeIndex) + arrow;
+        });
 
         // 3. Append the new next section NOW (before scrolling) so the total
         //    content width is large enough that the scroll target is reachable
